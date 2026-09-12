@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    //? Define el módulo de JavaScript utilizado para exportar el código. En este caso, "commonjs" indica que se utilizará CommonJS.
+    "module": "commonjs",
+    //? Genera archivos de declaración adicionales que proporcionan información sobre las variables, funciones y clases.
+    "declaration": true,
+    //? Elimina todos los comentarios del código fuente antes de generar el archivo compilado.
+    "removeComments": true,
+    //? Emite metadatos de decoradores en el archivo compilado.
+    "emitDecoratorMetadata": true,
+    //? Habilita la sintaxis de decoradores en TypeScript.
+    "experimentalDecorators": true,
+    //? Permite la importación implícita de módulos con default.
+    "allowSyntheticDefaultImports": true,
+    //? Define la versión de JavaScript en la que se compila el código.
+    "target": "ES2021",
+    //? Genera un archivo de mapa de fuente adicional que se utiliza para mapear el código fuente a la versión compilada.
+    "sourceMap": true,
+    //? Especifica la carpeta de destino donde se guardará el código compilado.
+    "outDir": "./dist",
+    //? Define patrones de rutas para rastrear módulos en lugar de buscarlos en la carpeta baseUrl.
+    "paths": {
+    },
+    //? Habilita el modo incremental, lo que significa que TypeScript intentará reutilizar el trabajo realizado en la compilación anterior.
+    "incremental": true,
+    //? Evita la verificación de errores en bibliotecas de TypeScript.
+    "skipLibCheck": true,
+    //? Desactiva las estrictas verificaciones de valores nulos.
+    "strictNullChecks": false,
+    //? Desactiva la verificación implícita de tipos como any.
+    "noImplicitAny": false,
+    //? Desactiva la verificación de que las llamadas a bind, call y apply sean consistentes con el tipo de objeto.
+    "strictBindCallApply": false,
+    //? Desactiva la verificación de que los nombres de archivos sean consistentes con su caso.
+    "forceConsistentCasingInFileNames": false,
+    //? Desactiva la verificación de que todas las ramas del switch tengan un return o un break.
+    "noFallthroughCasesInSwitch": false,
+    //?
+    "resolveJsonModule": true
+  }
+}
