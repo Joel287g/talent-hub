@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    //? Reconocer los tipos
+    "types": ["node", "vitest/globals"],
     //? Define el módulo de JavaScript utilizado para exportar el código. En este caso, "commonjs" indica que se utilizará CommonJS.
     "module": "commonjs",
     //? Genera archivos de declaración adicionales que proporcionan información sobre las variables, funciones y clases.
@@ -20,6 +22,8 @@
     "outDir": "./dist",
     //? Define patrones de rutas para rastrear módulos en lugar de buscarlos en la carpeta baseUrl.
     "paths": {
+      "@main/*": ["./src/*"],
+      "@configuration/*": ["./src/configuration/*"],
     },
     //? Habilita el modo incremental, lo que significa que TypeScript intentará reutilizar el trabajo realizado en la compilación anterior.
     "incremental": true,

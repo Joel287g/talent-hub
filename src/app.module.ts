@@ -1,21 +1,46 @@
+//? Imports de codigo
 import { Module } from '@nestjs/common';
-import { createObserveModule } from '@nestjs/observe';
-import { AppController } from './app.controller.js';
-import { AppService } from './app.service.js';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule } from '@nestjs/config';
 
-export const { ObserveModule, ObserveInstrument } = createObserveModule();
+//? Imports de usuario
+//* Environments config
+import {
+  environmentsConfig,
+  environments,
+  environmentsValidations,
+} from '@configuration/env';
+
+//* Database
+import { MongooseConfigService } from '@configuration/database/mongoose.database';
 
 @Module({
   imports: [
-    // Distributed tracing, auto-correlated logs, request/job metrics, error
-    // telemetry, alarms, and more — out of the box. Sign up at https://observe.nestjs.com
-    ObserveModule.forRoot({
-      appKey: 'YOUR_APP_KEY',
-      appSecret: 'YOUR_APP_SECRET',
-      serviceId: 'talent-hub',
+    //* ENVIROMENTS
+    ConfigModule.forRoot({
+      //? Set path of the .env
+      envFilePath: environments[process.env.NODE_ENV],
+
+      //? Load config
+      load: [environmentsConfig],
+
+      //? Expand Variables
+      expandVariables: true,
+
+      //? Set global environments
+      isGlobal: true,
+
+      //? Validation environments variables
+      validationSchema: environmentsValidations,
+    }),
+
+    //* DATABASE
+    MongooseModule.forRootAsync({
+      useClass: MongooseConfigService,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
+4
