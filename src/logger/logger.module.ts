@@ -3,11 +3,11 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 //? Imports de usuario
-import { LOGGER_REPOSITORY } from '@logger/application/ports/logger.repository.port';
+import { LOGGER_REPOSITORY } from '@logger/application/ports';
 import { LoggerService } from '@logger/application/services';
 
 import { Logger, LoggerSchema } from '@logger/infrastructure/adapters/schemas';
-import { MongoLoggerRepository } from '@logger/infrastructure/adapters/mongo-logger.repository';
+import { MongoLoggerRepository } from '@logger/infrastructure/adapters';
 
 @Module({
   imports: [

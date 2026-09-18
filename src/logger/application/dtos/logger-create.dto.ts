@@ -1,6 +1,6 @@
 //? Imports de codigo
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 //? Imports de usuario
 import { LoggerTypes, LoggerLevel } from '@logger/domain/enums';
@@ -15,6 +15,16 @@ export class LoggerCreateDto {
   @IsString()
   @IsEnum(LoggerTypes)
   readonly type: LoggerTypes;
+
+  @ApiProperty({
+    description: 'Level of log (required)',
+    required: true,
+    enum: LoggerLevel,
+  })
+  @IsOptional()
+  @IsString()
+  @IsEnum(LoggerLevel)
+  readonly level?: LoggerLevel;
 
   @ApiProperty({
     description: 'Message of log (required)',

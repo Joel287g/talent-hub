@@ -4,9 +4,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 //? Imports de usuario
 import { USERS_REPOSITORY } from '@users/domain/repositories';
+
 import { Users, UsersSchema } from '@users/infrastructure/persistence/schemas';
-import { MongoDBUsersRepository } from '@users/infrastructure/persistence/mongo-users.repository';
+import { MongoDBUsersRepository } from '@users/infrastructure/persistence';
 import { UsersController } from '@users/infrastructure/controllers';
+
 import * as usersUseCases from '@users/application/use-cases';
 
 @Module({

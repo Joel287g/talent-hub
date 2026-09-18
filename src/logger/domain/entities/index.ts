@@ -1,4 +1,4 @@
 export {
   LoggerEntity,
-  LoggerProps,
+  LoggerInterface,
 } from '@logger/domain/entities/logger.entity';
