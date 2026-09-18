@@ -26,7 +26,7 @@
       "@common/*": ["./src/common/*"],
       "@configuration/*": ["./src/configuration/*"],
       "@logger/*": ["./src/logger/*"],
-      "@authy/*": ["./src/common/infrastructure/auth/*"],
+      "@sniffer/*": ["./src/sniffer/*"],
       "@users/*": ["./src/users/*"],
     },
     //? Habilita el modo incremental, lo que significa que TypeScript intentará reutilizar el trabajo realizado en la compilación anterior.

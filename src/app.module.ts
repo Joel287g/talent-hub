@@ -17,10 +17,7 @@ import { MongooseConfigService } from '@configuration/database/mongoose.database
 //* Middlewares
 import { MiddlewaresModule } from '@common/infrastructure/middlewares.module';
 
-//* Logger
-import { LoggerModule } from '@logger/logger.module';
-
-//* Users
+//* Modules
 import { UsersModule } from '@users/users.module';
 
 @Module({
@@ -51,10 +48,7 @@ import { UsersModule } from '@users/users.module';
     //* MIDDLEWARES
     MiddlewaresModule,
 
-    //* LOGGER
-    LoggerModule,
-
-    //* USERS
+    //* MODULES
     UsersModule,
   ],
   controllers: [],

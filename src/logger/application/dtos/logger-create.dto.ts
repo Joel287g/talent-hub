@@ -17,16 +17,6 @@ export class LoggerCreateDto {
   readonly type: LoggerTypes;
 
   @ApiProperty({
-    description: 'Level of log (required)',
-    required: true,
-    enum: LoggerLevel,
-  })
-  @IsNotEmpty()
-  @IsString()
-  @IsEnum(LoggerLevel)
-  readonly level: LoggerLevel;
-
-  @ApiProperty({
     description: 'Message of log (required)',
     required: true,
   })

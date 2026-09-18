@@ -6,8 +6,10 @@ import { Global, Module } from '@nestjs/common';
 
 //* Module
 import { LoggerModule } from '@logger/logger.module';
+import { SnifferModule } from '@sniffer/sniffer.module';
 
 //* Interceptors
+import { SnifferInterceptor } from '@common/infrastructure/interceptors';
 
 //* Guards
 
@@ -23,6 +25,7 @@ import {
   imports: [
     //? Modules
     LoggerModule,
+    SnifferModule,
   ],
 
   controllers: [],
@@ -31,6 +34,10 @@ import {
     //? Errors
 
     //? Interceptors
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SnifferInterceptor,
+    },
 
     //? Guards
 
