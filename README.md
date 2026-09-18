@@ -4,11 +4,28 @@ Backend de alto rendimiento desarrollado bajo una **Arquitectura Hexagonal estri
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 📌 Requisitos de Entorno y Versiones
 
-- **Framework Principal:** [NestJS](https://nestjs.com/) (TypeScript)
-- **Base de Datos:** MongoDB & Mongoose
-- **Gestión de Errores:** Filtros globales de infraestructura y manejo seguro de entornos.
+Para asegurar la máxima compatibilidad y evitar discrepancias de dependencias en el equipo o en pipelines de CI/CD, este proyecto requiere un entorno estricto mediante Corepack:
+
+- **Node.js:** `>= 26.8.0`
+- **Gestor de paquetes:** `npm @ 12.0.x`
+- **Framework:** `NestJS v12.x`
+- **Base de Datos:** `MongoDB` (Mongoose v9.x) 
+
+---
+
+## 🧰 Herramientas y Utilidades (DX & Seguridad)
+
+El proyecto cuenta con herramientas configuradas a medida para priorizar la velocidad de desarrollo, el rendimiento y la seguridad del servidor:
+
+- **⚡ Testing Ultra-Rápido:** [Vitest](https://vitest.dev/) para pruebas unitarias y de integración, sustituyendo a Jest para un rendimiento superior impulsado por Vite.
+- **🧹 Linting y Formateo:** [Oxlint](https://oxc.rs/docs/guide/usage/linter.html) (basado en Rust) para un análisis estático de código entre 50 y 100 veces más rápido que ESLint, combinado con **Prettier** para el estilo.
+- **📖 Documentación Interactiva:** [Swagger OpenAPI](https://swagger.io/) autogenerado e integrado. (Disponible en la ruta `/api/docs` únicamente en entornos fuera de producción).
+- **🛡️ Seguridad y Auditoría:**
+  - **Helmet:** Para la configuración estricta de cabeceras HTTP de seguridad (Content Security Policy, mitigación de XSS).
+  - **Joi:** Validación estricta y tipado fuerte de las variables de entorno (`.env`) durante el arranque.
+- **📡 Telemetría Personalizada:** Sistema de interceptores asíncronos (`SnifferInterceptor`) integrado con eventos nativos HTTP (`finish`) para registrar la trazabilidad exacta de las peticiones sin bloquear la respuesta del cliente.
 
 ---
 
@@ -19,7 +36,8 @@ El código fuente se organiza modularmente separando las reglas de negocio de lo
 ```text
 src/
 ├── common/              # Elementos transversales (Dominio e Infraestructura compartida)
-├── logger/              # Módulo centralizado de trazabilidad y auditoría
+├── logger/              # Módulo centralizado de trazabilidad y consola
+├── sniffer/             # Módulo de auditoría y telemetría de red HTTP
 ├── users/               # Módulo de usuarios (Dominio, Aplicación, Infraestructura)
 └── docs/                # Documentación técnica específica del proyecto
 ```
@@ -52,7 +70,11 @@ Crea un archivo `.env.development` en la raíz del proyecto basándote en el arc
 # Modo desarrollo con recarga en vivo
 npm run start:dev
 
-# Modo producción
+# Ejecutar el linter y pruebas antes de subir código
+npm run lint
+npm run test
+
+# Compilación y modo producción
 npm run build
 npm run start:prod
 ```

@@ -25,12 +25,18 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
   - _Nota:_ Evitamos el "Modelo Anémico" (entidades que solo tienen getters/setters y cero lógica). Usamos un método `static create()` (Factory) para asegurar su integridad al nacer.
 - **Exception Filter (Filtro de Excepciones):** Capa de la Infraestructura en NestJS encargada de atrapar errores (ej. un error de duplicidad en Mongo o un error personalizado del dominio) antes de que lleguen al cliente, mapeándolos a una respuesta HTTP estandarizada.
 
+## F
+
+- **Fuga de Infraestructura (Infrastructure Leak):** Antipatrón arquitectónico que ocurre cuando detalles técnicos de librerías externas (como usar `Types.ObjectId` de Mongoose dentro de un DTO o Caso de Uso) contaminan el Dominio o la capa de Aplicación. Rompe por completo el aislamiento de la Arquitectura Hexagonal.
+
 ## I
 
+- **Interceptor:** Componente de la capa de Infraestructura (nativo en NestJS) que envuelve el flujo de la petición HTTP. Permite ejecutar lógica antes y después de que la petición alcance el Caso de Uso (Controller). Es el lugar ideal para aislar lógica transversal (cross-cutting concerns) como telemetría, logging o mutación de respuestas, manteniendo los Casos de Uso limpios.
 - **Inyección de Dependencias (DI):** Patrón de diseño en el que las clases no crean a sus propias dependencias (ej. no hacen `new Repository()`), sino que las reciben por el constructor. NestJS se encarga de inyectarlas usando un contenedor IoC (Inversion of Control).
 
 ## M
 
+- **Magic Strings (Cadenas Mágicas):** Antipatrón que consiste en escribir cadenas de texto literales en el código (ej. `'SnifferInterceptor'`) en lugar de utilizar variables, constantes dinámicas (como `SnifferInterceptor.name`) o enums. Generan un código frágil, propenso a errores de tipeo y difícil de refactorizar.
 - **Mapper (Mapeador):** Clase utilitaria de la capa de Infraestructura que traduce los datos entre dos mundos.
   - `toDomain`: Convierte un documento de MongoDB en una `Entity` pura.
   - `toPersistence`: Convierte una `Entity` pura en un formato que Mongoose entienda.
@@ -47,6 +53,11 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 ## S
 
 - **Symbol:** Tipo de dato primitivo en JavaScript que garantiza un valor único e irrepetible en memoria. Lo utilizamos como Token de inyección en NestJS para poder inyectar Interfaces puras sin colisiones en el contenedor de dependencias.
+
+## T
+
+- **Telemetría (Telemetry):** El proceso de recopilación automatizada de datos sobre el comportamiento interno del sistema en tiempo real (ej. tiempos de procesamiento HTTP, IPs, códigos de estado, cabeceras). En nuestro proyecto, está aislada y gestionada por el `SnifferModule`.
+- **Thread-Safe (Seguro contra concurrencia):** Diseño de código que garantiza que el sistema funcionará correctamente cuando múltiples usuarios o hilos ejecuten el mismo proceso simultáneamente. Es crucial en Node.js al inyectar dependencias Singleton (como el `LoggerService`) para evitar que el estado o el contexto de la petición del Usuario A sobrescriba accidentalmente el del Usuario B.
 
 ## V
 
