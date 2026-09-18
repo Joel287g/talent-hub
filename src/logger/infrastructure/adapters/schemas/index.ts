@@ -1,0 +1,1 @@
+export { Logger, LoggerSchema } from '@logger/infrastructure/adapters/schemas/logger.schemas';
