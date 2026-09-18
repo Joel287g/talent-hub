@@ -1,0 +1,1 @@
+export { MapperInterface } from '@common/interfaces/mapper.interface';
