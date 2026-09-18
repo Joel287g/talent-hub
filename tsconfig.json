@@ -23,7 +23,11 @@
     //? Define patrones de rutas para rastrear módulos en lugar de buscarlos en la carpeta baseUrl.
     "paths": {
       "@main/*": ["./src/*"],
+      "@common/*": ["./src/common/*"],
       "@configuration/*": ["./src/configuration/*"],
+      "@logger/*": ["./src/logger/*"],
+      "@authy/*": ["./src/common/infrastructure/auth/*"],
+      "@users/*": ["./src/users/*"],
     },
     //? Habilita el modo incremental, lo que significa que TypeScript intentará reutilizar el trabajo realizado en la compilación anterior.
     "incremental": true,
@@ -39,7 +43,7 @@
     "forceConsistentCasingInFileNames": false,
     //? Desactiva la verificación de que todas las ramas del switch tengan un return o un break.
     "noFallthroughCasesInSwitch": false,
-    //?
+    //? Permite la resolución de módulos JSON.
     "resolveJsonModule": true
   }
 }
