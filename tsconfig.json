@@ -14,8 +14,10 @@
     "experimentalDecorators": true,
     //? Permite la importación implícita de módulos con default.
     "allowSyntheticDefaultImports": true,
+    //? Permite especificar qué definiciones de tipo integradas deben incluirse en el proyecto
+    "lib": ["ES2022"],
     //? Define la versión de JavaScript en la que se compila el código.
-    "target": "ES2021",
+    "target": "ES2022",
     //? Genera un archivo de mapa de fuente adicional que se utiliza para mapear el código fuente a la versión compilada.
     "sourceMap": true,
     //? Especifica la carpeta de destino donde se guardará el código compilado.

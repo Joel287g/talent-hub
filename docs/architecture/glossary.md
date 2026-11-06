@@ -10,6 +10,10 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
   - _Ejemplo:_ `MongoDBUsersRepository` es un adaptador que conecta nuestro sistema con MongoDB.
 - **Arquitectura Hexagonal (Puertos y Adaptadores):** Patrón de diseño de software que busca aislar el núcleo de negocio (Dominio) de las tecnologías externas (Bases de datos, HTTP, UI) mediante el uso de interfaces (Puertos).
 
+## B
+
+- **BaseException:** Clase base de error que hereda nativamente de `Error` en JavaScript. Mantiene la capa de Dominio 100% pura y agnóstica a NestJS o protocolos HTTP, encapsulando el `statusCode`, `code`, `cause` y `metadata`.
+
 ## C
 
 - **Caso de Uso (Use Case / Interactor):** Clase que pertenece a la capa de Aplicación. Su única responsabilidad es orquestar un flujo específico del sistema. Recibe peticiones, delega validaciones a la Entidad y ordena al Repositorio guardar o buscar. **No contiene lógica de negocio pura.**
@@ -23,10 +27,12 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 
 - **Entidad (Entity):** Objeto de la capa de Dominio que posee una **identidad única** (un ID). Encapsula el estado de un concepto de negocio y las reglas que dictan cómo puede mutar ese estado a lo largo del tiempo.
   - _Nota:_ Evitamos el "Modelo Anémico" (entidades que solo tienen getters/setters y cero lógica). Usamos un método `static create()` (Factory) para asegurar su integridad al nacer.
+- **ERROR_GENERATOR:** Marcador / Snippet utilizado por la extensión de VS Code [Error codes generator](https://marketplace.visualstudio.com/items?itemName=Joel287g.error-codes-generator). Al ejecutar la extensión, este string se reemplaza automáticamente por un código único secuencial basado en la ruta del archivo (ej. `SRC_USERS_DOMAIN_001`).
 - **Exception Filter (Filtro de Excepciones):** Capa de la Infraestructura en NestJS encargada de atrapar errores (ej. un error de duplicidad en Mongo o un error personalizado del dominio) antes de que lleguen al cliente, mapeándolos a una respuesta HTTP estandarizada.
 
 ## F
 
+- **FilterException:** Interfaz definida en la capa de Infraestructura compartida que dicta el contrato de respuesta JSON estricto y uniforme para cualquier excepción capturada en la aplicación.
 - **Fuga de Infraestructura (Infrastructure Leak):** Antipatrón arquitectónico que ocurre cuando detalles técnicos de librerías externas (como usar `Types.ObjectId` de Mongoose dentro de un DTO o Caso de Uso) contaminan el Dominio o la capa de Aplicación. Rompe por completo el aislamiento de la Arquitectura Hexagonal.
 
 ## I

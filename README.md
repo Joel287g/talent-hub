@@ -34,12 +34,13 @@ El proyecto cuenta con herramientas configuradas a medida para priorizar la velo
 El código fuente se organiza modularmente separando las reglas de negocio de los detalles técnicos externos:
 
 ```text
+docs/                    # Documentación técnica específica del proyecto
 src/
 ├── common/              # Elementos transversales (Dominio e Infraestructura compartida)
+├── configuration/       # Configuración global del sistema
 ├── logger/              # Módulo centralizado de trazabilidad y consola
 ├── sniffer/             # Módulo de auditoría y telemetría de red HTTP
 ├── users/               # Módulo de usuarios (Dominio, Aplicación, Infraestructura)
-└── docs/                # Documentación técnica específica del proyecto
 ```
 
 ## 📚 Documentación del Proyecto
@@ -49,6 +50,7 @@ Para profundizar en las decisiones técnicas y operativas, consulta las guías e
 - [Glossario de Términos](./docs/architecture/glossary.md)
 - [Estándares de Arquitectura Hexagonal](./docs/architecture/hexagonal-standards.md)
 - [Manejo de Excepciones y Logging](./docs/guides/exception-handling.md)
+- [Estándares de Código y Formato](./docs/architecture/code-standards.md)
 
 ## ⚙️ Guía de Inicio Rápido
 

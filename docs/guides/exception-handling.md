@@ -11,8 +11,15 @@ Siguiendo los principios de la **Arquitectura Hexagonal**, el manejo de protocol
 ```text
 src/
  └── common/
+     ├── domain/
+     │   └── exceptions/
+     │       ├── base-exception.ts
+     │       ├── base-errors.interface.ts
+     │       ├── base-errors.abstract.ts
+     │       └── index.ts
      └── infrastructure/
          ├── filters/
+         │   ├── domain-exception.filter.ts
          │   ├── general-exception.filter.ts
          │   ├── http-exception.filter.ts
          │   ├── mongoose-exception.filter.ts
@@ -104,6 +111,15 @@ Todas las respuestas de error del backend devuelven una estructura JSON uniforme
 
 ---
 
+### 5. Catálogo de Errores por Módulo (`BaseErrors`)
+Para evitar el uso directo de excepciones de NestJS en los Casos de Uso (preveniendo la Fuga de Infraestructura), los errores se instancian extendiendo la clase abstracta `BaseErrors`:
+
+- Cada módulo define su propio catálogo (ej. `usersErrors` en `src/users/domain/exceptions/users.errors.ts`).
+- Los métodos heredados (como `notFoundException` o `forbiddenException`) asignan automáticamente el código de estado HTTP semántico y el marcador `'ERROR_GENERATOR'`.
+- Los Casos de Uso lanzan estos errores directamente sin necesidad de bloques `try/catch`.
+
 ---
 
-**Main menu:** [README.md](../../README.md) || **Previous:** [Estándares de Arquitectura Hexagonal](../architecture/hexagonal-standards.md)
+---
+
+**Main menu:** [README.md](../../README.md) || **Previous:** [Estándares de Arquitectura Hexagonal](../architecture/hexagonal-standards.md) || **Next:** [Estándares de Código y Formato](../architecture/code-standards.md) 
