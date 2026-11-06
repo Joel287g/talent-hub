@@ -14,9 +14,6 @@ import { HttpStatus } from '@nestjs/common';
   collection: Collections.SNIFFER,
 })
 export class Sniffer extends Document {
-  @Prop({ required: true, type: Types.ObjectId })
-  _id: Types.ObjectId;
-
   @Prop({ required: false, type: String })
   auth?: string;
 

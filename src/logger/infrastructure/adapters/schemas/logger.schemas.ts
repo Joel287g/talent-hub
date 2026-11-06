@@ -14,9 +14,6 @@ import * as LoggerMessages from '@logger/domain/enums/logger-messages.enum';
   collection: 'logger',
 })
 export class Logger extends Document {
-  @Prop({ required: true, type: Types.ObjectId })
-  _id: Types.ObjectId;
-
   @Prop({
     required: true,
     type: String,

@@ -13,9 +13,6 @@ import { UserStatus } from '@users/domain/enums/user-status.enum';
   toJSON: { virtuals: false, getters: false },
 })
 export class Users extends Document {
-  @Prop({ required: true, type: Types.ObjectId })
-  _id: Types.ObjectId;
-
   @Prop({ required: true, type: String, unique: true })
   uid: string;
 
