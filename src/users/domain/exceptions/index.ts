@@ -1,0 +1,1 @@
+export * from '@users/domain/exceptions/users.errors';
