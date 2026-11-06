@@ -24,12 +24,11 @@
     "outDir": "./dist",
     //? Define patrones de rutas para rastrear módulos en lugar de buscarlos en la carpeta baseUrl.
     "paths": {
-      "@main/*": ["./src/*"],
       "@common/*": ["./src/common/*"],
       "@configuration/*": ["./src/configuration/*"],
       "@logger/*": ["./src/logger/*"],
       "@sniffer/*": ["./src/sniffer/*"],
-      "@users/*": ["./src/users/*"],
+      "@users/*": ["./src/users/*"]
     },
     //? Habilita el modo incremental, lo que significa que TypeScript intentará reutilizar el trabajo realizado en la compilación anterior.
     "incremental": true,
