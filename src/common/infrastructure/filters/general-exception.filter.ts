@@ -4,6 +4,8 @@ import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/commo
 import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
+import { Environments } from '@common/infrastructure/enums';
+
 import { FilterException } from '../interfaces';
 
 @Catch()
@@ -41,7 +43,7 @@ export class GeneralExceptionsFilter implements ExceptionFilter {
     };
 
     //! Solo adjuntamos contexto técnico en modo desarrollo
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== Environments.PRODUCTION) {
       if (STACK) BODY.stack = STACK;
       if (CAUSE) BODY.cause = CAUSE;
     }

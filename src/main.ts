@@ -4,11 +4,14 @@ import { ValidationPipe } from '@nestjs/common';
 
 //? Imports de usuario
 import { AppModule } from '@main/app.module';
+
 import {
   HelmetSecurityConfig,
   CorsSecurityConfig,
 } from '@configuration/security';
 import { SwaggerRunner } from '@configuration/documentation/swagger-config';
+
+import { Environments } from '@common/infrastructure/enums';
 
 async function main() {
   const app = await NestFactory.create(AppModule);
@@ -49,7 +52,7 @@ async function main() {
   );
 
   //? Documentation
-  if (process.env.NODE_ENV !== 'production') new SwaggerRunner(app).run();
+  if (process.env.NODE_ENV !== Environments.PRODUCTION) new SwaggerRunner(app).run();
 
   await app.listen(process.env.PORT);
 }

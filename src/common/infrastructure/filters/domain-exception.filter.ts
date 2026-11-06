@@ -5,8 +5,11 @@ import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
+import { Environments } from '@common/infrastructure/enums';
+
 import { BaseException } from '../../domain/exceptions';
 import { FilterException } from '../interfaces';
+
 
 @Catch(BaseException)
 export class DomainExceptionFilter implements ExceptionFilter {
@@ -42,7 +45,7 @@ export class DomainExceptionFilter implements ExceptionFilter {
     };
 
     //! Por motivos de seguridad, stack y cause solo se exponen en desarrollo
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== Environments.PRODUCTION) {
       if (exception.stack) BODY.stack = exception.stack;
       if (exception.cause) BODY.cause = exception.cause;
     }

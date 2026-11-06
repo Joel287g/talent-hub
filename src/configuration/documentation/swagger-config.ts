@@ -5,6 +5,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 //? Imports de usuario
 import { name, description, author, version } from '../../../package.json';
 
+import { Environments } from '@common/infrastructure/enums';
+
 export class SwaggerRunner {
   private config: DocumentBuilder;
   private app: INestApplication;
@@ -45,7 +47,7 @@ export class SwaggerRunner {
           schema: {
             type: 'string',
             default:
-              process.env.NODE_ENV !== 'production'
+              process.env.NODE_ENV !== Environments.PRODUCTION
                 ? process.env.API_KEY
                 : null,
           },

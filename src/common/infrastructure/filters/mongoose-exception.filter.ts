@@ -6,6 +6,7 @@ import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/commo
 import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
+import { Environments } from '@common/infrastructure/enums';
 import { FilterException } from '../interfaces';
 
 @Catch(mongo.MongoServerError)
@@ -56,7 +57,7 @@ export class MongooseExceptionFilter implements ExceptionFilter<mongo.MongoServe
     };
 
     //! Filtrado de stack trace para proteger infraestructura
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== Environments.PRODUCTION) {
       if (STACK) BODY.stack = STACK;
       if (CAUSE) BODY.cause = CAUSE;
     }

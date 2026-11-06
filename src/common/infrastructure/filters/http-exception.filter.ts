@@ -5,6 +5,7 @@ import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/co
 import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
+import { Environments } from '@common/infrastructure/enums';
 import { FilterException } from '@common/infrastructure/interfaces';
 
 @Catch(HttpException)
@@ -39,7 +40,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     };
 
     //! Entorno seguro: inyectamos telemetría técnica solo fuera de producción
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== Environments.PRODUCTION) {
       if (STACK) BODY.stack = STACK;
       if (CAUSE) BODY.cause = CAUSE;
     }
