@@ -15,6 +15,7 @@ import { SnifferInterceptor } from '@common/infrastructure/interceptors';
 
 //* Filters
 import {
+  DomainExceptionFilter,
   GeneralExceptionsFilter,
   HttpExceptionFilter,
   MongooseExceptionFilter,
@@ -48,12 +49,16 @@ import {
     },
     {
       provide: APP_FILTER,
+      useClass: MongooseExceptionFilter
+    },
+    {
+      provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
     {
       provide: APP_FILTER,
-      useClass: MongooseExceptionFilter,
+      useClass: DomainExceptionFilter,
     },
   ],
 })
-export class MiddlewaresModule {}
+export class MiddlewaresModule { }

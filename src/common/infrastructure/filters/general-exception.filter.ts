@@ -1,43 +1,36 @@
 //? Imports de codigo
-import { Request, Response } from 'express';
-
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpStatus,
-} from '@nestjs/common';
+import { Request } from 'express';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
-import { FilterException } from '@common/infrastructure/interfaces';
+import { FilterException } from '../interfaces';
 
 @Catch()
 export class GeneralExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
   async catch(exception: unknown, host: ArgumentsHost): Promise<void> {
     const { httpAdapter: HTTP_ADAPTER } = this.httpAdapterHost;
-
     const CTX = host.switchToHttp();
     const REQUEST = CTX.getRequest<Request>();
-    const RESPONSE = CTX.getResponse<Response>();
+    const RESPONSE = CTX.getResponse();
 
-    //? Si la respuesta ya ha sido enviada, no hacemos nada en el filtro
-    if (RESPONSE.headersSent) return;
+    //! Evitar respuestas dobles
+    if (HTTP_ADAPTER.isHeadersSent(RESPONSE)) return;
 
+    //* Este cajón de sastre siempre responderá 500
     const STATUS_CODE = HttpStatus.INTERNAL_SERVER_ERROR;
     const { url: URL, method: METHOD } = REQUEST;
 
-    //? Extracción directa con fallbacks seguros por defecto
+    //* Extracción defensiva asumiendo un objeto genérico o desconocido
     const ERROR = exception as Record<string, any>;
-    const MESSAGE =
-      ERROR?.message ?? 'Ocurrió un error inesperado en el servidor';
+    const MESSAGE = ERROR?.message ?? 'Ocurrió un error inesperado en el servidor';
     const NAME = ERROR?.name ?? 'InternalServerError';
     const STACK = ERROR?.stack;
     const CAUSE = ERROR?.cause;
 
-    //? Respuesta limpia y segura para el cliente
+    //* Generación estricta de la estructura de error
     const BODY: FilterException = {
       message: MESSAGE,
       name: NAME,
@@ -47,7 +40,7 @@ export class GeneralExceptionsFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
     };
 
-    //? Agregar valores para desarrollo y debugging, si existen
+    //! Solo adjuntamos contexto técnico en modo desarrollo
     if (process.env.NODE_ENV !== 'production') {
       if (STACK) BODY.stack = STACK;
       if (CAUSE) BODY.cause = CAUSE;

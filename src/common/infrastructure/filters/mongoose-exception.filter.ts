@@ -1,42 +1,33 @@
 //? Imports de codigo
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { mongo } from 'mongoose';
 
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpStatus,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
-import { FilterException } from '@common/infrastructure/interfaces';
+import { FilterException } from '../interfaces';
 
 @Catch(mongo.MongoServerError)
 export class MongooseExceptionFilter implements ExceptionFilter<mongo.MongoServerError> {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
 
   catch(exception: mongo.MongoServerError, host: ArgumentsHost) {
     const { httpAdapter: HTTP_ADAPTER } = this.httpAdapterHost;
-
     const CTX = host.switchToHttp();
     const REQUEST = CTX.getRequest<Request>();
-    const RESPONSE = CTX.getResponse<Response>();
+    const RESPONSE = CTX.getResponse();
+
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
-    //? Si la respuesta ya ha sido enviada, no hacemos nada en el filtro
-    if (RESPONSE.headersSent) return;
+    //! Prevenir fallos si la cabecera ya se mandó al cliente
+    if (HTTP_ADAPTER.isHeadersSent(RESPONSE)) return;
 
+    //* Extraemos contexto HTTP y propiedades del driver nativo
     const { url: URL, method: METHOD } = REQUEST;
-    const {
-      message: MESSAGE,
-      name: NAME,
-      stack: STACK,
-      cause: CAUSE,
-      ...additionalException
-    } = exception;
+    const { message: MESSAGE, name: NAME, stack: STACK, cause: CAUSE, ...additionalException } = exception;
 
+    //* Traducción de códigos crudos de Mongo a HTTP Status semánticos
     switch (exception.code) {
       case 11000:
       case 11001:
@@ -53,6 +44,7 @@ export class MongooseExceptionFilter implements ExceptionFilter<mongo.MongoServe
         break;
     }
 
+    //* Armado del contrato final de respuesta
     const BODY: FilterException = {
       message: MESSAGE,
       name: NAME,
@@ -63,7 +55,7 @@ export class MongooseExceptionFilter implements ExceptionFilter<mongo.MongoServe
       additionalException,
     };
 
-    //? Agregar valores para desarrollo y debugging, si existen
+    //! Filtrado de stack trace para proteger infraestructura
     if (process.env.NODE_ENV !== 'production') {
       if (STACK) BODY.stack = STACK;
       if (CAUSE) BODY.cause = CAUSE;

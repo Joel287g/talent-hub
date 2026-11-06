@@ -1,12 +1,7 @@
 //? Imports de codigo
-import { Request, Response } from 'express';
+import { Request } from 'express';
 
-import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
-} from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
@@ -18,36 +13,32 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const { httpAdapter: HTTP_ADAPTER } = this.httpAdapterHost;
-
     const CTX = host.switchToHttp();
     const REQUEST = CTX.getRequest<Request>();
-    const RESPONSE = CTX.getResponse<Response>();
+    const RESPONSE = CTX.getResponse();
+
+    //! Si la respuesta ya ha sido enviada, abortamos el filtro
+    if (HTTP_ADAPTER.isHeadersSent(RESPONSE)) return;
+
+    //* Extracción del estado y de los datos de la petición
     const STATUS_CODE = exception.getStatus();
-
-    //? Si la respuesta ya ha sido enviada, no hacemos nada en el filtro
-    if (RESPONSE.headersSent) return;
-
     const { url: URL, method: METHOD } = REQUEST;
-    const {
-      message: MESSAGE,
-      name: NAME,
-      stack: STACK,
-      cause: CAUSE,
-      ...additionalException
-    } = exception;
 
+    //* Separamos propiedades base de la excepción de NestJS
+    const { message: MESSAGE, name: NAME, stack: STACK, cause: CAUSE, ...additionalException } = exception;
+
+    //* Construcción del body bajo el estándar
     const BODY: FilterException = {
       message: MESSAGE,
       name: NAME,
       statusCode: STATUS_CODE,
-      cause: CAUSE,
       method: METHOD,
       url: URL,
       timestamp: new Date().toISOString(),
       additionalException,
     };
 
-    //? Agregar valores para desarrollo y debugging, si existen
+    //! Entorno seguro: inyectamos telemetría técnica solo fuera de producción
     if (process.env.NODE_ENV !== 'production') {
       if (STACK) BODY.stack = STACK;
       if (CAUSE) BODY.cause = CAUSE;
