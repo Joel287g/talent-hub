@@ -1,5 +1,5 @@
-import { LoggerMetadata } from '../../domain/entities/logger.entity';
-import { extractHeaders } from '@common/infrastructure/helpers'; // Asumo que mantienes este helper global
+import { extractHeaders } from '@common/infrastructure/helpers';
+import { LoggerMetadata } from '@logger/domain/entities';
 
 export class RequestExtractorUtil {
   public static extractData(request: any, error?: any): LoggerMetadata {

@@ -1,5 +1,5 @@
-import { LoggerCreateDto } from '@main/logger/application/dtos';
-import { LoggerTypes, LoggerLevel } from '../enums';
+import { LoggerCreateDto } from '@logger/application/dtos';
+import { LoggerLevel, LoggerTypes } from '@logger/domain/enums';
 
 export interface LoggerMetadata {
   url: string;

@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 
 //? Imports de usuario
-import { AppModule } from '@main/app.module';
+import { AppModule } from './app.module';
 
 import {
   HelmetSecurityConfig,

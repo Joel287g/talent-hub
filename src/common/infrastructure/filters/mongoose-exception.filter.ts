@@ -7,7 +7,7 @@ import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
 import { Environments } from '@common/infrastructure/enums';
-import { FilterException } from '../interfaces';
+import { FilterException } from '@common/infrastructure/interfaces';
 
 @Catch(mongo.MongoServerError)
 export class MongooseExceptionFilter implements ExceptionFilter<mongo.MongoServerError> {

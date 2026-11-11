@@ -5,8 +5,7 @@ import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
 import { Environments } from '@common/infrastructure/enums';
-
-import { FilterException } from '../interfaces';
+import { FilterException } from '@common/infrastructure/interfaces';
 
 @Catch()
 export class GeneralExceptionsFilter implements ExceptionFilter {
