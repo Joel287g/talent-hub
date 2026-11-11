@@ -4,8 +4,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 
 //? Imports de usuario
-import { LoggerRepository } from '@logger/application/ports/logger.repository.port';
-import { LoggerEntity } from '@logger/domain/entities/logger.entity';
+import { LoggerRepository } from '@logger/application/ports';
+import { LoggerEntity } from '@logger/domain/entities';
 
 import { Logger } from '@logger/infrastructure/adapters/schemas';
 

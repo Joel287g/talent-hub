@@ -12,7 +12,7 @@ import {
 } from '@configuration/env';
 
 //* Database
-import { MongooseConfigService } from '@configuration/database/mongoose.database';
+import { MongooseConfigService } from '@configuration/database';
 
 //* Middlewares
 import { MiddlewaresModule } from '@common/infrastructure/middlewares.module';

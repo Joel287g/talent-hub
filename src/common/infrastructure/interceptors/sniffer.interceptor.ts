@@ -15,8 +15,7 @@ import { CreateSnifferUseCase } from '@sniffer/application/use-cases';
 import { CreateSnifferDto } from '@sniffer/application/dtos';
 
 import { LoggerService } from '@logger/application/services';
-import { LoggerTypes, LoggerLevel } from '@logger/domain/enums';
-import { LoggerSniffer } from '@logger/domain/enums/logger-messages.enum';
+import { LoggerTypes, LoggerLevel, LoggerSniffer } from '@logger/domain/enums';
 
 @Injectable()
 export class SnifferInterceptor implements NestInterceptor {

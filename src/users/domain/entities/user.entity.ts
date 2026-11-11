@@ -1,5 +1,5 @@
 //? Imports de usuario
-import { UserStatus } from '@users/domain/enums/user-status.enum';
+import { UserStatus } from '@users/domain/enums';
 
 import { CreateUserDto } from '@users/application/dtos';
 

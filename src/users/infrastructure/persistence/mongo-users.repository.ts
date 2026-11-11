@@ -8,7 +8,7 @@ import { BaseRepository } from '@common/repositories';
 import { UsersRepository } from '@users/domain/repositories';
 import { Users } from '@users/infrastructure/persistence/schemas';
 import { UserEntity } from '@users/domain/entities';
-import { UserMapper } from '@users/infrastructure/persistence';
+import { UserMapper } from '@users/infrastructure/persistence/user.mapper';
 
 @Injectable()
 export class MongoDBUsersRepository

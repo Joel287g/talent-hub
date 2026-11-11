@@ -1,5 +1,5 @@
 //? Imports de usuario
-import { BaseRepositoryInterface } from '@common/repositories/base-repository.interface';
+import { BaseRepositoryInterface } from '@common/repositories';
 import { SnifferEntity } from '@sniffer/domain/entities';
 
 export const SNIFFER_REPOSITORY = Symbol('SNIFFER_REPOSITORY');

@@ -3,8 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 //? Imports de usuario
-import { LoggerLevel, LoggerTypes } from '@logger/domain/enums';
-import * as LoggerMessages from '@logger/domain/enums/logger-messages.enum';
+import { LoggerLevel, LoggerTypes, LoggerMessages } from '@logger/domain/enums';
 
 @Schema({
   _id: true,

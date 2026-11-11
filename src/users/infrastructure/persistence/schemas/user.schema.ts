@@ -4,7 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
 import { Collections } from '@common/infrastructure/enums';
-import { UserStatus } from '@users/domain/enums/user-status.enum';
+import { UserStatus } from '@users/domain/enums';
 
 @Schema({
   collection: Collections.USERS,

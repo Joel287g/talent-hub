@@ -1,5 +1,5 @@
 //? Imports de usuario
-import { LoggerEntity } from '@logger/domain/entities/logger.entity';
+import { LoggerEntity } from '@logger/domain/entities';
 
 export const LOGGER_REPOSITORY = Symbol('LOGGER_REPOSITORY');
 

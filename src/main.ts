@@ -9,7 +9,7 @@ import {
   HelmetSecurityConfig,
   CorsSecurityConfig,
 } from '@configuration/security';
-import { SwaggerRunner } from '@configuration/documentation/swagger-config';
+import { SwaggerRunner } from '@configuration/documentation';
 
 import { Environments } from '@common/infrastructure/enums';
 

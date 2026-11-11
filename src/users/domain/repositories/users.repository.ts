@@ -1,5 +1,5 @@
 //? Imports de usuario
-import { BaseRepositoryInterface } from '@common/repositories/base-repository.interface';
+import { BaseRepositoryInterface } from '@common/repositories';
 import { UserEntity } from '@users/domain/entities';
 
 export const USERS_REPOSITORY = Symbol('USERS_REPOSITORY');

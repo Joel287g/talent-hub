@@ -2,7 +2,7 @@
 import { Document, Model } from 'mongoose';
 
 //? Imports de usuario
-import { BaseRepositoryInterface } from '@common/repositories';
+import { BaseRepositoryInterface } from '@common/repositories/base-repository.interface';
 
 export abstract class BaseRepository<
   T,

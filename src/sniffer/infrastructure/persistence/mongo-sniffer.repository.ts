@@ -8,7 +8,7 @@ import { BaseRepository } from '@common/repositories';
 import { SnifferRepository } from '@sniffer/domain/repositories';
 import { Sniffer } from '@sniffer/infrastructure/persistence/schemas';
 import { SnifferEntity } from '@sniffer/domain/entities';
-import { SnifferMapper } from '@sniffer/infrastructure/persistence';
+import { SnifferMapper } from '@sniffer/infrastructure/persistence/sniffer.mapper';
 
 @Injectable()
 export class MongoDBSnifferRepository

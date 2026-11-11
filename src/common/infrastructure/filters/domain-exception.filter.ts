@@ -7,7 +7,7 @@ import { HttpAdapterHost } from '@nestjs/core';
 //? Imports de usuario
 import { Environments } from '@common/infrastructure/enums';
 import { BaseException } from '@common/domain/exceptions';
-import { FilterException } from '@common/infrastructure/interfaces/filters-exceptions.interfaces';
+import { FilterException } from '@common/infrastructure/interfaces';
 
 @Catch(BaseException)
 export class DomainExceptionFilter implements ExceptionFilter {
