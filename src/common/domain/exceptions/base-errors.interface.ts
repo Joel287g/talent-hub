@@ -2,53 +2,53 @@
 import { BaseException } from '@common/domain/exceptions/base-exception';
 
 export interface BaseErrorsInterface {
-  badRequestException(message?: string, code?: string, cause?: Error | unknown): BaseException;
-  unauthorizedException(message?: string, code?: string, cause?: Error | unknown): BaseException;
-  notFoundException(message?: string, code?: string, cause?: Error | unknown): BaseException;
-  forbiddenException(message?: string, code?: string, cause?: Error | unknown): BaseException;
+  badRequestException(code?: string, message?: string, cause?: Error | unknown): BaseException;
+  unauthorizedException(code?: string, message?: string, cause?: Error | unknown): BaseException;
+  notFoundException(code?: string, message?: string, cause?: Error | unknown): BaseException;
+  forbiddenException(code?: string, message?: string, cause?: Error | unknown): BaseException;
   methodNotAllowedException(
-    message?: string,
     code?: string,
+    message?: string,
     cause?: Error | unknown,
   ): BaseException;
-  notAcceptableException(message?: string, code?: string, cause?: Error | unknown): BaseException;
-  requestTimeoutException(message?: string, code?: string, cause?: Error | unknown): BaseException;
-  conflictException(message?: string, code?: string, cause?: Error | unknown): BaseException;
-  goneException(message?: string, code?: string, cause?: Error | unknown): BaseException;
+  notAcceptableException(code?: string, message?: string, cause?: Error | unknown): BaseException;
+  requestTimeoutException(code?: string, message?: string, cause?: Error | unknown): BaseException;
+  conflictException(code?: string, message?: string, cause?: Error | unknown): BaseException;
+  goneException(code?: string, message?: string, cause?: Error | unknown): BaseException;
   preconditionFailedException(
-    message?: string,
     code?: string,
+    message?: string,
     cause?: Error | unknown,
   ): BaseException;
-  payloadTooLargeException(message?: string, code?: string, cause?: Error | unknown): BaseException;
+  payloadTooLargeException(code?: string, message?: string, cause?: Error | unknown): BaseException;
   unsupportedMediaTypeException(
-    message?: string,
     code?: string,
+    message?: string,
     cause?: Error | unknown,
   ): BaseException;
-  imATeapotException(message?: string, code?: string, cause?: Error | unknown): BaseException;
-  misdirectedException(message?: string, code?: string, cause?: Error | unknown): BaseException;
+  imATeapotException(code?: string, message?: string, cause?: Error | unknown): BaseException;
+  misdirectedException(code?: string, message?: string, cause?: Error | unknown): BaseException;
   unprocessableEntityException(
-    message?: string,
     code?: string,
+    message?: string,
     cause?: Error | unknown,
   ): BaseException;
   internalServerErrorException(
-    message?: string,
     code?: string,
+    message?: string,
     cause?: Error | unknown,
   ): BaseException;
-  notImplementedException(message?: string, code?: string, cause?: Error | unknown): BaseException;
-  badGatewayException(message?: string, code?: string, cause?: Error | unknown): BaseException;
+  notImplementedException(code?: string, message?: string, cause?: Error | unknown): BaseException;
+  badGatewayException(code?: string, message?: string, cause?: Error | unknown): BaseException;
   serviceUnavailableException(
-    message?: string,
     code?: string,
+    message?: string,
     cause?: Error | unknown,
   ): BaseException;
-  gatewayTimeoutException(message?: string, code?: string, cause?: Error | unknown): BaseException;
+  gatewayTimeoutException(code?: string, message?: string, cause?: Error | unknown): BaseException;
   httpVersionNotSupportedException(
-    message?: string,
     code?: string,
+    message?: string,
     cause?: Error | unknown,
   ): BaseException;
 }
