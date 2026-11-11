@@ -10,9 +10,7 @@ import { Logger, LoggerSchema } from '@logger/infrastructure/adapters/schemas';
 import { MongoLoggerRepository } from '@logger/infrastructure/adapters';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Logger.name, schema: LoggerSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: Logger.name, schema: LoggerSchema }])],
   providers: [
     LoggerService,
     {

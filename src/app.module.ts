@@ -5,11 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 
 //? Imports de usuario
 //* Environments config
-import {
-  environmentsConfig,
-  environments,
-  environmentsValidations,
-} from '@configuration/env';
+import { environmentsConfig, environments, environmentsValidations } from '@configuration/env';
 
 //* Database
 import { MongooseConfigService } from '@configuration/database';

@@ -4,10 +4,7 @@ import { Document, Model } from 'mongoose';
 //? Imports de usuario
 import { BaseRepositoryInterface } from '@common/repositories/base-repository.interface';
 
-export abstract class BaseRepository<
-  T,
-  D extends Document,
-> implements BaseRepositoryInterface<T> {
+export abstract class BaseRepository<T, D extends Document> implements BaseRepositoryInterface<T> {
   constructor(protected readonly model: Model<D>) {}
 
   protected abstract mapToDomain(document: D): T;

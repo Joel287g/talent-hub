@@ -15,7 +15,7 @@ export const environmentsValidations = joi.object({
   DB_NAME: joi.string().required(),
   DB_USER: joi.string().required(),
   DB_PASSWORD: joi.string().required(),
-  DB_CLUSTER: joi.string().required(), 
+  DB_CLUSTER: joi.string().required(),
   DB_URI: joi.string().required(),
 
   //? JWT

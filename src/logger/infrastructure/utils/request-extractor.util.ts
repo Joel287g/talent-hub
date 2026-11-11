@@ -4,8 +4,9 @@ import { LoggerMetadata } from '@logger/domain/entities';
 export class RequestExtractorUtil {
   public static extractData(request: any, error?: any): LoggerMetadata {
     const headers = request.headers;
-    const [apiKey, userAgent, ip, ip2, referer, appVersion, authorization] =
-      extractHeaders(request, [
+    const [apiKey, userAgent, ip, ip2, referer, appVersion, authorization] = extractHeaders(
+      request,
+      [
         'x-api-key',
         'user-agent',
         'client-ip',
@@ -13,7 +14,8 @@ export class RequestExtractorUtil {
         'referer',
         'app-version',
         'authorization',
-      ]);
+      ],
+    );
 
     const method = request.method;
     const content = method === 'GET' ? 'query' : 'body';

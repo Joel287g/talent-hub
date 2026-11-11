@@ -9,7 +9,7 @@ import { FilterException } from '@common/infrastructure/interfaces';
 
 @Catch()
 export class GeneralExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   async catch(exception: unknown, host: ArgumentsHost): Promise<void> {
     const { httpAdapter: HTTP_ADAPTER } = this.httpAdapterHost;

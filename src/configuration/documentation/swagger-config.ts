@@ -46,10 +46,7 @@ export class SwaggerRunner {
           allowEmptyValue: false,
           schema: {
             type: 'string',
-            default:
-              process.env.NODE_ENV !== Environments.PRODUCTION
-                ? process.env.API_KEY
-                : null,
+            default: process.env.NODE_ENV !== Environments.PRODUCTION ? process.env.API_KEY : null,
           },
         },
       )

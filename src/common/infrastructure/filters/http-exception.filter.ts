@@ -26,7 +26,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const { url: URL, method: METHOD } = REQUEST;
 
     //* Separamos propiedades base de la excepción de NestJS
-    const { message: MESSAGE, name: NAME, stack: STACK, cause: CAUSE, ...additionalException } = exception;
+    const {
+      message: MESSAGE,
+      name: NAME,
+      stack: STACK,
+      cause: CAUSE,
+      ...additionalException
+    } = exception;
 
     //* Construcción del body bajo el estándar
     const BODY: FilterException = {

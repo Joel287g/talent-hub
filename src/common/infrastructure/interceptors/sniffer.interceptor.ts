@@ -1,10 +1,5 @@
 //? Imports de codigo
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
@@ -34,15 +29,14 @@ export class SnifferInterceptor implements NestInterceptor {
 
     //? 1. Extracción de datos
     const HEADERS = REQUEST.headers;
-    const [USER_AGENT, IP, IP_2, REFERER, APP_VERSION, AUTHORIZATION] =
-      extractHeaders(REQUEST, [
-        'user-agent',
-        'client-ip',
-        'x-forwarded-for',
-        'referer',
-        'app-version',
-        'authorization',
-      ]);
+    const [USER_AGENT, IP, IP_2, REFERER, APP_VERSION, AUTHORIZATION] = extractHeaders(REQUEST, [
+      'user-agent',
+      'client-ip',
+      'x-forwarded-for',
+      'referer',
+      'app-version',
+      'authorization',
+    ]);
 
     const METHOD = REQUEST.method;
     const CONTENT = METHOD === 'GET' ? 'query' : 'body';
@@ -74,8 +68,7 @@ export class SnifferInterceptor implements NestInterceptor {
       SNIFFER.processingTime = Date.now() - NOW;
       SNIFFER.response = errorData || responseData;
 
-      const IS_SUCCESS =
-        RESPONSE.statusCode >= 200 && RESPONSE.statusCode < 400;
+      const IS_SUCCESS = RESPONSE.statusCode >= 200 && RESPONSE.statusCode < 400;
 
       this.handleTelemetry(IS_SUCCESS, SNIFFER);
     });

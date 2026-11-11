@@ -29,7 +29,7 @@ export class LoggerEntity {
       data: payload.data,
       level: payload.level,
       message: payload.message,
-      type: payload.type
+      type: payload.type,
     });
   }
 }

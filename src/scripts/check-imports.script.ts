@@ -3,11 +3,13 @@ import fs from 'fs';
 import path from 'path';
 
 //? Imports de usuario
-import * as TS_CONFIG from '../../tsconfig.json'
+import * as TS_CONFIG from '../../tsconfig.json';
 
 //* Constantes de configuración
 const SRC_DIR: string = path.resolve('src');
-const PATHS: string[] = Object.keys(TS_CONFIG.compilerOptions.paths).map((key: string) => key.replace('/*', ''));
+const PATHS: string[] = Object.keys(TS_CONFIG.compilerOptions.paths).map((key: string) =>
+  key.replace('/*', ''),
+);
 
 console.info(`\n Paths Absolutos Permitidos: ${PATHS.join(', ')}\n`);
 
@@ -66,7 +68,9 @@ function validateImports(): void {
 
       //* Regla 1: PROHIBICIÓN ABSOLUTA de rutas relativas (./ o ../)
       if (isRelative) {
-        console.error(`❌ [${relativeFilePath}]: Import relativo prohibido "${importPath}". Utiliza siempre la ruta absoluta con alias (@...).`);
+        console.error(
+          `❌ [${relativeFilePath}]: Import relativo prohibido "${importPath}". Utiliza siempre la ruta absoluta con alias (@...).`,
+        );
         totalErrors++;
         continue;
       }
@@ -95,15 +99,19 @@ function validateImports(): void {
       if (isSameFolder) {
         // CASO A: MISMA CARPETA
         if (isBarrelImport) {
-          console.error(`❌ [${relativeFilePath}]: No puedes consumir el barril de tu propia carpeta "${importPath}" (causa dependencia circular). Importa el fichero directo mediante su ruta absoluta.`);
+          console.error(
+            `❌ [${relativeFilePath}]: No puedes consumir el barril de tu propia carpeta "${importPath}" (causa dependencia circular). Importa el fichero directo mediante su ruta absoluta.`,
+          );
           totalErrors++;
         }
       } else {
         // CASO B: OTRA CARPETA / MÓDULO EXTERNO
-        const isModuleImport: boolean = importPath.endsWith('.module'); 
-        
+        const isModuleImport: boolean = importPath.endsWith('.module');
+
         if (!isBarrelImport && !isModuleImport) {
-          console.error(`❌ [${relativeFilePath}]: Deep import prohibido "${importPath}". Al importar desde otra carpeta debes usar directamente el barril de la capa.`);
+          console.error(
+            `❌ [${relativeFilePath}]: Deep import prohibido "${importPath}". Al importar desde otra carpeta debes usar directamente el barril de la capa.`,
+          );
           totalErrors++;
         }
       }
@@ -114,7 +122,9 @@ function validateImports(): void {
     console.error(`\n❌ Se encontraron ${totalErrors} violaciones en las reglas de importación.\n`);
     process.exit(1);
   } else {
-    console.log('✅ Todos los imports respetan la arquitectura estrictamente con rutas absolutas.\n');
+    console.log(
+      '✅ Todos los imports respetan la arquitectura estrictamente con rutas absolutas.\n',
+    );
   }
 }
 

@@ -11,7 +11,7 @@ import { FilterException } from '@common/infrastructure/interfaces';
 
 @Catch(mongo.MongoServerError)
 export class MongooseExceptionFilter implements ExceptionFilter<mongo.MongoServerError> {
-  constructor(private readonly httpAdapterHost: HttpAdapterHost) { }
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
 
   catch(exception: mongo.MongoServerError, host: ArgumentsHost) {
     const { httpAdapter: HTTP_ADAPTER } = this.httpAdapterHost;
@@ -26,7 +26,13 @@ export class MongooseExceptionFilter implements ExceptionFilter<mongo.MongoServe
 
     //* Extraemos contexto HTTP y propiedades del driver nativo
     const { url: URL, method: METHOD } = REQUEST;
-    const { message: MESSAGE, name: NAME, stack: STACK, cause: CAUSE, ...additionalException } = exception;
+    const {
+      message: MESSAGE,
+      name: NAME,
+      stack: STACK,
+      cause: CAUSE,
+      ...additionalException
+    } = exception;
 
     //* Traducción de códigos crudos de Mongo a HTTP Status semánticos
     switch (exception.code) {

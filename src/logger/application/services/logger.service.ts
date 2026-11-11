@@ -25,13 +25,9 @@ export class LoggerService {
     contextDetail: string[] = [],
   ): Promise<void> {
     const contextString = [this.defaultContext, ...contextDetail].join('-');
-    const activeLogger =
-      contextDetail.length > 0 ? new Logger(contextString) : this.consoleLogger;
+    const activeLogger = contextDetail.length > 0 ? new Logger(contextString) : this.consoleLogger;
 
-    activeLogger[level.toLowerCase()](
-      logger.message,
-      JSON.stringify(logger.data).slice(0, 2000),
-    );
+    activeLogger[level.toLowerCase()](logger.message, JSON.stringify(logger.data).slice(0, 2000));
 
     const logEntity = LoggerEntity.create({
       type: logger.type,
@@ -43,45 +39,27 @@ export class LoggerService {
     await this.loggerRepository.save(logEntity);
   }
 
-  public async error(
-    logger: LoggerCreateDto,
-    ...contextDetail: string[]
-  ): Promise<void> {
+  public async error(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.ERROR, logger, contextDetail);
   }
 
-  public async log(
-    logger: LoggerCreateDto,
-    ...contextDetail: string[]
-  ): Promise<void> {
+  public async log(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.LOG, logger, contextDetail);
   }
 
-  public async warning(
-    logger: LoggerCreateDto,
-    ...contextDetail: string[]
-  ): Promise<void> {
+  public async warning(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.WARN, logger, contextDetail);
   }
 
-  public async debug(
-    logger: LoggerCreateDto,
-    ...contextDetail: string[]
-  ): Promise<void> {
+  public async debug(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.DEBUG, logger, contextDetail);
   }
 
-  public async verbose(
-    logger: LoggerCreateDto,
-    ...contextDetail: string[]
-  ): Promise<void> {
+  public async verbose(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.VERBOSE, logger, contextDetail);
   }
 
-  public async fatal(
-    logger: LoggerCreateDto,
-    ...contextDetail: string[]
-  ): Promise<void> {
+  public async fatal(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.FATAL, logger, contextDetail);
   }
 }

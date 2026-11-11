@@ -3,10 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 
 //? Imports de sniffer
 import { CreateSnifferDto } from '@sniffer/application/dtos';
-import {
-  SNIFFER_REPOSITORY,
-  SnifferRepository,
-} from '@sniffer/domain/repositories';
+import { SNIFFER_REPOSITORY, SnifferRepository } from '@sniffer/domain/repositories';
 import { SnifferEntity } from '@sniffer/domain/entities';
 
 @Injectable()

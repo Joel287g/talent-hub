@@ -24,8 +24,7 @@ export class JwtConfigService implements JwtOptionsFactory {
         algorithm: 'HS256',
 
         //? Token lifetime
-        expiresIn: this.configService.security.jwt
-          .expiration_time as StringValue,
+        expiresIn: this.configService.security.jwt.expiration_time as StringValue,
 
         //? Token recipient
         audience: this.configService.security.jwt.audience,

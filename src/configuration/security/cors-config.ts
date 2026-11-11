@@ -19,13 +19,7 @@ export class CorsSecurityConfig {
       optionsSuccessStatus: 204,
 
       //? Defines the request headers allowed in all routes. You can specify a single value or an array of strings.
-      allowedHeaders: [
-        'Origin',
-        'X-Requested-With',
-        'Content-Type',
-        'Accept',
-        'Authorization',
-      ],
+      allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
 
       //? Indicates whether credentials (such as cookies with HttpOnly and Authorization headers) are allowed.
       credentials: true,

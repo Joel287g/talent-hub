@@ -5,10 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 //? Imports de usuario
 import { AppModule } from './app.module';
 
-import {
-  HelmetSecurityConfig,
-  CorsSecurityConfig,
-} from '@configuration/security';
+import { HelmetSecurityConfig, CorsSecurityConfig } from '@configuration/security';
 import { SwaggerRunner } from '@configuration/documentation';
 
 import { Environments } from '@common/infrastructure/enums';

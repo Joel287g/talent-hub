@@ -49,7 +49,7 @@ import {
     },
     {
       provide: APP_FILTER,
-      useClass: MongooseExceptionFilter
+      useClass: MongooseExceptionFilter,
     },
     {
       provide: APP_FILTER,
@@ -61,4 +61,4 @@ import {
     },
   ],
 })
-export class MiddlewaresModule { }
+export class MiddlewaresModule {}

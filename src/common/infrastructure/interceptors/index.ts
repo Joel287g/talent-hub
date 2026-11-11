@@ -1,1 +1,1 @@
-export { SnifferInterceptor } from '@common/infrastructure/interceptors/sniffer.interceptor'
+export { SnifferInterceptor } from '@common/infrastructure/interceptors/sniffer.interceptor';

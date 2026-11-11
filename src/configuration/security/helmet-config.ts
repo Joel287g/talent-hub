@@ -26,10 +26,7 @@ export class HelmetSecurityConfig {
 
       //? Controls the referrer information sent to other sites.
       referrerPolicy: {
-        policy: [
-          'strict-origin-when-cross-origin',
-          'no-referrer-when-downgrade',
-        ],
+        policy: ['strict-origin-when-cross-origin', 'no-referrer-when-downgrade'],
       },
 
       //? Hides server information about the powering web application.

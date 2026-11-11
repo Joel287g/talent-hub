@@ -4,17 +4,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 //? Imports de usuario
 import { SNIFFER_REPOSITORY } from '@sniffer/domain/repositories';
-import {
-  Sniffer,
-  SnifferSchema,
-} from '@sniffer/infrastructure/persistence/schemas';
+import { Sniffer, SnifferSchema } from '@sniffer/infrastructure/persistence/schemas';
 import { MongoDBSnifferRepository } from '@sniffer/infrastructure/persistence';
 import * as snifferUseCases from '@sniffer/application/use-cases';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Sniffer.name, schema: SnifferSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: Sniffer.name, schema: SnifferSchema }])],
   providers: [
     //? Use cases
     ...Object.values(snifferUseCases),

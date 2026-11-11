@@ -12,9 +12,7 @@ import { UsersController } from '@users/infrastructure/controllers';
 import * as usersUseCases from '@users/application/use-cases';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: Users.name, schema: UsersSchema }]),
-  ],
+  imports: [MongooseModule.forFeature([{ name: Users.name, schema: UsersSchema }])],
   controllers: [UsersController],
   providers: [
     //? Use cases

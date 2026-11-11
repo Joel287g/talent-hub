@@ -38,13 +38,9 @@ export function catchConstructor(error: any) {
               error: error.name,
               message: error.message,
               statusCode:
-                error.response?.statusCode ||
-                error.status ||
-                HttpStatus.INTERNAL_SERVER_ERROR,
+                error.response?.statusCode || error.status || HttpStatus.INTERNAL_SERVER_ERROR,
             },
-            error.response?.statusCode ||
-              error.status ||
-              HttpStatus.INTERNAL_SERVER_ERROR,
+            error.response?.statusCode || error.status || HttpStatus.INTERNAL_SERVER_ERROR,
           );
           break;
       }

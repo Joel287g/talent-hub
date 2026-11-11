@@ -33,13 +33,27 @@ export class UserEntity {
   }
 
   //? Getters
-  public get id(): string | null { return this._id; }
-  public get uid(): string { return this._uid; }
-  public get name(): string { return this._name; }
-  public get lastName(): string { return this._lastName; }
-  public get status(): UserStatus { return this._status; }
-  public get createdAt(): Date | undefined { return this._createdAt; }
-  public get updatedAt(): Date | undefined { return this._updatedAt; }
+  public get id(): string | null {
+    return this._id;
+  }
+  public get uid(): string {
+    return this._uid;
+  }
+  public get name(): string {
+    return this._name;
+  }
+  public get lastName(): string {
+    return this._lastName;
+  }
+  public get status(): UserStatus {
+    return this._status;
+  }
+  public get createdAt(): Date | undefined {
+    return this._createdAt;
+  }
+  public get updatedAt(): Date | undefined {
+    return this._updatedAt;
+  }
 
   //? Methods static
   public static create(user: CreateUserDto): UserEntity {
@@ -51,4 +65,3 @@ export class UserEntity {
     });
   }
 }
-
