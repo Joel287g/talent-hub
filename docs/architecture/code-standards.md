@@ -1,58 +1,104 @@
+La mejor estrategia es **unificar ambos documentos** en un único fichero (`docs/architecture/code-standards.md`) para evitar redundancias y mantener una única fuente de verdad para los desarrolladores.
+
+El primer archivo aporta el sistema avanzado de validación de barriles y rutas, mientras que el segundo contiene reglas esenciales de formateo y el uso de `BetterComments` que no deben perderse.
+
+Aquí tienes el documento unificado y estructurado de forma secuencial:
+
+```markdown
 # 📐 Estándares de Código y Formato
 
-Este documento define las reglas estrictas de estilo, formato, organización de importaciones y convenciones de comentarios que deben seguirse en todo el código fuente del proyecto **Talent Hub**.
+Este documento define las reglas estrictas de estilo, formato, nomenclatura, organización de importaciones y convenciones de comentarios que deben seguirse en todo el código fuente del proyecto **Talent Hub**. Todas las reglas de importación documentadas aquí son auditadas automáticamente antes de cada compilación o inicio en desarrollo.
 
 ---
 
-## 1. Reglas de Organización de Imports
+## 1. Convenciones de Nomenclatura
 
-Para mantener un código limpio, legible y predecible, todos los ficheros TypeScript deben ordenar sus importaciones de forma estricta respetando la siguiente estructura y bloques:
+Para mantener una consistencia clara en la mutabilidad, tipado y propósito de los datos en todo el proyecto:
 
-### A. Orden de Bloques y Comentarios
-1. **Imports de código interno/especial** (si aplica) deben precederse obligatoriamente con el comentario de código: `//? Imports de codigo`.
-2. Debajo se colocan los **imports de dependencias externas y de Node.js**, precedidos o separados correctamente.
-   - Primero se sitúan los **imports nativos de Node.js** (ej. `path`, `fs`).
-   - Se dejan **dos saltos de línea** (`\n\n`).
-   - A continuación se sitúan los **imports de frameworks y librerías externas** (ej. NestJS, Mongoose).
-3. Seguido de un salto de línea, se colocan todos los **imports del proyecto**.
-
-### B. Uso Estricto de Rutas Absolutas
-- Es una regla **estricta y obligatoria** utilizar siempre rutas absolutas configuradas en el [tsconfig.json](../../tsconfig.json) (por ejemplo, usando los alias definidos como `@common/...`, `@users/...`, etc.) para todos los imports internos del proyecto.
-- Queda prohibido el uso de rutas relativas largas con puntos (`../../`) para archivos internos del proyecto.
-
-### C. Ejemplo de Bloques de Imports
-
-```ts
-//? Imports de codigo
-import { Request } from 'express';
-
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
-
-//? Imports de usuario
-import { FilterException } from '@common/infrastructure/interfaces';
-```
+| Elemento | Convención | Ejemplo |
+| :--- | :--- | :--- |
+| **Clases, Interfaces, Types y Enums** | `PascalCase` | `DomainExceptionFilter`, `BaseErrorsInterface` |
+| **Variables mutables (`let`) y propiedades** | `camelCase` | `totalErrors`, `relativeFilePath`, `currentUserCount` |
+| **Constantes inmutables de ámbito global o módulo** | `SNAKE_CASE` (Mayúsculas) | `MAX_RETRIES`, `SRC_DIR`, `ALIAS_PREFIXES` |
+| **Nombres de archivos físicos y carpetas** | `kebab-case` | `domain-exception.filter.ts`, `check-imports.ts` |
+| **Tokens de Inyección NestJS (Symbols)** | `SNAKE_CASE` (Mayúsculas) | `USERS_REPOSITORY = Symbol('USERS_REPOSITORY')` |
 
 ---
 
-## 2. Convenciones de Nomenclatura de Variables y Constantes
+## 2. Convenciones de Comentarios (`BetterComments`)
 
-Para mantener una consistencia clara en la mutabilidad y el propósito de los datos:
-
-- Las constantes deben declararse obligatoriamente en **MAYÚSCULAS** y formato **SNAKE_CASE** (ej. MAX_RETRIES, DEFAULT_TIMEOUT).
-- Las variables declaradas con let deben ir obligatoriamente en **minúsculas** y formato **camelCase** (ej. currentUserCount, isActive).
-
----
-
-## 3. Convenciones de Comentarios (`BetterComments`)
-
-Para estandarizar la documentación visual y el rastreo en el editor, se utiliza obligatoriamente la extensión **BetterComments** (de Aaron Bond) en Visual Studio Code, empleando los siguientes prefijos en los comentarios de código:
+Para estandarizar la documentación visual y el rastreo en el editor, se utiliza obligatoriamente la extensión **BetterComments** en Visual Studio Code. Se deben emplear los siguientes prefijos en los comentarios:
 
 - `//?` : Para notas informativas, descripción de secciones o etiquetado de bloques de imports.
 - `//*` : Para destacar puntos clave, lógica importante o explicaciones de negocio.
-- `//!` : Para advertencias críticas, alertas de seguridad (como la omisión de `stack` en producción) o código temporal/bloqueante.
+- `//!` : Para advertencias críticas, alertas de seguridad o código temporal/bloqueante.
 - `//TODO:` : Para tareas pendientes o futuras refactorizaciones.
-- `//?` : (Otras variantes soportadas por la extensión según la paleta de colores configurada).
+
+---
+
+## 3. Reglas de Organización e Importaciones
+
+Para mantener un código limpio y prevenir errores de referencias circulares, todos los ficheros TypeScript deben clasificar y ordenar sus importaciones respetando las siguientes directrices.
+
+### A. Orden de Bloques y Comentarios
+Las importaciones se dividen en dos bloques delimitados por `BetterComments`:
+
+```typescript
+//? Imports de codigo
+import fs from 'fs';
+import path from 'path';
+
+import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
+
+//? Imports de usuario
+import { BaseException } from '@common/domain/exceptions';
+import { FilterException } from '@common/infrastructure/interfaces';
+
+```
+
+1. **`//? Imports de codigo`**: Contiene dependencias nativas de Node.js (ej. `fs`, `path`) separadas por un salto de línea de las librerías externas o frameworks (ej. `@nestjs/common`, `mongoose`).
+2. **`//? Imports de usuario`**: Contiene exclusivamente código interno del proyecto (`src/`).
+
+### B. Uso Estricto de Rutas y Archivos de Barril (`index.ts`)
+
+Queda **estrictamente prohibido el uso de rutas relativas** (`./` o `../`). Se aplicará la siguiente matriz para garantizar el encapsulamiento:
+
+| Ámbito de la Importación | Archivo Destino | Sintaxis Requerida | Sintaxis Prohibida | Razón Técnica |
+| --- | --- | --- | --- | --- |
+| **Consumo Inter-carpeta** *(Desde otra carpeta o módulo)* | Archivo de barril (`index.ts`) | `@common/domain/exceptions` | `@common/domain/exceptions/base-exception` | Protege el encapsulamiento. Prohíbe los *deep imports* desde el exterior. |
+| **Consumo Intra-carpeta** *(Dentro de la misma carpeta)* | Fichero hermano directo | `@common/domain/exceptions/base-exception` | `@common/domain/exceptions` | Previene fallos por dependencias circulares al evitar cargar el `index.ts` local. |
+| **Módulos NestJS** | Archivo `*.module.ts` | `@users/users.module` | N/A | Los módulos no utilizan barriles. Se importan directo con la ruta absoluta del fichero. |
+
+### C. Excepciones Autorizadas
+
+Quedan exentos de la validación estricta de barriles:
+
+* Archivos de configuración principal (ej. `app.module`, `package.json`).
+* Re-exportaciones declarativas internas en archivos de barril (`index.ts`).
+* Archivos de pruebas (`*.spec.ts`).
+* El script de validación (`scripts/check-imports.script.ts`).
+
+---
+
+## 4. Automatización y Auditoría (`scripts/check-imports.ts`)
+
+El cumplimiento de estas reglas es auditado automáticamente antes de compilar o arrancar el servidor mediante un analizador de sintaxis estático.
+
+### Integración en `package.json`
+
+```json
+{
+  "scripts": {
+    "check:imports": "npx tsx src/scripts/check-imports.script.ts",
+    "start:dev": "npm run check:imports && cross-env NODE_ENV=development nest start --watch",
+    "build": "npm run check:imports && nest build"
+  }
+}
+
+```
+
+Si el script detecta rutas relativas, *deep imports* hacia otras carpetas o referencias circulares locales, interrumpirá el proceso con un código `process.exit(1)` listando los archivos infractores.
 
 ---
 

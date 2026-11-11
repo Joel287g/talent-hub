@@ -26,6 +26,7 @@ El proyecto cuenta con herramientas configuradas a medida para priorizar la velo
   - **Helmet:** Para la configuración estricta de cabeceras HTTP de seguridad (Content Security Policy, mitigación de XSS).
   - **Joi:** Validación estricta y tipado fuerte de las variables de entorno (`.env`) durante el arranque.
 - **📡 Telemetría Personalizada:** Sistema de interceptores asíncronos (`SnifferInterceptor`) integrado con eventos nativos HTTP (`finish`) para registrar la trazabilidad exacta de las peticiones sin bloquear la respuesta del cliente.
+-   **🏗️ Auditoría Arquitectónica de Imports:** Script automatizado (`scripts/check-imports.ts`) en TypeScript que valida en tiempo de compilación la prohibición de rutas relativas, el correcto uso de archivos de barril (`index.ts`) y la prevención de referencias circulares.
 
 ---
 
@@ -69,7 +70,10 @@ Crea un archivo `.env.development` en la raíz del proyecto basándote en el arc
 ### 3. Ejecutar la aplicación
 
 ```bash
-# Modo desarrollo con recarga en vivo
+# Comprobar la integridad arquitectónica de los imports
+npm run check:imports
+
+# Modo desarrollo con recarga en vivo (ejecuta check:imports antes del arranque)
 npm run start:dev
 
 # Ejecutar el linter y pruebas antes de subir código

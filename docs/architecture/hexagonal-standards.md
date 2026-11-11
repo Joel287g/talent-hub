@@ -100,6 +100,15 @@ Cualquier código transversal o compartido `(src/common)` debe respetar la separ
 
 ---
 
+##### Regla 5: Estándar Estricto de Importaciones y Archivos de Barril
+Para garantizar la integridad del empaquetado y prevenir fallos por dependencias circulares en tiempo de ejecución:
+- **Rutas Absolutas Obligatorias:** Queda prohibido el uso de rutas relativas (`./` o `../`) en todo el módulo. Todos los imports deben utilizar los alias de `tsconfig.json` (`@common`, `@users`, etc.).
+- **Consumo Inter-carpeta:** Se debe consumir obligatoriamente el archivo de barril (`index.ts`) mediante su alias absoluto (ej. `@common/domain/exceptions`). Los *deep imports* directos a subficheros están prohibidos desde fuera de la carpeta.
+- **Consumo Intra-carpeta:** Está prohibido consumir el `index.ts` de la propia carpeta para evitar referencias circulares. Se debe importar el fichero hermano objetivo directamente con su ruta absoluta completa (ej. `@common/domain/exceptions/base-exception`).
+- **Módulos NestJS:** Los archivos `*.module.ts` no utilizan barriles, por lo que su importación directa mediante alias absoluto es válida.
+
+---
+
 ---
 
 **Main menu:** [README.md](../../README.md) || **Previous:** [Glossario de Términos](./glossary.md) || **Next:** [Manejo de Excepciones y Logging](../guides/exception-handling.md)
