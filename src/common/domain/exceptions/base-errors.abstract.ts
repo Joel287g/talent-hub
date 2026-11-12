@@ -1,6 +1,7 @@
 //? Imports de usuario
 import { BaseException } from '@common/domain/exceptions/base-exception';
 import { BaseErrorsInterface } from '@common/domain/exceptions/base-errors.interface';
+import { BaseErrorsEnum } from '@common/infrastructure/enums';
 
 /**
  * Fábrica abstracta de errores predeterminados.
@@ -9,7 +10,7 @@ import { BaseErrorsInterface } from '@common/domain/exceptions/base-errors.inter
 export abstract class BaseErrors implements BaseErrorsInterface {
   public badRequestException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-001',
-    message: string = 'La petición no es válida.',
+    message: BaseErrorsEnum = BaseErrorsEnum.BAD_REQUEST,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 400, code, cause);
@@ -17,7 +18,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public unauthorizedException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-002',
-    message: string = 'No está autorizado para realizar esta acción.',
+    message: BaseErrorsEnum = BaseErrorsEnum.UNAUTHORIZED,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 401, code, cause);
@@ -25,7 +26,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public forbiddenException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-003',
-    message: string = 'Acceso denegado a este recurso.',
+    message: BaseErrorsEnum = BaseErrorsEnum.FORBIDDEN,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 403, code, cause);
@@ -33,7 +34,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public notFoundException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-004',
-    message: string = 'El recurso solicitado no fue encontrado.',
+    message: BaseErrorsEnum = BaseErrorsEnum.NOT_FOUND,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 404, code, cause);
@@ -41,7 +42,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public methodNotAllowedException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-005',
-    message: string = 'Método no permitido.',
+    message: BaseErrorsEnum = BaseErrorsEnum.METHOD_NOT_ALLOWED,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 405, code, cause);
@@ -49,7 +50,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public notAcceptableException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-006',
-    message: string = 'La petición no es aceptable.',
+    message: BaseErrorsEnum = BaseErrorsEnum.NOT_ACCEPTABLE,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 406, code, cause);
@@ -57,7 +58,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public requestTimeoutException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-007',
-    message: string = 'Tiempo de espera agotado para la petición.',
+    message: BaseErrorsEnum = BaseErrorsEnum.REQUEST_TIMEOUT,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 408, code, cause);
@@ -65,7 +66,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public conflictException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-008',
-    message: string = 'Existe un conflicto con el estado actual del recurso.',
+    message: BaseErrorsEnum = BaseErrorsEnum.CONFLICT,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 409, code, cause);
@@ -73,7 +74,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public goneException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-009',
-    message: string = 'El recurso ya no está disponible.',
+    message: BaseErrorsEnum = BaseErrorsEnum.GONE,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 410, code, cause);
@@ -81,7 +82,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public preconditionFailedException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-010',
-    message: string = 'Fallo en la precondición.',
+    message: BaseErrorsEnum = BaseErrorsEnum.PRECONDITION_FAILED,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 412, code, cause);
@@ -89,7 +90,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public payloadTooLargeException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-011',
-    message: string = 'La carga útil de la petición es demasiado grande.',
+    message: BaseErrorsEnum = BaseErrorsEnum.PAYLOAD_TOO_LARGE,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 413, code, cause);
@@ -97,7 +98,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public unsupportedMediaTypeException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-012',
-    message: string = 'Tipo de medio no soportado.',
+    message: BaseErrorsEnum = BaseErrorsEnum.UNSUPPORTED_MEDIA_TYPE,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 415, code, cause);
@@ -105,7 +106,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public imATeapotException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-013',
-    message: string = 'Soy una tetera.',
+    message: BaseErrorsEnum = BaseErrorsEnum.IM_A_TEAPOT,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 418, code, cause);
@@ -113,7 +114,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public misdirectedException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-014',
-    message: string = 'Petición mal dirigida.',
+    message: BaseErrorsEnum = BaseErrorsEnum.MIS_DIRECTED_REQUEST,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 421, code, cause);
@@ -121,7 +122,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public unprocessableEntityException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-015',
-    message: string = 'No se pudo procesar la entidad.',
+    message: BaseErrorsEnum = BaseErrorsEnum.UNPROCESSABLE_ENTITY,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 422, code, cause);
@@ -129,7 +130,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public internalServerErrorException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-016',
-    message: string = 'Error interno del servidor.',
+    message: BaseErrorsEnum = BaseErrorsEnum.INTERNAL_SERVER_ERROR,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 500, code, cause);
@@ -137,7 +138,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public notImplementedException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-017',
-    message: string = 'Funcionalidad no implementada.',
+    message: BaseErrorsEnum = BaseErrorsEnum.NOT_IMPLEMENTED,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 501, code, cause);
@@ -145,7 +146,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public badGatewayException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-018',
-    message: string = 'Puerta de enlace no válida.',
+    message: BaseErrorsEnum = BaseErrorsEnum.BAD_GATEWAY,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 502, code, cause);
@@ -153,7 +154,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public serviceUnavailableException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-019',
-    message: string = 'Servicio no disponible.',
+    message: BaseErrorsEnum = BaseErrorsEnum.SERVICE_UNAVAILABLE,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 503, code, cause);
@@ -161,7 +162,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public gatewayTimeoutException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-020',
-    message: string = 'Tiempo de espera agotado en la puerta de enlace.',
+    message: BaseErrorsEnum = BaseErrorsEnum.GATEWAY_TIMEOUT,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 504, code, cause);
@@ -169,7 +170,7 @@ export abstract class BaseErrors implements BaseErrorsInterface {
 
   public httpVersionNotSupportedException(
     code: string = 'COMM-DOM-EXC-BASE_ERRO-021',
-    message: string = 'Versión HTTP no soportada.',
+    message: BaseErrorsEnum = BaseErrorsEnum.HTTP_VERSION_NOT_SUPPORTED,
     cause?: Error | unknown,
   ): BaseException {
     return new BaseException(message, 505, code, cause);

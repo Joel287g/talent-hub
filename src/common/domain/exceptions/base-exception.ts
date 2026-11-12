@@ -1,3 +1,6 @@
+//? Imports de usuario
+import { BaseErrorsEnum } from '@common/infrastructure/enums';
+
 /**
  * Declaración global para la capacidad de capturar el rastro de pila de errores.
  */
@@ -31,7 +34,7 @@ export class BaseException extends Error {
   public readonly metadata?: Record<string, any>;
 
   constructor(
-    message: string,
+    message: BaseErrorsEnum,
     statusCode: number,
     code: string,
     cause?: Error | unknown,

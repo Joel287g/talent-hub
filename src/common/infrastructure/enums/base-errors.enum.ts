@@ -1,0 +1,31 @@
+/**
+ * Enumeración de errores base para la aplicación.
+ * Cada valor representa un tipo de error común que puede ocurrir en la aplicación.
+ * Esta enumeración se utiliza para estandarizar los mensajes de error y facilitar la gestión de excepciones.
+ *
+ * @enum {string}
+ * @readonly
+ */
+export enum BaseErrorsEnum {
+  BAD_REQUEST = 'BAD_REQUEST',
+  UNAUTHORIZED = 'UNAUTHORIZED',
+  FORBIDDEN = 'FORBIDDEN',
+  NOT_FOUND = 'NOT_FOUND',
+  METHOD_NOT_ALLOWED = 'METHOD_NOT_ALLOWED',
+  NOT_ACCEPTABLE = 'NOT_ACCEPTABLE',
+  REQUEST_TIMEOUT = 'REQUEST_TIMEOUT',
+  CONFLICT = 'CONFLICT',
+  GONE = 'GONE',
+  PRECONDITION_FAILED = 'PRECONDITION_FAILED',
+  PAYLOAD_TOO_LARGE = 'PAYLOAD_TOO_LARGE',
+  UNSUPPORTED_MEDIA_TYPE = 'UNSUPPORTED_MEDIA_TYPE',
+  IM_A_TEAPOT = 'IM_A_TEAPOT',
+  MIS_DIRECTED_REQUEST = 'MIS_DIRECTED_REQUEST',
+  UNPROCESSABLE_ENTITY = 'UNPROCESSABLE_ENTITY',
+  INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
+  NOT_IMPLEMENTED = 'NOT_IMPLEMENTED',
+  BAD_GATEWAY = 'BAD_GATEWAY',
+  SERVICE_UNAVAILABLE = 'SERVICE_UNAVAILABLE',
+  GATEWAY_TIMEOUT = 'GATEWAY_TIMEOUT',
+  HTTP_VERSION_NOT_SUPPORTED = 'HTTP_VERSION_NOT_SUPPORTED',
+}
