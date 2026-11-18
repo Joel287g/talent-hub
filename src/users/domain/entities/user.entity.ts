@@ -1,5 +1,5 @@
 //? Imports de usuario
-import { SystemRoleEnum } from '@common/infrastructure/enums';
+import { SystemRoleEnum } from '@common/domain/enums';
 
 import { PhoneEntity, PhoneInterface } from '@common/domain/entities';
 import {

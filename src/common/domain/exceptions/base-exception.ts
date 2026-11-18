@@ -1,5 +1,5 @@
 //? Imports de usuario
-import { BaseErrorsEnum } from '@common/infrastructure/enums';
+import { BaseErrorsEnum } from '@common/domain/enums';
 
 /**
  * Declaración global para la capacidad de capturar el rastro de pila de errores.

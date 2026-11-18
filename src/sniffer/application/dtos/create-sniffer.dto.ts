@@ -5,7 +5,7 @@ import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
 //? Imports de codigo
-import { MethodsHttp } from '@common/infrastructure/enums';
+import { MethodsHttp } from '@common/domain/enums';
 
 export class CreateSnifferDto {
   @ApiProperty({

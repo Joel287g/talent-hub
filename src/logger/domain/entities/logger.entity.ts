@@ -1,4 +1,3 @@
-import { LoggerCreateDto } from '@logger/application/dtos';
 import { LoggerLevel, LoggerTypes } from '@logger/domain/enums';
 
 export interface LoggerMetadata {
@@ -21,10 +20,11 @@ export interface LoggerInterface {
   data: LoggerMetadata;
 }
 
+export type CreateLoggerMetada = LoggerInterface;
 export class LoggerEntity {
   private constructor(public readonly props: LoggerInterface) {}
 
-  public static create(payload: LoggerCreateDto): LoggerEntity {
+  public static create(payload: LoggerInterface): LoggerEntity {
     return new LoggerEntity({
       data: payload.data,
       level: payload.level,

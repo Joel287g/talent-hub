@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
-import { Collections, SystemRoleEnum } from '@common/infrastructure/enums';
+import { Collections, SystemRoleEnum } from '@common/domain/enums';
 import { ProfileTypeEnum, UserStatus } from '@users/domain/enums';
 import {
   BusinessProfile,

@@ -3,7 +3,7 @@ import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
-import { Collections, MethodsHttp } from '@common/infrastructure/enums';
+import { Collections, MethodsHttp } from '@common/domain/enums';
 import { HttpStatus } from '@nestjs/common';
 
 @Schema({

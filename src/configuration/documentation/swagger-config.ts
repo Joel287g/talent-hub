@@ -5,7 +5,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 //? Imports de usuario
 import { name, description, author, version } from '../../../package.json';
 
-import { Environments } from '@common/infrastructure/enums';
+import { Environments } from '@common/domain/enums';
 
 export class SwaggerRunner {
   private config: DocumentBuilder;

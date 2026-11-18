@@ -13,6 +13,8 @@
   "homepage": "https://github.com/Joel287g/talent-hub.git#readme",
   "scripts": {
     "check:imports": "npx tsx src/scripts/check-imports.script.ts",
+    "check:hexagonal": "npx tsx src/scripts/check-hexagonal.script.ts",
+    "check:arch": "npm run check:imports && npm run check:hexagonal",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.{ts,js,html,css}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js,html,css}\"",

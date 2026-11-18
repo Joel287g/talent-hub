@@ -8,7 +8,7 @@ import { AppModule } from './app.module';
 import { HelmetSecurityConfig, CorsSecurityConfig } from '@configuration/security';
 import { SwaggerRunner } from '@configuration/documentation';
 
-import { Environments } from '@common/infrastructure/enums';
+import { Environments } from '@common/domain/enums';
 
 async function main() {
   const app = await NestFactory.create(AppModule);

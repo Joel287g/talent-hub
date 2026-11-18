@@ -1,7 +1,7 @@
 //? Imports de usuario
 import { BaseException } from '@common/domain/exceptions/base-exception';
 import { BaseErrorsInterface } from '@common/domain/exceptions/base-errors.interface';
-import { BaseErrorsEnum } from '@common/infrastructure/enums';
+import { BaseErrorsEnum } from '@common/domain/enums';
 
 /**
  * Fábrica abstracta de errores predeterminados.

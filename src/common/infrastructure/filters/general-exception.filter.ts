@@ -4,7 +4,7 @@ import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/commo
 import { HttpAdapterHost } from '@nestjs/core';
 
 //? Imports de usuario
-import { Environments } from '@common/infrastructure/enums';
+import { Environments } from '@common/domain/enums';
 import { FilterException } from '@common/infrastructure/interfaces';
 
 @Catch()

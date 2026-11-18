@@ -1,9 +1,5 @@
-//? Imports de codigo
-import { HttpStatus } from '@nestjs/common';
-
 //? Imports de usuario
-import { MethodsHttp } from '@common/infrastructure/enums';
-import { CreateSnifferDto } from '@sniffer/application/dtos';
+import { MethodsHttp } from '@common/domain/enums';
 
 export interface SnifferInterface {
   id?: string | null;
@@ -15,7 +11,7 @@ export interface SnifferInterface {
   response?: any;
   headers?: any;
   method: MethodsHttp;
-  statusCode: HttpStatus;
+  statusCode: number;
   processingTime: number;
   userAgent?: string;
   referer?: string;
@@ -23,6 +19,8 @@ export interface SnifferInterface {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export type CreateSnifferType = Omit<SnifferInterface, 'id' | 'createdAt' | 'updatedAt'>;
 
 export class SnifferEntity {
   private readonly _id?: string | null;
@@ -111,7 +109,7 @@ export class SnifferEntity {
   }
 
   //? Methods static
-  public static create(sniffer: CreateSnifferDto): SnifferEntity {
+  public static create(sniffer: CreateSnifferType): SnifferEntity {
     return new SnifferEntity({
       auth: sniffer.auth,
       userId: sniffer.userId,
