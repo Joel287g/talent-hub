@@ -6,3 +6,5 @@ export * from '@common/infrastructure/enums/guards-decorators.enum';
 export * from '@common/infrastructure/enums/methods-http.enum';
 
 export * from '@common/infrastructure/enums/base-errors.enum';
+
+export * from '@common/infrastructure/enums/system-role.enum';

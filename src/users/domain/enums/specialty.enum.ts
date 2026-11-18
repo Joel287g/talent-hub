@@ -1,0 +1,5 @@
+export enum SpecialtyEnum {
+  DANCER = 'DANCER',
+  INSTRUCTOR = 'INSTRUCTOR',
+  CHOREOGRAPHER = 'CHOREOGRAPHER',
+}
