@@ -1,10 +1,11 @@
 //? Imports de codigo
 import { Document, Types } from 'mongoose';
+
+import { HttpStatus } from '@nestjs/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
 import { Collections, MethodsHttp } from '@common/domain/enums';
-import { HttpStatus } from '@nestjs/common';
 
 @Schema({
   _id: true,

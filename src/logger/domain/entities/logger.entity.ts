@@ -15,16 +15,17 @@ export interface LoggerMetadata {
 
 export interface LoggerInterface {
   type: LoggerTypes;
-  level: LoggerLevel;
+  level?: LoggerLevel;
   message: string;
   data: LoggerMetadata;
 }
 
-export type CreateLoggerMetada = LoggerInterface;
+export type CreateLoggerMetadaType = LoggerInterface;
+
 export class LoggerEntity {
   private constructor(public readonly props: LoggerInterface) {}
 
-  public static create(payload: LoggerInterface): LoggerEntity {
+  public static create(payload: CreateLoggerMetadaType): LoggerEntity {
     return new LoggerEntity({
       data: payload.data,
       level: payload.level,

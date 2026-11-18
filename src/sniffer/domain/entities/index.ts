@@ -1,1 +1,1 @@
-export { SnifferEntity } from '@sniffer/domain/entities/sniffer.entity';
+export { CreateSnifferType, SnifferEntity } from '@sniffer/domain/entities/sniffer.entity';

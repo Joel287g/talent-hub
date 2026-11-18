@@ -4,10 +4,11 @@ import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-valida
 import { HttpStatus } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 
-//? Imports de codigo
+//? Imports de usuarop
 import { MethodsHttp } from '@common/domain/enums';
+import { CreateSnifferType } from '@sniffer/domain/entities';
 
-export class CreateSnifferDto {
+export class CreateSnifferDto implements CreateSnifferType {
   @ApiProperty({
     description: 'Autorización (optional)',
     required: false,
@@ -79,7 +80,7 @@ export class CreateSnifferDto {
   @IsNotEmpty()
   @IsNumber()
   @IsEnum(HttpStatus)
-  statusCode?: HttpStatus;
+  statusCode: HttpStatus;
 
   @ApiProperty({
     description: 'Tiempo de procesamiento en ms (required)',
@@ -87,7 +88,7 @@ export class CreateSnifferDto {
   })
   @IsNotEmpty()
   @IsNumber()
-  processingTime?: number;
+  processingTime: number;
 
   @ApiProperty({
     description: 'User agent (optional)',

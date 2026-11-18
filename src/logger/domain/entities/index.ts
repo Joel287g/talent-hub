@@ -1,4 +1,5 @@
 export {
+  CreateLoggerMetadaType,
   LoggerEntity,
   LoggerInterface,
   LoggerMetadata,

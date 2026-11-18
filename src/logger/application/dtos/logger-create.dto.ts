@@ -3,9 +3,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 //? Imports de usuario
+import { CreateLoggerMetadaType } from '@logger/domain/entities';
 import { LoggerTypes, LoggerLevel } from '@logger/domain/enums';
 
-export class LoggerCreateDto {
+export class LoggerCreateDto implements CreateLoggerMetadaType {
   @ApiProperty({
     description: 'Type of log (required)',
     required: true,
