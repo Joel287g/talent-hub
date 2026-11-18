@@ -13,11 +13,11 @@ export class Address {
   @Prop({ required: true, type: String, trim: true })
   city: string;
 
-  @Prop({ required: false, type: String, trim: true })
-  postalCode?: string;
+  @Prop({ required: true, type: String, trim: true })
+  postalCode: string;
 
-  @Prop({ required: false, type: String, trim: true })
-  street?: string;
+  @Prop({ required: true, type: String, trim: true })
+  street: string;
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);

@@ -100,6 +100,7 @@ erDiagram
         string extension "webp | png | jpg | ..."
         string mimeType "image/webp | image/png | image/jpeg"
         number size "Tamaño en bytes"
+        number duration "Duración del archivo"
 
         Date createdAt
         Date updatedAt
