@@ -101,13 +101,32 @@ Cualquier código transversal o compartido `(src/common)` debe respetar la separ
 ---
 
 ##### Regla 5: Estándar Estricto de Importaciones y Archivos de Barril
+
 Para garantizar la integridad del empaquetado y prevenir fallos por dependencias circulares en tiempo de ejecución:
+
 - **Rutas Absolutas Obligatorias:** Queda prohibido el uso de rutas relativas (`./` o `../`) en todo el módulo. Todos los imports deben utilizar los alias de `tsconfig.json` (`@common`, `@users`, etc.).
-- **Consumo Inter-carpeta:** Se debe consumir obligatoriamente el archivo de barril (`index.ts`) mediante su alias absoluto (ej. `@common/domain/exceptions`). Los *deep imports* directos a subficheros están prohibidos desde fuera de la carpeta.
+- **Consumo Inter-carpeta:** Se debe consumir obligatoriamente el archivo de barril (`index.ts`) mediante su alias absoluto (ej. `@common/domain/exceptions`). Los _deep imports_ directos a subficheros están prohibidos desde fuera de la carpeta.
 - **Consumo Intra-carpeta:** Está prohibido consumir el `index.ts` de la propia carpeta para evitar referencias circulares. Se debe importar el fichero hermano objetivo directamente con su ruta absoluta completa (ej. `@common/domain/exceptions/base-exception`).
 - **Módulos NestJS:** Los archivos `*.module.ts` no utilizan barriles, por lo que su importación directa mediante alias absoluto es válida.
 
 ---
+
+##### Regla 6: Regla de Dependencia Unidireccional y Blindaje de Capas
+
+El flujo de dependencias entre capas es estrictamente unidireccional y siempre apunta **de afuera hacia adentro**:
+
+$$\text{infrastructure} \longrightarrow \text{application} \longrightarrow \text{domain}$$
+
+Ninguna capa interior puede conocer, importar ni acoplarse a una capa exterior ni a detalles técnicos de frameworks. Para garantizarlo, se aplica la siguiente matriz de seguridad arquitectónica:
+
+| Capa Origen                            | Dependencias Internas Permitidas                                                       | Dependencias Internas Prohibidas                                                                                     | Librerías Externas Prohibidas                                                                                        |
+| :------------------------------------- | :------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------- |
+| **`domain/`** _(Núcleo)_               | Solo elementos de `domain/` (del propio módulo o `@common/domain`).                    | `application/`, `infrastructure/`, archivos `*.module.ts`.                                                           | `@nestjs/*`, `mongoose`, `express`, `fastify`, `class-validator`, `class-transformer`, `rxjs`, `joi`, `nestjs-i18n`. |
+| **`application/`** _(Orquestación)_    | `domain/` y `application/` (del propio módulo o `@common`).                            | `infrastructure/` (schemas, mappers, repositorios concretos, guards, filters), archivos `*.module.ts`.               | `@nestjs/mongoose`, `@nestjs/platform-*`, `mongoose`, `express`, `fastify`.                                          |
+| **`infrastructure/`** _(Adaptadores)_  | `infrastructure/`, `application/` y `domain/` (propios y de `@common`).                | Capa `infrastructure/` privada de otro módulo de negocio (ej. `@users/infrastructure` desde `@jobs/infrastructure`). | —                                                                                                                    |
+| **`*.module.ts`** _(Composition Root)_ | `domain/`, `application/` e `infrastructure/` para ensamblar `Symbol` con adaptadores. | —                                                                                                                    | —                                                                                                                    |
+
+- **Auditoría Automatizada (`src/scripts/check-hexagonal.script.ts`):** El cumplimiento de esta matriz se verifica estáticamente antes de compilar o iniciar el servidor mediante `npm run check:hexagonal` (integrado en `npm run check:arch`). Ante cualquier fuga entre capas o importación de librerías prohibidas, el proceso aborta con `process.exit(1)`.
 
 ---
 

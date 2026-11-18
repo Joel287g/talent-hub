@@ -4,7 +4,7 @@ El primer archivo aporta el sistema avanzado de validación de barriles y rutas,
 
 Aquí tienes el documento unificado y estructurado de forma secuencial:
 
-```markdown
+````markdown
 # 📐 Estándares de Código y Formato
 
 Este documento define las reglas estrictas de estilo, formato, nomenclatura, organización de importaciones y convenciones de comentarios que deben seguirse en todo el código fuente del proyecto **Talent Hub**. Todas las reglas de importación documentadas aquí son auditadas automáticamente antes de cada compilación o inicio en desarrollo.
@@ -15,13 +15,13 @@ Este documento define las reglas estrictas de estilo, formato, nomenclatura, org
 
 Para mantener una consistencia clara en la mutabilidad, tipado y propósito de los datos en todo el proyecto:
 
-| Elemento | Convención | Ejemplo |
-| :--- | :--- | :--- |
-| **Clases, Interfaces, Types y Enums** | `PascalCase` | `DomainExceptionFilter`, `BaseErrorsInterface` |
-| **Variables mutables (`let`) y propiedades** | `camelCase` | `totalErrors`, `relativeFilePath`, `currentUserCount` |
-| **Constantes inmutables de ámbito global o módulo** | `SNAKE_CASE` (Mayúsculas) | `MAX_RETRIES`, `SRC_DIR`, `ALIAS_PREFIXES` |
-| **Nombres de archivos físicos y carpetas** | `kebab-case` | `domain-exception.filter.ts`, `check-imports.ts` |
-| **Tokens de Inyección NestJS (Symbols)** | `SNAKE_CASE` (Mayúsculas) | `USERS_REPOSITORY = Symbol('USERS_REPOSITORY')` |
+| Elemento                                            | Convención                | Ejemplo                                               |
+| :-------------------------------------------------- | :------------------------ | :---------------------------------------------------- |
+| **Clases, Interfaces, Types y Enums**               | `PascalCase`              | `DomainExceptionFilter`, `BaseErrorsInterface`        |
+| **Variables mutables (`let`) y propiedades**        | `camelCase`               | `totalErrors`, `relativeFilePath`, `currentUserCount` |
+| **Constantes inmutables de ámbito global o módulo** | `SNAKE_CASE` (Mayúsculas) | `MAX_RETRIES`, `SRC_DIR`, `ALIAS_PREFIXES`            |
+| **Nombres de archivos físicos y carpetas**          | `kebab-case`              | `domain-exception.filter.ts`, `check-imports.ts`      |
+| **Tokens de Inyección NestJS (Symbols)**            | `SNAKE_CASE` (Mayúsculas) | `USERS_REPOSITORY = Symbol('USERS_REPOSITORY')`       |
 
 ---
 
@@ -41,6 +41,7 @@ Para estandarizar la documentación visual y el rastreo en el editor, se utiliza
 Para mantener un código limpio y prevenir errores de referencias circulares, todos los ficheros TypeScript deben clasificar y ordenar sus importaciones respetando las siguientes directrices.
 
 ### A. Orden de Bloques y Comentarios
+
 Las importaciones se dividen en dos bloques delimitados por `BetterComments`:
 
 ```typescript
@@ -54,8 +55,8 @@ import { HttpAdapterHost } from '@nestjs/core';
 //? Imports de usuario
 import { BaseException } from '@common/domain/exceptions';
 import { FilterException } from '@common/infrastructure/interfaces';
-
 ```
+````
 
 1. **`//? Imports de codigo`**: Contiene dependencias nativas de Node.js (ej. `fs`, `path`) separadas por un salto de línea de las librerías externas o frameworks (ej. `@nestjs/common`, `mongoose`).
 2. **`//? Imports de usuario`**: Contiene exclusivamente código interno del proyecto (`src/`).
@@ -64,41 +65,42 @@ import { FilterException } from '@common/infrastructure/interfaces';
 
 Queda **estrictamente prohibido el uso de rutas relativas** (`./` o `../`). Se aplicará la siguiente matriz para garantizar el encapsulamiento:
 
-| Ámbito de la Importación | Archivo Destino | Sintaxis Requerida | Sintaxis Prohibida | Razón Técnica |
-| --- | --- | --- | --- | --- |
-| **Consumo Inter-carpeta** *(Desde otra carpeta o módulo)* | Archivo de barril (`index.ts`) | `@common/domain/exceptions` | `@common/domain/exceptions/base-exception` | Protege el encapsulamiento. Prohíbe los *deep imports* desde el exterior. |
-| **Consumo Intra-carpeta** *(Dentro de la misma carpeta)* | Fichero hermano directo | `@common/domain/exceptions/base-exception` | `@common/domain/exceptions` | Previene fallos por dependencias circulares al evitar cargar el `index.ts` local. |
-| **Módulos NestJS** | Archivo `*.module.ts` | `@users/users.module` | N/A | Los módulos no utilizan barriles. Se importan directo con la ruta absoluta del fichero. |
+| Ámbito de la Importación                                  | Archivo Destino                | Sintaxis Requerida                         | Sintaxis Prohibida                         | Razón Técnica                                                                           |
+| --------------------------------------------------------- | ------------------------------ | ------------------------------------------ | ------------------------------------------ | --------------------------------------------------------------------------------------- |
+| **Consumo Inter-carpeta** _(Desde otra carpeta o módulo)_ | Archivo de barril (`index.ts`) | `@common/domain/exceptions`                | `@common/domain/exceptions/base-exception` | Protege el encapsulamiento. Prohíbe los _deep imports_ desde el exterior.               |
+| **Consumo Intra-carpeta** _(Dentro de la misma carpeta)_  | Fichero hermano directo        | `@common/domain/exceptions/base-exception` | `@common/domain/exceptions`                | Previene fallos por dependencias circulares al evitar cargar el `index.ts` local.       |
+| **Módulos NestJS**                                        | Archivo `*.module.ts`          | `@users/users.module`                      | N/A                                        | Los módulos no utilizan barriles. Se importan directo con la ruta absoluta del fichero. |
 
-### C. Excepciones Autorizadas
+##### C. Excepciones Autorizadas
 
 Quedan exentos de la validación estricta de barriles:
 
-* Archivos de configuración principal (ej. `app.module`, `package.json`).
-* Re-exportaciones declarativas internas en archivos de barril (`index.ts`).
-* Archivos de pruebas (`*.spec.ts`).
-* El script de validación (`scripts/check-imports.script.ts`).
+- Archivos de configuración principal (ej. `app.module`, `package.json`).
+- Re-exportaciones declarativas internas en archivos de barril (`index.ts`).
+- Archivos de pruebas (`*.spec.ts`, `*.e2e-spec.ts`).
+- Los scripts de auditoría arquitectónica (`src/scripts/check-imports.script.ts` y `src/scripts/check-hexagonal.script.ts`).
 
 ---
 
-## 4. Automatización y Auditoría (`scripts/check-imports.ts`)
+#### 4. Automatización y Auditoría (`check-imports` y `check-hexagonal`)
 
-El cumplimiento de estas reglas es auditado automáticamente antes de compilar o arrancar el servidor mediante un analizador de sintaxis estático.
+El cumplimiento de las reglas de importación y del aislamiento de capas hexagonales se audita automáticamente antes de compilar o arrancar el servidor mediante analizadores de sintaxis estáticos.
 
-### Integración en `package.json`
+##### Integración en `package.json`
 
 ```json
 {
   "scripts": {
     "check:imports": "npx tsx src/scripts/check-imports.script.ts",
-    "start:dev": "npm run check:imports && cross-env NODE_ENV=development nest start --watch",
-    "build": "npm run check:imports && nest build"
+    "check:hexagonal": "npx tsx src/scripts/check-hexagonal.script.ts",
+    "check:arch": "npm run check:imports && npm run check:hexagonal",
+    "start:dev": "npm run check:arch && cross-env NODE_ENV=development nest start --watch",
+    "build": "npm run check:arch && nest build"
   }
 }
-
 ```
 
-Si el script detecta rutas relativas, *deep imports* hacia otras carpetas o referencias circulares locales, interrumpirá el proceso con un código `process.exit(1)` listando los archivos infractores.
+Si el script detecta rutas relativas, _deep imports_ hacia otras carpetas o referencias circulares locales, interrumpirá el proceso con un código `process.exit(1)` listando los archivos infractores.
 
 ---
 

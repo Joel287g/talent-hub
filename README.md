@@ -26,7 +26,7 @@ El proyecto cuenta con herramientas configuradas a medida para priorizar la velo
   - **Helmet:** Para la configuración estricta de cabeceras HTTP de seguridad (Content Security Policy, mitigación de XSS).
   - **Joi:** Validación estricta y tipado fuerte de las variables de entorno (`.env`) durante el arranque.
 - **📡 Telemetría Personalizada:** Sistema de interceptores asíncronos (`SnifferInterceptor`) integrado con eventos nativos HTTP (`finish`) para registrar la trazabilidad exacta de las peticiones sin bloquear la respuesta del cliente.
--   **🏗️ Auditoría Arquitectónica de Imports:** Script automatizado (`scripts/check-imports.ts`) en TypeScript que valida en tiempo de compilación la prohibición de rutas relativas, el correcto uso de archivos de barril (`index.ts`) y la prevención de referencias circulares.
+* **🏗️ Auditoría Arquitectónica Automatizada:** Scripts nativos en TypeScript (`src/scripts/check-imports.script.ts` y `src/scripts/check-hexagonal.script.ts`) que validan antes de compilar el uso estricto de alias absolutos, archivos de barril (`index.ts`), ausencia de referencias circulares y el aislamiento unidireccional entre capas hexagonales (`infrastructure -> application -> domain`).
 
 ---
 
@@ -48,7 +48,7 @@ src/
 
 Para profundizar en las decisiones técnicas y operativas, consulta las guías específicas:
 
-- [Glossario de Términos](./docs/architecture/glossary.md)
+- [Glosario de Términos](./docs/architecture/glossary.md)
 - [Estándares de Arquitectura Hexagonal](./docs/architecture/hexagonal-standards.md)
 - [Manejo de Excepciones y Logging](./docs/guides/exception-handling.md)
 - [Estándares de Código y Formato](./docs/architecture/code-standards.md)
@@ -71,17 +71,21 @@ Crea un archivo `.env.development` en la raíz del proyecto basándote en el arc
 ### 3. Ejecutar la aplicación
 
 ```bash
-# Comprobar la integridad arquitectónica de los imports
-npm run check:imports
+# Comprobar la integridad de imports y capas hexagonales (ejecuta check:imports y check:hexagonal)
+npm run check:arch
 
-# Modo desarrollo con recarga en vivo (ejecuta check:imports antes del arranque)
+# Auditorías individuales
+npm run check:imports
+npm run check:hexagonal
+
+# Modo desarrollo con recarga en vivo (ejecuta check:arch antes del arranque)
 npm run start:dev
 
 # Ejecutar el linter y pruebas antes de subir código
 npm run lint
 npm run test
 
-# Compilación y modo producción
+# Compilación y modo producción (ejecuta check:arch antes de nest build)
 npm run build
 npm run start:prod
 ```
