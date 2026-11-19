@@ -1,4 +1,6 @@
 //? Imports de codigo
+import { Types } from 'mongoose';
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
@@ -7,10 +9,11 @@ import {
   AddressSchema,
   MediaFile,
   MediaFileSchema,
+  Phone,
+  PhoneSchema,
 } from '@common/infrastructure/persistence/schemas';
 
 import { DanceStyleEnum, BusinessTypeEnum } from '@users/domain/enums';
-import { Phone, PhoneSchema } from '@users/infrastructure/persistence/schemas/phone.schema';
 
 @Schema({
   _id: true,
@@ -19,6 +22,13 @@ import { Phone, PhoneSchema } from '@users/infrastructure/persistence/schemas/ph
   toJSON: { virtuals: false, getters: false },
 })
 export class BusinessProfile {
+  @Prop({
+    required: true,
+    type: Types.ObjectId,
+    default: () => new Types.ObjectId(),
+  })
+  _id: Types.ObjectId;
+
   //? Datos de la empresa
   @Prop({ required: true, type: String, trim: true })
   name: string;

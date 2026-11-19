@@ -4,6 +4,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
 import { Collections, SystemRoleEnum } from '@common/domain/enums';
+import { Phone, PhoneSchema } from '@common/infrastructure/persistence/schemas';
+
 import { ProfileTypeEnum, UserStatus } from '@users/domain/enums';
 import {
   BusinessProfile,
@@ -13,7 +15,6 @@ import {
   PersonalProfile,
   PersonalProfileSchema,
 } from '@users/infrastructure/persistence/schemas/personal-profile.schema';
-import { Phone, PhoneSchema } from '@users/infrastructure/persistence/schemas/phone.schema';
 
 @Schema({
   collection: Collections.USERS,

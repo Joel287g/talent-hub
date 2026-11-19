@@ -9,5 +9,3 @@ export {
   BusinessProfile,
   BusinessProfileSchema,
 } from '@users/infrastructure/persistence/schemas/business-profile.schema';
-
-export { Phone, PhoneSchema } from '@users/infrastructure/persistence/schemas/phone.schema';

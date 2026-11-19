@@ -1,4 +1,6 @@
 //? Imports de codigo
+import { Types } from 'mongoose';
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
@@ -10,6 +12,13 @@ import { MediaExtension, MediaMimeType } from '@common/domain/enums';
   toJSON: { virtuals: false, getters: false },
 })
 export class MediaFile {
+  @Prop({
+    required: true,
+    type: Types.ObjectId,
+    default: () => new Types.ObjectId()
+  })
+  _id: Types.ObjectId;
+
   @Prop({
     required: true,
     type: String,
