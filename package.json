@@ -18,6 +18,8 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.{ts,js,html,css}\"",
     "format:check": "prettier --check \"src/**/*.{ts,js,html,css}\"",
+    "lint": "oxlint -c oxlint.json src",
+    "lint:fix": "oxlint -c oxlint.json --fix src",
     "start:dev": "cross-env NODE_ENV=development nest start --watch"
   },
   "engines": {

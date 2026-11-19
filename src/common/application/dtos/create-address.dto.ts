@@ -1,5 +1,5 @@
 //? Imports de codigo
-import { IsNotEmpty, IsString, IsUppercase, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 

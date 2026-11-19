@@ -1,3 +1,4 @@
+//? Imports de codigo
 import {
   BadRequestException,
   ConflictException,
@@ -42,8 +43,6 @@ export function catchConstructor(error: any) {
             },
             error.response?.statusCode || error.status || HttpStatus.INTERNAL_SERVER_ERROR,
           );
-          break;
       }
-      break;
   }
 }

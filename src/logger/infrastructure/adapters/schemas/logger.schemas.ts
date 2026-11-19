@@ -1,6 +1,7 @@
 //? Imports de codigo
+import { Document } from 'mongoose';
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
 
 //? Imports de usuario
 import { LoggerLevel, LoggerTypes, LoggerMessages } from '@logger/domain/enums';
