@@ -26,7 +26,7 @@ El proyecto cuenta con herramientas configuradas a medida para priorizar la velo
   - **Helmet:** Para la configuración estricta de cabeceras HTTP de seguridad (Content Security Policy, mitigación de XSS).
   - **Joi:** Validación estricta y tipado fuerte de las variables de entorno (`.env`) durante el arranque.
 - **📡 Telemetría Personalizada:** Sistema de interceptores asíncronos (`SnifferInterceptor`) integrado con eventos nativos HTTP (`finish`) para registrar la trazabilidad exacta de las peticiones sin bloquear la respuesta del cliente.
-* **🏗️ Auditoría Arquitectónica Automatizada:** Scripts nativos en TypeScript (`src/scripts/check-imports.script.ts` y `src/scripts/check-hexagonal.script.ts`) que validan antes de compilar el uso estricto de alias absolutos, archivos de barril (`index.ts`), ausencia de referencias circulares y el aislamiento unidireccional entre capas hexagonales (`infrastructure -> application -> domain`).
+- **🏗️ Auditoría Arquitectónica:** Scripts nativos en TypeScript (`src/scripts/check-imports.script.ts` y `src/scripts/check-hexagonal.script.ts`), ejecutados con `npm run check:arch`, que validan el uso estricto de alias absolutos, archivos de barril (`index.ts`), ausencia de referencias circulares y el aislamiento unidireccional entre capas hexagonales (`infrastructure -> application -> domain`).
 
 ---
 
@@ -71,6 +71,18 @@ Crea un archivo `.env.development` en la raíz del proyecto basándote en el arc
 ### 3. Ejecutar la aplicación
 
 ```bash
+# Modo desarrollo con recarga en vivo
+npm run start:dev
+
+# Compilación
+npm run build
+```
+
+### 4. Verificar el código antes de subirlo
+
+Las auditorías no se ejecutan automáticamente al compilar ni al arrancar: lánzalas manualmente al terminar cualquier `fix` o `feature`.
+
+```bash
 # Comprobar la integridad de imports y capas hexagonales (ejecuta check:imports y check:hexagonal)
 npm run check:arch
 
@@ -78,14 +90,11 @@ npm run check:arch
 npm run check:imports
 npm run check:hexagonal
 
-# Modo desarrollo con recarga en vivo (ejecuta check:arch antes del arranque)
-npm run start:dev
-
-# Ejecutar el linter y pruebas antes de subir código
+# Linter (Oxlint)
 npm run lint
-npm run test
+npm run lint:fix
 
-# Compilación y modo producción (ejecuta check:arch antes de nest build)
-npm run build
-npm run start:prod
+# Formato (Prettier)
+npm run format:check
+npm run format
 ```

@@ -100,7 +100,7 @@ Cualquier código transversal o compartido `(src/common)` debe respetar la separ
 
 ---
 
-##### Regla 5: Estándar Estricto de Importaciones y Archivos de Barril
+### Regla 5: Estándar Estricto de Importaciones y Archivos de Barril
 
 Para garantizar la integridad del empaquetado y prevenir fallos por dependencias circulares en tiempo de ejecución:
 
@@ -111,7 +111,7 @@ Para garantizar la integridad del empaquetado y prevenir fallos por dependencias
 
 ---
 
-##### Regla 6: Regla de Dependencia Unidireccional y Blindaje de Capas
+### Regla 6: Regla de Dependencia Unidireccional y Blindaje de Capas
 
 El flujo de dependencias entre capas es estrictamente unidireccional y siempre apunta **de afuera hacia adentro**:
 
@@ -126,7 +126,7 @@ Ninguna capa interior puede conocer, importar ni acoplarse a una capa exterior n
 | **`infrastructure/`** _(Adaptadores)_  | `infrastructure/`, `application/` y `domain/` (propios y de `@common`).                | Capa `infrastructure/` privada de otro módulo de negocio (ej. `@users/infrastructure` desde `@jobs/infrastructure`). | —                                                                                                                    |
 | **`*.module.ts`** _(Composition Root)_ | `domain/`, `application/` e `infrastructure/` para ensamblar `Symbol` con adaptadores. | —                                                                                                                    | —                                                                                                                    |
 
-- **Auditoría Automatizada (`src/scripts/check-hexagonal.script.ts`):** El cumplimiento de esta matriz se verifica estáticamente antes de compilar o iniciar el servidor mediante `npm run check:hexagonal` (integrado en `npm run check:arch`). Ante cualquier fuga entre capas o importación de librerías prohibidas, el proceso aborta con `process.exit(1)`.
+- **Auditoría Automatizada (`src/scripts/check-hexagonal.script.ts`):** El cumplimiento de esta matriz se verifica estáticamente mediante `npm run check:hexagonal` (integrado en `npm run check:arch`), que debe ejecutarse manualmente al terminar cualquier `fix` o `feature` y antes de subir código. Ante cualquier fuga entre capas o importación de librerías prohibidas, el proceso aborta con `process.exit(1)`.
 
 ---
 

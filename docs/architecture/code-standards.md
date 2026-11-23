@@ -1,13 +1,6 @@
-La mejor estrategia es **unificar ambos documentos** en un único fichero (`docs/architecture/code-standards.md`) para evitar redundancias y mantener una única fuente de verdad para los desarrolladores.
-
-El primer archivo aporta el sistema avanzado de validación de barriles y rutas, mientras que el segundo contiene reglas esenciales de formateo y el uso de `BetterComments` que no deben perderse.
-
-Aquí tienes el documento unificado y estructurado de forma secuencial:
-
-````markdown
 # 📐 Estándares de Código y Formato
 
-Este documento define las reglas estrictas de estilo, formato, nomenclatura, organización de importaciones y convenciones de comentarios que deben seguirse en todo el código fuente del proyecto **Talent Hub**. Todas las reglas de importación documentadas aquí son auditadas automáticamente antes de cada compilación o inicio en desarrollo.
+Este documento define las reglas estrictas de estilo, formato, nomenclatura, organización de importaciones y convenciones de comentarios que deben seguirse en todo el código fuente del proyecto **Talent Hub**. Las reglas de importación y de aislamiento de capas documentadas aquí se auditan con los scripts de `src/scripts/` (ver sección 4).
 
 ---
 
@@ -56,7 +49,6 @@ import { HttpAdapterHost } from '@nestjs/core';
 import { BaseException } from '@common/domain/exceptions';
 import { FilterException } from '@common/infrastructure/interfaces';
 ```
-````
 
 1. **`//? Imports de codigo`**: Contiene dependencias nativas de Node.js (ej. `fs`, `path`) separadas por un salto de línea de las librerías externas o frameworks (ej. `@nestjs/common`, `mongoose`).
 2. **`//? Imports de usuario`**: Contiene exclusivamente código interno del proyecto (`src/`).
@@ -71,7 +63,7 @@ Queda **estrictamente prohibido el uso de rutas relativas** (`./` o `../`). Se a
 | **Consumo Intra-carpeta** _(Dentro de la misma carpeta)_  | Fichero hermano directo        | `@common/domain/exceptions/base-exception` | `@common/domain/exceptions`                | Previene fallos por dependencias circulares al evitar cargar el `index.ts` local.       |
 | **Módulos NestJS**                                        | Archivo `*.module.ts`          | `@users/users.module`                      | N/A                                        | Los módulos no utilizan barriles. Se importan directo con la ruta absoluta del fichero. |
 
-##### C. Excepciones Autorizadas
+### C. Excepciones Autorizadas
 
 Quedan exentos de la validación estricta de barriles:
 
@@ -82,27 +74,27 @@ Quedan exentos de la validación estricta de barriles:
 
 ---
 
-#### 4. Automatización y Auditoría (`check-imports` y `check-hexagonal`)
+## 4. Automatización y Auditoría (`check-imports` y `check-hexagonal`)
 
-El cumplimiento de las reglas de importación y del aislamiento de capas hexagonales se audita automáticamente antes de compilar o arrancar el servidor mediante analizadores de sintaxis estáticos.
+El cumplimiento de las reglas de importación y del aislamiento de capas hexagonales se audita mediante analizadores de sintaxis estáticos ubicados en `src/scripts/`. Estos scripts **no se ejecutan automáticamente** al compilar ni al arrancar el servidor: deben lanzarse manualmente al terminar cualquier `fix` o `feature`, y siempre antes de subir código.
 
-##### Integración en `package.json`
+### Integración en `package.json`
 
 ```json
 {
   "scripts": {
     "check:imports": "npx tsx src/scripts/check-imports.script.ts",
     "check:hexagonal": "npx tsx src/scripts/check-hexagonal.script.ts",
-    "check:arch": "npm run check:imports && npm run check:hexagonal",
-    "start:dev": "npm run check:arch && cross-env NODE_ENV=development nest start --watch",
-    "build": "npm run check:arch && nest build"
+    "check:arch": "npm run check:imports && npm run check:hexagonal"
   }
 }
 ```
 
-Si el script detecta rutas relativas, _deep imports_ hacia otras carpetas o referencias circulares locales, interrumpirá el proceso con un código `process.exit(1)` listando los archivos infractores.
+- **`check:imports`**: Detecta rutas relativas, _deep imports_ hacia otras carpetas y consumo del `index.ts` de la propia carpeta (referencias circulares locales).
+- **`check:hexagonal`**: Verifica la matriz de dependencias entre capas (`infrastructure → application → domain`) y las librerías externas prohibidas en cada capa.
+- **`check:arch`**: Ejecuta ambas auditorías en secuencia.
 
----
+Si un script detecta una infracción, interrumpe el proceso con `process.exit(1)` y lista los archivos infractores.
 
 ---
 

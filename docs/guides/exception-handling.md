@@ -25,24 +25,30 @@ src/
          │   ├── mongoose-exception.filter.ts
          │   └── index.ts
          └── interfaces/
-             └── filter-exception.interface.ts
+             ├── filters-exceptions.interfaces.ts
+             └── index.ts
 ```
 
-### 2. Los Tres Pilares de Excepciones
+### 2. Los Cuatro Pilares de Excepciones
 
-El sistema implementa tres filtros registrados globalmente mediante el token APP_FILTER en el MiddlewaresModule, evaluados en orden jerárquico:
+El sistema implementa cuatro filtros registrados globalmente mediante el token `APP_FILTER` en el `MiddlewaresModule` (`src/common/infrastructure/middlewares.module.ts`). Cada filtro atrapa un tipo de error concreto y el `GeneralExceptionsFilter` actúa como red de seguridad para todo lo demás:
 
-#### A. General Exceptions Filter (`@Catch()`)
+#### A. Domain Exception Filter (`@Catch(BaseException)`)
+
+- **Propósito:** Atrapa los errores de negocio lanzados desde el Dominio o los Casos de Uso mediante los catálogos de errores (`BaseException`, ver sección 5).
+- **Comportamiento:** Usa el `statusCode` definido en la propia excepción (por defecto **500**) y adjunta en `additionalException` el `code` único del error y su `metadata` (o `null`). De esta forma el Dominio permanece agnóstico a HTTP y es la Infraestructura quien traduce el error a la respuesta.
+
+#### B. General Exceptions Filter (`@Catch()`)
 
 - **Propósito:** Funciona como un "cajón de sastre". Atrapa cualquier error no controlado o imprevisto que ocurra en la aplicación (Errores 500).
 - **Comportamiento:** Extrae de forma segura el mensaje y el nombre del error usando fallbacks por defecto, evitando que la aplicación falle al intentar responder al cliente.
 
-#### B. HTTP Exception Filter (`@Catch(HttpException)`)
+#### C. HTTP Exception Filter (`@Catch(HttpException)`)
 
 - **Propósito:** Atrapa todas las excepciones controladas del framework o lanzadas explícitamente (ej. BadRequestException, UnauthorizedException, NotFoundException).
 - **Comportamiento:** Preserva el código de estado HTTP original (400, 401, 404, etc.) y extrae propiedades adicionales (como los mensajes de error del ValidationPipe de NestJS) bajo la propiedad additionalException.
 
-#### C. Mongoose Exception Filter (`@Catch(mongo.MongoServerError)`)
+#### D. Mongoose Exception Filter (`@Catch(mongo.MongoServerError)`)
 
 - **Propósito:** Intercepta los errores nativos lanzados por el driver de MongoDB.
 - **Comportamiento:** Traduce códigos crudos de base de datos a códigos de estado HTTP semánticamente correctos:
@@ -112,11 +118,39 @@ Todas las respuestas de error del backend devuelven una estructura JSON uniforme
 ---
 
 ### 5. Catálogo de Errores por Módulo (`BaseErrors`)
-Para evitar el uso directo de excepciones de NestJS en los Casos de Uso (preveniendo la Fuga de Infraestructura), los errores se instancian extendiendo la clase abstracta `BaseErrors`:
+Para evitar el uso directo de excepciones de NestJS en los Casos de Uso (preveniendo la Fuga de Infraestructura), los errores se instancian extendiendo la clase abstracta `BaseErrors` (`src/common/domain/exceptions/base-errors.abstract.ts`):
 
-- Cada módulo define su propio catálogo (ej. `usersErrors` en `src/users/domain/exceptions/users.errors.ts`).
-- Los métodos heredados (como `notFoundException` o `forbiddenException`) asignan automáticamente el código de estado HTTP semántico y el marcador `'ERROR_GENERATOR'`.
-- Los Casos de Uso lanzan estos errores directamente sin necesidad de bloques `try/catch`.
+- Los métodos heredados de `BaseErrors` (como `notFoundException` o `forbiddenException`) asignan automáticamente el código de estado HTTP semántico, un mensaje de `BaseErrorsEnum` y un código único por defecto (ej. `COMM-DOM-EXC-BASE_ERRO-004`). Todos aceptan un `cause` opcional.
+- Cada módulo define su propio catálogo en `domain/exceptions/`, con sus mensajes en un enum dentro de `domain/exceptions/enums/`. Ejemplo del módulo de usuarios:
+
+```text
+src/users/domain/exceptions/
+ ├── enums/
+ │   ├── user-errors.enum.ts      # UserErrorsEnum (USER-NOT_FOUND, USER-ALREADY_EXISTS, ...)
+ │   └── index.ts
+ ├── user-errors.exceptions.ts    # UserErrorsFactory extends BaseErrors
+ └── index.ts                     # export { UserErrors }
+```
+
+```typescript
+//? Imports de usuario
+import { BaseException, BaseErrors } from '@common/domain/exceptions';
+
+import { UserErrorsEnum } from '@users/domain/exceptions/enums';
+
+class UserErrorsFactory extends BaseErrors {
+  public notFound(code: string = 'USER-DOM-EXC-USER_ERRO-001'): BaseException<UserErrorsEnum> {
+    return new BaseException<UserErrorsEnum>(UserErrorsEnum.NOT_FOUND, 404, code);
+  }
+}
+
+//* Solo se exporta la instancia, nunca la clase
+export const UserErrors = new UserErrorsFactory();
+```
+
+- Los códigos únicos (`USER-DOM-EXC-USER_ERRO-001`) se generan con la extensión [Error codes generator](https://marketplace.visualstudio.com/items?itemName=Joel287g.error-codes-generator) a partir del marcador `'ERROR_GENERATOR'` (ver [Glosario](../architecture/glossary.md)).
+- Al lanzar un error se pasa el código único del punto exacto donde ocurre, para poder rastrearlo (ej. `throw UserErrors.notFound('USER-APP-USE-FIND_USER_BY_UID-001')`). Si se omite, se usa el código por defecto del catálogo.
+- Los Casos de Uso, Servicios y Entidades lanzan estos errores directamente sin necesidad de bloques `try/catch`, y el `DomainExceptionFilter` los traduce a la respuesta HTTP.
 
 ---
 
