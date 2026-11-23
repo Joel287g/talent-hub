@@ -133,6 +133,11 @@ export class UserEntity {
     return this._updatedAt;
   }
 
+  //? Methods
+  public isActive(): boolean {
+    return this._status === UserStatus.ACTIVE;
+  }
+
   //? Methods static
   public static create(user: CreateUserType): UserEntity {
     const PERSONAL_PROFILE = user.personalProfile

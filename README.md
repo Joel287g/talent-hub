@@ -24,6 +24,7 @@ El proyecto cuenta con herramientas configuradas a medida para priorizar la velo
 - **📖 Documentación Interactiva:** [Swagger OpenAPI](https://swagger.io/) autogenerado e integrado. (Disponible en la ruta `/api/docs` únicamente en entornos fuera de producción).
 - **🛡️ Seguridad y Auditoría:**
   - **Helmet:** Para la configuración estricta de cabeceras HTTP de seguridad (Content Security Policy, mitigación de XSS).
+  - **JWT + Passport:** Guard global (`JwtAuthGuard`) que valida el token en cada petición y verifica que la cuenta del usuario siga activa.
   - **Joi:** Validación estricta y tipado fuerte de las variables de entorno (`.env`) durante el arranque.
 - **📡 Telemetría Personalizada:** Sistema de interceptores asíncronos (`SnifferInterceptor`) integrado con eventos nativos HTTP (`finish`) para registrar la trazabilidad exacta de las peticiones sin bloquear la respuesta del cliente.
 - **🏗️ Auditoría Arquitectónica:** Scripts nativos en TypeScript (`src/scripts/check-imports.script.ts` y `src/scripts/check-hexagonal.script.ts`), ejecutados con `npm run check:arch`, que validan el uso estricto de alias absolutos, archivos de barril (`index.ts`), ausencia de referencias circulares y el aislamiento unidireccional entre capas hexagonales (`infrastructure -> application -> domain`).
@@ -37,6 +38,7 @@ El código fuente se organiza modularmente separando las reglas de negocio de lo
 ```text
 docs/                    # Documentación técnica específica del proyecto
 src/
+├── auth/                # Autenticación JWT (Passport strategy y guard global)
 ├── common/              # Elementos transversales (Dominio e Infraestructura compartida)
 ├── configuration/       # Configuración global del sistema
 ├── logger/              # Módulo centralizado de trazabilidad y consola
@@ -52,6 +54,7 @@ Para profundizar en las decisiones técnicas y operativas, consulta las guías e
 - [Estándares de Arquitectura Hexagonal](./docs/architecture/hexagonal-standards.md)
 - [Manejo de Excepciones y Logging](./docs/guides/exception-handling.md)
 - [Estándares de Código y Formato](./docs/architecture/code-standards.md)
+- [Autenticación (JWT + Passport)](./docs/guides/authentication.md)
 - [Diagramas ER](./docs/architecture/entity-relationship-diagram.md)
 
 ## ⚙️ Guía de Inicio Rápido

@@ -44,6 +44,7 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 
 - **Entidad (Entity):** Objeto de la capa de Dominio que posee una **identidad única** (un ID). Encapsula el estado de un concepto de negocio y las reglas que dictan cómo puede mutar ese estado a lo largo del tiempo.
   - _Nota:_ Evitamos el "Modelo Anémico" (entidades que solo tienen getters/setters y cero lógica). Usamos un método `static create()` (Factory) para asegurar su integridad al nacer.
+- **Estrategia (Strategy / Passport):** Adaptador de infraestructura que define cómo se autentica una petición. En nuestro proyecto, `JwtStrategy` verifica el JWT y, en su método `validate()`, delega en `ValidateUserSessionUseCase` la comprobación de integridad del usuario (existe y está `ACTIVE`).
 - **ERROR_GENERATOR:** Marcador / Snippet utilizado por la extensión de VS Code [Error codes generator](https://marketplace.visualstudio.com/items?itemName=Joel287g.error-codes-generator). Al ejecutar la extensión, este string se reemplaza automáticamente por un código único secuencial basado en la ruta del archivo (ej. `USER-DOM-EXC-USER_ERRO-001`: módulo, capa, carpeta, archivo y secuencial).
 - **Exception Filter (Filtro de Excepciones):** Capa de la Infraestructura en NestJS encargada de atrapar errores (ej. un error de duplicidad en Mongo o un error personalizado del dominio) antes de que lleguen al cliente, mapeándolos a una respuesta HTTP estandarizada.
 
@@ -58,10 +59,24 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 ---
 ---
 
+## G
+
+- **Guard:** Componente de la capa de Infraestructura (nativo en NestJS) que decide si una petición puede alcanzar el Controller. El `JwtAuthGuard` se registra globalmente (`APP_GUARD`) y exige un JWT válido salvo en las rutas marcadas con `@PublicJwt()`.
+
+---
+---
+
 ## I
 
 - **Interceptor:** Componente de la capa de Infraestructura (nativo en NestJS) que envuelve el flujo de la petición HTTP. Permite ejecutar lógica antes y después de que la petición alcance el Caso de Uso (Controller). Es el lugar ideal para aislar lógica transversal (cross-cutting concerns) como telemetría, logging o mutación de respuestas, manteniendo los Casos de Uso limpios.
 - **Inyección de Dependencias (DI):** Patrón de diseño en el que las clases no crean a sus propias dependencias (ej. no hacen `new Repository()`), sino que las reciben por el constructor. NestJS se encarga de inyectarlas usando un contenedor IoC (Inversion of Control).
+
+---
+---
+
+## J
+
+- **JWT (JSON Web Token):** Token firmado por el backend al hacer login que identifica la sesión del usuario. Su payload (`JwtPayload`) solo contiene el identificador interno del usuario (`id`), nunca el UID de Firebase ni datos sensibles.
 
 ---
 ---

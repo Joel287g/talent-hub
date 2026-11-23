@@ -1,5 +1,5 @@
 //? Imports de codigo
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtModuleOptions, JwtOptionsFactory } from '@nestjs/jwt';
 
@@ -8,6 +8,7 @@ import { StringValue } from 'ms';
 //? Imports de usuario
 import { environmentsConfig } from '@configuration/env';
 
+@Injectable()
 export class JwtConfigService implements JwtOptionsFactory {
   constructor(
     @Inject(environmentsConfig.KEY)
@@ -39,6 +40,9 @@ export class JwtConfigService implements JwtOptionsFactory {
       verifyOptions: {
         //? Token lifetime
         algorithms: ['HS256'],
+
+        //? Token recipient must match the one used when signing
+        audience: this.configService.security.jwt.audience,
 
         //? Allows a tolerance in seconds for time verification in the token
         clockTolerance: 60,

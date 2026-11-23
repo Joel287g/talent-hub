@@ -3,6 +3,8 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 //? Imports de usuario
+import { PublicJwt } from '@common/infrastructure/decorators';
+
 import { CreateUserDto } from '@users/application/dtos';
 import { CreateUserService } from '@users/application/services';
 
@@ -11,6 +13,7 @@ import { CreateUserService } from '@users/application/services';
 export class UsersController {
   constructor(private readonly createUserService: CreateUserService) {}
 
+  @PublicJwt()
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Crea un usuario completo tras finalizar el flujo de onboarding' })

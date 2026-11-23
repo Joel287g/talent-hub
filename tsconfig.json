@@ -12,6 +12,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "paths": {
+      "@auth/*": ["./src/auth/*"],
       "@common/*": ["./src/common/*"],
       "@configuration/*": ["./src/configuration/*"],
       "@logger/*": ["./src/logger/*"],

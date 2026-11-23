@@ -98,4 +98,4 @@ Si un script detecta una infracción, interrumpe el proceso con `process.exit(1)
 
 ---
 
-**Main menu:** [README.md](../../README.md) || **Previous:** [Manejo de Excepciones y Logging](../guides/exception-handling.md)
+**Main menu:** [README.md](../../README.md) || **Previous:** [Manejo de Excepciones y Logging](../guides/exception-handling.md) || **Next:** [Autenticación (JWT + Passport)](../guides/authentication.md)

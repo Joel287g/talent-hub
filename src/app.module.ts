@@ -14,6 +14,7 @@ import { MongooseConfigService } from '@configuration/database';
 import { MiddlewaresModule } from '@common/infrastructure/middlewares.module';
 
 //* Modules
+import { AuthModule } from '@auth/auth.module';
 import { UsersModule } from '@users/users.module';
 
 @Module({
@@ -45,6 +46,7 @@ import { UsersModule } from '@users/users.module';
     MiddlewaresModule,
 
     //* MODULES
+    AuthModule,
     UsersModule,
   ],
   controllers: [],

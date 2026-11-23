@@ -2,7 +2,7 @@
 
 Plataforma centralizada para conectar talento artístico (bailarines, coreógrafos, instructores) con academias, compañías y empresas mediante ofertas de empleo. Backend en **NestJS 12 + MongoDB (Mongoose 9)**, Node `>= 26.8`, construido bajo una **Arquitectura Hexagonal estricta** y principios de **DDD**.
 
-Módulos actuales en `src/`: `common` (transversal), `configuration`, `logger`, `sniffer` (telemetría HTTP) y `users`. Alias absolutos: `@common`, `@configuration`, `@logger`, `@sniffer`, `@users`.
+Módulos actuales en `src/`: `auth` (JWT + Passport), `common` (transversal), `configuration`, `logger`, `sniffer` (telemetría HTTP) y `users`. Alias absolutos: `@auth`, `@common`, `@configuration`, `@logger`, `@sniffer`, `@users`.
 
 ---
 
@@ -15,6 +15,7 @@ Las reglas, instrucciones y direcciones del proyecto viven en `docs/`. **Todo c�
 - Manejo de Excepciones y Filtros Globales: @docs/guides/exception-handling.md
 - Estándares de Código y Formato (nomenclatura, BetterComments, imports y barriles): @docs/architecture/code-standards.md
 - Diagrama Entidad-Relación del módulo de usuarios: @docs/architecture/entity-relationship-diagram.md
+- Autenticación (JWT + Passport, `@PublicJwt`, `@GetUser`): @docs/guides/authentication.md
 - Visión general, stack y comandos: @README.md
 
 ### Resumen de reglas críticas (detalle completo en los docs)
