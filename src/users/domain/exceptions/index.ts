@@ -1,1 +1,1 @@
-export * from '@users/domain/exceptions/users.errors';
+export { UserErrors } from '@users/domain/exceptions/user-errors.exceptions';

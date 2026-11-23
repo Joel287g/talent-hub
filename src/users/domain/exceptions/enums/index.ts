@@ -1,0 +1,1 @@
+export { UserErrorsEnum } from '@users/domain/exceptions/enums/user-errors.enum'

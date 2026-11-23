@@ -8,13 +8,16 @@ import { Users } from '@users/infrastructure/persistence/schemas';
 import { UserEntity } from '@users/domain/entities';
 
 import { BusinessProfileMapper } from '@users/infrastructure/persistence/business-profile.mapper';
-import { PersonalProfileMapper   } from '@users/infrastructure/persistence/personal-profile.mapper';
+import { PersonalProfileMapper } from '@users/infrastructure/persistence/personal-profile.mapper';
 
 export class UserMapper {
   /**
    * Transforma el documento crudo de MongoDB a una Entidad de Dominio pura.
    */
-  public static toDomain(user: Users): UserEntity {
+  public static toDomain(user: Users): UserEntity;
+  public static toDomain(user: Users | null): UserEntity | null {
+    if (!user) return null;
+
     return new UserEntity({
       id: user._id.toString(),
       uid: user.uid,
@@ -39,7 +42,10 @@ export class UserMapper {
   /**
    * Transforma la Entidad de Dominio pura en un objeto plano que Mongoose pueda guardar.
    */
-  public static toPersistence(user: UserEntity): Record<string, any> {
+  public static toPersistence(user: UserEntity): Record<string, any>;
+  public static toPersistence(user: UserEntity | null): Record<string, any> | null {
+    if (!user) return null;
+
     return {
       _id: user.id ? new Types.ObjectId(user.id) : new Types.ObjectId(),
       uid: user.uid,

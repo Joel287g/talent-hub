@@ -22,17 +22,44 @@ export class MongoDBUsersRepository
     super(usersModel);
   }
 
+  //#region Mappers
   /**
    * Implementación requerida por el BaseRepository (Lectura)
    */
-  protected mapToDomain(document: Users): UserEntity {
-    return UserMapper.toDomain(document);
+  protected mapToDomain(user: Users): UserEntity {
+    return UserMapper.toDomain(user);
   }
 
   /**
    * Implementación requerida por el BaseRepository (Escritura)
    */
-  protected mapToDb(entity: UserEntity): any {
-    return UserMapper.toPersistence(entity);
+  protected mapToDb(user: UserEntity): any {
+    return UserMapper.toPersistence(user);
   }
+  //#endregion
+
+  //#region GET
+  async findByUid(uid: string): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findOne({ uid });
+    return this.mapToDomain(USER);
+  }
+
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findOne({ email });
+    return this.mapToDomain(USER);
+  }
+
+  async findByPhone(phone: {
+    cca2: string;
+    code: string;
+    number: string;
+  }): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findOne({
+      cca2: phone.cca2,
+      code: phone.code,
+      number: phone.number,
+    });
+    return this.mapToDomain(USER);
+  }
+  //#endregion
 }

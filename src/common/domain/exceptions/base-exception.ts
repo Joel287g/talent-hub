@@ -1,5 +1,5 @@
 //? Imports de usuario
-import { BaseErrorsEnum } from '@common/domain/enums';
+import { BaseErrorsEnum } from "@common/domain/enums";
 
 /**
  * Declaración global para la capacidad de capturar el rastro de pila de errores.
@@ -27,14 +27,14 @@ declare global {
  * @param {Record<string, any>} metadata - Información adicional sobre el error (opcional).
  * @returns {void}
  */
-export class BaseException extends Error {
+export class BaseException<TMessage extends string = string> extends Error {
   public readonly code: string;
   public readonly statusCode: number;
   public readonly cause?: Error | unknown;
   public readonly metadata?: Record<string, any>;
 
   constructor(
-    message: BaseErrorsEnum,
+    message: TMessage | BaseErrorsEnum,
     statusCode: number,
     code: string,
     cause?: Error | unknown,

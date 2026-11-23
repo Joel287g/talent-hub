@@ -1,7 +1,7 @@
 //? Imports de usuario
 import { SystemRoleEnum } from '@common/domain/enums';
-
 import { PhoneEntity, PhoneInterface } from '@common/domain/entities';
+
 import {
   BusinessProfileEntity,
   BusinessProfileInterface,
@@ -13,6 +13,7 @@ import {
   PersonalProfileInterface,
 } from '@users/domain/entities/personal-profile.entity';
 import { ProfileTypeEnum, UserStatus } from '@users/domain/enums';
+import { UserErrors } from '@users/domain/exceptions';
 
 export interface UserInterface {
   id?: string | null;
@@ -141,6 +142,15 @@ export class UserEntity {
     const BUSINESS_PROFILES = (user.businessProfiles ?? []).map((profile) =>
       BusinessProfileEntity.create(profile),
     );
+
+    //* Invariante: Ninguna cuenta nace sin el perfil correspondiente a su contexto inicial
+    if (user.activeProfileType === ProfileTypeEnum.PERSONAL && !PERSONAL_PROFILE) {
+      throw UserErrors.invalidInitialProfile('USER-DOM-ENT-USER-001');
+    }
+
+    if (user.activeProfileType === ProfileTypeEnum.BUSINESS && BUSINESS_PROFILES.length === 0) {
+      throw UserErrors.invalidInitialProfile('USER-DOM-ENT-USER-002');
+    }
 
     return new UserEntity({
       uid: user.uid,

@@ -1,19 +1,21 @@
 //? Imports de codigo
-import { Controller, Post, Body } from '@nestjs/common';
-import { ApiBody, ApiOperation } from '@nestjs/swagger';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 //? Imports de usuario
 import { CreateUserDto } from '@users/application/dtos';
-import { CreateUserUseCase } from '@users/application/use-cases';
+import { CreateUserService } from '@users/application/services';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly createUserUseCase: CreateUserUseCase) {}
+  constructor(private readonly createUserService: CreateUserService) {}
 
   @Post('create')
-  @ApiOperation({ summary: 'Crear un nuevo usuario' })
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Crea un usuario completo tras finalizar el flujo de onboarding' })
   @ApiBody({ type: CreateUserDto })
-  async createUser(@Body() payload: CreateUserDto) {
-    return await this.createUserUseCase.execute(payload);
+  public async create(@Body() createUserDto: CreateUserDto) {
+    return await this.createUserService.execute(createUserDto);
   }
 }

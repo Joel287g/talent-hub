@@ -9,12 +9,16 @@ import { Users, UsersSchema } from '@users/infrastructure/persistence/schemas';
 import { MongoDBUsersRepository } from '@users/infrastructure/persistence';
 import { UsersController } from '@users/infrastructure/controllers';
 
+import * as usersServices from '@users/application/services'
 import * as usersUseCases from '@users/application/use-cases';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Users.name, schema: UsersSchema }])],
   controllers: [UsersController],
   providers: [
+    //? Services
+    ...Object.values(usersServices),
+
     //? Use cases
     ...Object.values(usersUseCases),
 
