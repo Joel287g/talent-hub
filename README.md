@@ -26,7 +26,7 @@ El proyecto cuenta con herramientas configuradas a medida para priorizar la velo
   - **Helmet:** Para la configuración estricta de cabeceras HTTP de seguridad (Content Security Policy, mitigación de XSS).
   - **JWT + Passport:** Guard global (`JwtAuthGuard`) que valida el token en cada petición y verifica que la cuenta del usuario siga activa.
   - **Joi:** Validación estricta y tipado fuerte de las variables de entorno (`.env`) durante el arranque.
-- **📡 Telemetría Personalizada:** Sistema de interceptores asíncronos (`SnifferInterceptor`) integrado con eventos nativos HTTP (`finish`) para registrar la trazabilidad exacta de las peticiones sin bloquear la respuesta del cliente.
+- **📡 Telemetría Personalizada:** Middleware asíncrono (`SnifferMiddleware`) integrado con eventos nativos HTTP (`finish`) para registrar la trazabilidad exacta de las peticiones sin bloquear la respuesta del cliente.
 - **🏗️ Auditoría Arquitectónica:** Scripts nativos en TypeScript (`src/scripts/check-imports.script.ts` y `src/scripts/check-hexagonal.script.ts`), ejecutados con `npm run check:arch`, que validan el uso estricto de alias absolutos, archivos de barril (`index.ts`), ausencia de referencias circulares y el aislamiento unidireccional entre capas hexagonales (`infrastructure -> application -> domain`).
 
 ---

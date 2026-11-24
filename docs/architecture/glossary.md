@@ -68,7 +68,7 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 
 ## I
 
-- **Interceptor:** Componente de la capa de Infraestructura (nativo en NestJS) que envuelve el flujo de la petición HTTP. Permite ejecutar lógica antes y después de que la petición alcance el Caso de Uso (Controller). Es el lugar ideal para aislar lógica transversal (cross-cutting concerns) como telemetría, logging o mutación de respuestas, manteniendo los Casos de Uso limpios.
+- **Interceptor:** Componente de la capa de Infraestructura (nativo en NestJS) que envuelve el flujo de la petición HTTP. Permite ejecutar lógica antes y después de que la petición alcance el Caso de Uso (Controller). Es el lugar ideal para aislar lógica transversal (cross-cutting concerns) como logging o mutación de respuestas, manteniendo los Casos de Uso limpios.
 - **Inyección de Dependencias (DI):** Patrón de diseño en el que las clases no crean a sus propias dependencias (ej. no hacen `new Repository()`), sino que las reciben por el constructor. NestJS se encarga de inyectarlas usando un contenedor IoC (Inversion of Control).
 
 ---
@@ -83,7 +83,8 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 
 ## M
 
-- **Magic Strings (Cadenas Mágicas):** Antipatrón que consiste en escribir cadenas de texto literales en el código (ej. `'SnifferInterceptor'`) en lugar de utilizar variables, constantes dinámicas (como `SnifferInterceptor.name`) o enums. Generan un código frágil, propenso a errores de tipeo y difícil de refactorizar.
+- **Middleware:** Componente de la capa de Infraestructura que se ejecuta antes que los Guards, Interceptores y Controllers. El `SnifferMiddleware` registra la telemetría aquí para incluir también las peticiones rechazadas por un Guard, que nunca llegan a los Interceptores.
+- **Magic Strings (Cadenas Mágicas):** Antipatrón que consiste en escribir cadenas de texto literales en el código (ej. `'SnifferMiddleware'`) en lugar de utilizar variables, constantes dinámicas (como `SnifferMiddleware.name`) o enums. Generan un código frágil, propenso a errores de tipeo y difícil de refactorizar.
 - **Mapper (Mapeador):** Clase utilitaria de la capa de Infraestructura que traduce los datos entre dos mundos.
   - `toDomain`: Convierte un documento de MongoDB en una `Entity` pura.
   - `toPersistence`: Convierte una `Entity` pura en un formato que Mongoose entienda.

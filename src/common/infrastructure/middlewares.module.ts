@@ -1,6 +1,6 @@
 //? Imports de codigo
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { Global, Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
+import { Global, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 //? Imports de usuario
 
@@ -8,10 +8,8 @@ import { Global, Module } from '@nestjs/common';
 import { LoggerModule } from '@logger/logger.module';
 import { SnifferModule } from '@sniffer/sniffer.module';
 
-//* Interceptors
-import { SnifferInterceptor } from '@common/infrastructure/interceptors';
-
-//* Guards
+//* Middlewares
+import { SnifferMiddleware } from '@common/infrastructure/middlewares';
 
 //* Filters
 import {
@@ -34,14 +32,6 @@ import {
   providers: [
     //? Errors
 
-    //? Interceptors
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: SnifferInterceptor,
-    },
-
-    //? Guards
-
     //? Filters
     {
       provide: APP_FILTER,
@@ -61,4 +51,9 @@ import {
     },
   ],
 })
-export class MiddlewaresModule {}
+export class MiddlewaresModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    //* Se ejecuta antes que los guards: registra todas las peticiones, incluidas las rechazadas
+    consumer.apply(SnifferMiddleware).forRoutes('{*splat}');
+  }
+}
