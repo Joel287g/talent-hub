@@ -73,7 +73,7 @@ Cada fallo de token se registra con `LoggerTypes.JWT` (sin cabeceras, para no gu
 | `JSON_WEB_TOKEN`     | `AUTH-INF-GUA-JWT_AUTH-006` | error        |
 | `ANOTHER`            | `AUTH-INF-GUA-JWT_AUTH-007` | error        |
 
-Como el `SnifferMiddleware` se ejecuta antes que los guards, las peticiones rechazadas también quedan en la colección `sniffer`.
+Como el `SnifferMiddleware` se ejecuta antes que los guards, las peticiones rechazadas también quedan en la colección `sniffer`. En las autenticadas se guarda además el `userId`.
 
 Todos los errores son `BaseException`, por lo que los traduce el `DomainExceptionFilter`.
 

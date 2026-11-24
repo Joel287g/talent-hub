@@ -69,6 +69,8 @@ export class SnifferMiddleware implements NestMiddleware {
 
     //? 4. Escuchar el final real del ciclo de vida HTTP
     response.on('finish', () => {
+      //? Usuario que la JwtStrategy adjunta tras validar el token (rutas protegidas)
+      SNIFFER.userId = request.user?.id;
       SNIFFER.statusCode = response.statusCode;
       SNIFFER.processingTime = Date.now() - NOW;
       SNIFFER.response = responseData;
