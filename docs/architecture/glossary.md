@@ -44,7 +44,7 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 
 - **Entidad (Entity):** Objeto de la capa de Dominio que posee una **identidad única** (un ID). Encapsula el estado de un concepto de negocio y las reglas que dictan cómo puede mutar ese estado a lo largo del tiempo.
   - _Nota:_ Evitamos el "Modelo Anémico" (entidades que solo tienen getters/setters y cero lógica). Usamos un método `static create()` (Factory) para asegurar su integridad al nacer.
-- **Estrategia (Strategy / Passport):** Adaptador de infraestructura que define cómo se autentica una petición. En nuestro proyecto, `JwtStrategy` verifica el JWT y, en su método `validate()`, delega en `ValidateUserSessionUseCase` la comprobación de integridad del usuario (existe y está `ACTIVE`).
+- **Estrategia (Strategy / Passport):** Adaptador de infraestructura que define cómo se autentica una petición. En nuestro proyecto, `JwtStrategy` verifica el JWT y, en su método `validate()`, comprueba la integridad del usuario (existe y está `ACTIVE`) mediante el puerto `USERS_REPOSITORY`.
 - **ERROR_GENERATOR:** Marcador / Snippet utilizado por la extensión de VS Code [Error codes generator](https://marketplace.visualstudio.com/items?itemName=Joel287g.error-codes-generator). Al ejecutar la extensión, este string se reemplaza automáticamente por un código único secuencial basado en la ruta del archivo (ej. `USER-DOM-EXC-USER_ERRO-001`: módulo, capa, carpeta, archivo y secuencial).
 - **Exception Filter (Filtro de Excepciones):** Capa de la Infraestructura en NestJS encargada de atrapar errores (ej. un error de duplicidad en Mongo o un error personalizado del dominio) antes de que lleguen al cliente, mapeándolos a una respuesta HTTP estandarizada.
 
@@ -76,7 +76,7 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 
 ## J
 
-- **JWT (JSON Web Token):** Token firmado por el backend al hacer login que identifica la sesión del usuario. Su payload (`JwtPayload`) solo contiene el identificador interno del usuario (`id`), nunca el UID de Firebase ni datos sensibles.
+- **JWT (JSON Web Token):** Token firmado por el backend (`AuthService.sign()`) que identifica la sesión del usuario. Su payload (`JwtPayload`) solo contiene el `id` interno del usuario y **no está cifrado**, por lo que nunca debe incluir datos sensibles.
 
 ---
 ---

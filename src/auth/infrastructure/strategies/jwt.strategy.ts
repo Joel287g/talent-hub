@@ -2,16 +2,16 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { Inject, Injectable } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 
 //? Imports de usuario
-import { environmentsConfig } from '@configuration/env';
+import { JwtConfigService } from '@configuration/security';
 
+import { AuthErrors } from '@auth/domain/exceptions';
 import { JwtPayload } from '@auth/domain/interfaces';
-import { ValidateUserSessionUseCase } from '@auth/application/use-cases';
 
 import { UserEntity } from '@users/domain/entities';
+import { USERS_REPOSITORY, UsersRepository } from '@users/domain/repositories';
 
 //* Cabecera HTTP de la que se extrae el token (sin prefijo `Bearer`)
 export const JWT_AUTHORIZATION_HEADER = 'authorization';
@@ -22,20 +22,21 @@ export const JWT_STRATEGY = 'jwt';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, JWT_STRATEGY) {
   constructor(
-    @Inject(environmentsConfig.KEY)
-    configService: ConfigType<typeof environmentsConfig>,
-    private readonly validateUserSessionUseCase: ValidateUserSessionUseCase,
+    jwtConfigService: JwtConfigService,
+    @Inject(USERS_REPOSITORY)
+    private readonly usersRepository: UsersRepository,
   ) {
+    const { secret, verifyOptions } = jwtConfigService.createJwtOptions();
+
     super({
-      secretOrKey: configService.security.jwt.secret,
+      secretOrKey: secret as string,
       jwtFromRequest: ExtractJwt.fromHeader(JWT_AUTHORIZATION_HEADER),
-      ignoreExpiration: false,
-      algorithms: ['HS256'],
-      audience: configService.security.jwt.audience,
-      jsonWebTokenOptions: {
-        //? Tolerancia en segundos para la verificación de tiempos (igual que JwtConfigService)
-        clockTolerance: 60,
-      },
+
+      //! passport-jwt ignora estos dos valores si solo van dentro de jsonWebTokenOptions
+      algorithms: verifyOptions.algorithms,
+      audience: verifyOptions.audience as string,
+
+      jsonWebTokenOptions: verifyOptions,
     });
   }
 
@@ -44,6 +45,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, JWT_STRATEGY) {
    * Verifica la integridad del usuario en cada petición; lo que retorna se adjunta en `request.user`.
    */
   public async validate({ id }: JwtPayload): Promise<UserEntity> {
-    return await this.validateUserSessionUseCase.execute(id);
+    const USER = await this.usersRepository.findById(id);
+
+    if (!USER) throw AuthErrors.invalidSession('AUTH-INF-STR-JWT-001');
+
+    if (!USER.isActive()) throw AuthErrors.inactiveUser('AUTH-INF-STR-JWT-002');
+
+    return USER;
   }
 }

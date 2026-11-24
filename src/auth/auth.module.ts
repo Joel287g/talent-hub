@@ -10,13 +10,13 @@ import { JwtConfigService } from '@configuration/security';
 import { LoggerModule } from '@logger/logger.module';
 import { UsersModule } from '@users/users.module';
 
-import { ValidateUserSessionUseCase } from '@auth/application/use-cases';
+import { AuthService } from '@auth/application/services';
 import { JwtStrategy, JWT_STRATEGY } from '@auth/infrastructure/strategies';
 import { JwtAuthGuard } from '@auth/infrastructure/guards';
 
 @Module({
   imports: [
-    //? Modules
+    //? Modules (UsersModule exporta USERS_REPOSITORY, que consume la JwtStrategy)
     LoggerModule,
     UsersModule,
 
@@ -25,10 +25,11 @@ import { JwtAuthGuard } from '@auth/infrastructure/guards';
     JwtModule.registerAsync({ useClass: JwtConfigService }),
   ],
   providers: [
-    //? Use cases (consume USERS_REPOSITORY exportado por UsersModule)
-    ValidateUserSessionUseCase,
+    //? Services
+    AuthService,
 
     //? Strategies
+    JwtConfigService,
     JwtStrategy,
 
     //* Guard global: toda ruta exige JWT salvo las marcadas con @PublicJwt()
@@ -38,7 +39,7 @@ import { JwtAuthGuard } from '@auth/infrastructure/guards';
     },
   ],
 
-  //? JwtModule se exporta para firmar el token en el futuro flujo de login
-  exports: [JwtModule],
+  //? AuthService firma el token
+  exports: [AuthService],
 })
 export class AuthModule {}

@@ -2,13 +2,13 @@
 
 Este documento describe cómo **Talent Hub** valida la sesión del usuario en cada petición mediante un JSON Web Token (JWT) firmado por el propio backend, y cómo los controladores acceden al usuario autenticado.
 
-> El `uid` almacenado en el usuario es el UID de Firebase y **no participa** en la validación del JWT. El token se emite al hacer login y su payload solo contiene el identificador interno del usuario.
+> El `uid` es el UID de Firebase y **no participa** en la validación del JWT. El payload solo contiene el `id` interno del usuario; el resto de sus datos se leen de la base de datos en cada petición.
 
 ---
 
 ## 1. Ubicación Arquitectónica
 
-La autenticación vive en su propio módulo (`src/auth`, alias `@auth`), con su propio catálogo de errores (`AuthErrors`) separado del de usuarios. La verificación de integridad del usuario la hace el Caso de Uso `ValidateUserSessionUseCase` de `auth`, que consume el puerto `USERS_REPOSITORY` exportado por el `UsersModule`. Así la estrategia nunca toca Mongoose directamente y `users` no conoce nada de autenticación.
+La autenticación vive en su propio módulo (`src/auth`, alias `@auth`), con su propio catálogo de errores (`AuthErrors`) separado del de usuarios. La `JwtStrategy` verifica la integridad del usuario mediante el puerto `USERS_REPOSITORY` exportado por el `UsersModule`, así que nunca toca Mongoose directamente y `users` no conoce nada de autenticación.
 
 ```text
 src/
@@ -21,8 +21,8 @@ src/
  │   │   └── interfaces/
  │   │       └── jwt-payload.interface.ts   # JwtPayload { id }
  │   ├── application/
- │   │   └── use-cases/
- │   │       └── validate-user-session.use-case.ts
+ │   │   └── services/
+ │   │       └── jwt.service.ts              # AuthService.sign(user)
  │   ├── infrastructure/
  │   │   ├── strategies/
  │   │   │   └── jwt.strategy.ts             # JwtStrategy (passport-jwt)
@@ -46,8 +46,8 @@ src/
 
 1. El `JwtAuthGuard` (registrado globalmente con `APP_GUARD` en el `AuthModule`) intercepta la petición.
 2. Si el endpoint o el controlador están marcados con `@PublicJwt()` (metadata `GuardsDecorators.IS_PUBLIC_JWT`), la petición pasa sin validar.
-3. La `JwtStrategy` extrae el token de la cabecera `authorization` (**sin prefijo `Bearer`**) y verifica la firma (`HS256`, `JWT_SECRET`), la expiración y la audiencia (`JWT_AUDIENCE`).
-4. Si el token es válido, `validate({ id })` ejecuta `ValidateUserSessionUseCase`, que comprueba que el usuario **existe** y está **`ACTIVE`** (`UserEntity.isActive()`).
+3. El guard ejecuta la `JwtStrategy`, **único punto** donde se verifica el token: lo extrae de la cabecera `authorization` (**sin prefijo `Bearer`**) y comprueba la firma (`HS256`, `JWT_SECRET`), la expiración y la audiencia (`JWT_AUDIENCE`). Toda la configuración (firma y verificación) sale de `JwtConfigService`. Si falla, `JwtAuthGuard.handleRequest` registra el motivo y responde **401**.
+4. Si el token es válido, `validate({ id })` comprueba en base de datos que el usuario **existe** y está **`ACTIVE`** (`UserEntity.isActive()`).
 5. La `UserEntity` devuelta se adjunta en `request.user` y queda disponible para `@GetUser()`.
 
 ---
@@ -57,11 +57,23 @@ src/
 | Situación                                                      | Origen                       | Respuesta                                      |
 | :------------------------------------------------------------- | :--------------------------- | :--------------------------------------------- |
 | Sin token, firma inválida, token mal formado, expirado, etc.   | `JwtAuthGuard.handleRequest` | **401** `AUTH-INVALID_TOKEN` + log `LoggerJwt` |
-| El `id` del token ya no corresponde a ningún usuario           | `ValidateUserSessionUseCase` | **401** `AUTH-INVALID_SESSION`                 |
-| La cuenta del usuario está `INACTIVE`                          | `ValidateUserSessionUseCase` | **401** `AUTH-INACTIVE_USER`                   |
+| El `id` del token ya no corresponde a ningún usuario           | `JwtStrategy.validate`       | **401** `AUTH-INVALID_SESSION`                 |
+| La cuenta del usuario está `INACTIVE`                          | `JwtStrategy.validate`       | **401** `AUTH-INACTIVE_USER`                   |
 | `@GetUser()` usado en una ruta pública (no hay `request.user`) | `GetUser`                    | **500** `INTERNAL_SERVER_ERROR`                |
 
-Cada fallo de token se registra con `LoggerTypes.JWT` y el mensaje de `LoggerJwt` correspondiente (`NOT_FOUND`, `EXPIRED`, `NOT_BEFORE`, `MALFORMED`, `INVALID_SIGNATURE`, `JSON_WEB_TOKEN`, `ANOTHER`). Todos los errores son `BaseException`, por lo que los traduce el `DomainExceptionFilter`.
+Cada fallo de token se registra con `LoggerTypes.JWT` (sin cabeceras, para no guardar el token) y devuelve en `additionalException.code` un código único según el motivo:
+
+| Motivo (`LoggerJwt`) | Código                      | Nivel de log |
+| :------------------- | :-------------------------- | :----------- |
+| `NOT_FOUND`          | `AUTH-INF-GUA-JWT_AUTH-001` | warning      |
+| `EXPIRED`            | `AUTH-INF-GUA-JWT_AUTH-002` | warning      |
+| `NOT_BEFORE`         | `AUTH-INF-GUA-JWT_AUTH-003` | warning      |
+| `MALFORMED`          | `AUTH-INF-GUA-JWT_AUTH-004` | warning      |
+| `INVALID_SIGNATURE`  | `AUTH-INF-GUA-JWT_AUTH-005` | error        |
+| `JSON_WEB_TOKEN`     | `AUTH-INF-GUA-JWT_AUTH-006` | error        |
+| `ANOTHER`            | `AUTH-INF-GUA-JWT_AUTH-007` | error        |
+
+Todos los errores son `BaseException`, por lo que los traduce el `DomainExceptionFilter`.
 
 ---
 
@@ -96,7 +108,7 @@ export class UsersController {
 
 ## 5. Pendiente
 
-- //TODO: Endpoint de **login** que firme el token (`JwtService.signAsync({ id })`, ya exportado por el `AuthModule`) y su renovación para devolverlo actualizado en cada sesión.
+- //TODO: Endpoint de **login** que firme el token con `AuthService.sign(user)` (exportado por el `AuthModule`) y su renovación.
 
 ---
 
