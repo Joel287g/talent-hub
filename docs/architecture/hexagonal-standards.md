@@ -34,7 +34,7 @@ Contiene todos los detalles técnicos y de framework. Es la única capa que cono
 - **`controllers/`**: Puntos de entrada HTTP (Rutas, Swagger).
 - **`persistence/`**:
   - `schemas/`: Definición de la estructura de base de datos (Mongoose).
-  - `mappers/`: Traductores que convierten Documentos de BD a Entidades puras y viceversa.
+  - `mappers/`: Traductores que convierten Documentos de BD a Entidades puras y viceversa (`toDomain` / `toPersistence`), y Entidades en respuestas HTTP (`toResponse`).
   - `mongo-*.repository.ts`: Adaptadores concretos que implementan los puertos del dominio.
 
 ## 3. Reglas de Oro del Proyecto
@@ -96,7 +96,8 @@ Cualquier código transversal o compartido `(src/common)` debe respetar la separ
 - El Use Case envía la Entidad al Repository Interface (Puerto de Dominio).
 - El Mongo Repository (Adaptador de Infraestructura) intercepta la llamada.
 - El Adaptador usa el Mapper para convertir la Entity en un Schema de Mongo y guarda en BD.
-- Retorna el resultado en cascada hacia el cliente.
+- El Adaptador convierte el documento guardado de nuevo en Entity (`toDomain`) y la retorna en cascada hasta el Controller.
+- El Controller transforma la Entity con `Mapper.toResponse()` y responde al cliente. Nunca devuelve la Entity directamente, porque se serializaría con sus propiedades privadas (`_id`, `_name`, ...).
 
 ---
 

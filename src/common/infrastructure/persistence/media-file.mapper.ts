@@ -2,7 +2,7 @@
 import { Types } from 'mongoose';
 
 //? Imports de usuario
-import { MediaFileEntity } from '@common/domain/entities';
+import { MediaFileEntity, MediaFileInterface } from '@common/domain/entities';
 import { MediaFile } from '@common/infrastructure/persistence/schemas';
 
 export class MediaFileMapper {
@@ -37,6 +37,25 @@ export class MediaFileMapper {
       extension: mediaFile.extension,
       mimeType: mediaFile.mimeType,
       size: mediaFile.size,
+      createdAt: mediaFile.createdAt,
+      updatedAt: mediaFile.updatedAt,
+    };
+  }
+
+  /**
+   * Transforma la Entidad de Dominio pura en un objeto plano para la respuesta HTTP (sin prefijos `_`).
+   */
+  public static toResponse(mediaFile: MediaFileEntity): MediaFileInterface {
+    return {
+      id: mediaFile.id,
+      url: mediaFile.url,
+      key: mediaFile.key,
+      thumbnailUrl: mediaFile.thumbnailUrl,
+      originalName: mediaFile.originalName,
+      extension: mediaFile.extension,
+      mimeType: mediaFile.mimeType,
+      size: mediaFile.size,
+      duration: mediaFile.duration,
       createdAt: mediaFile.createdAt,
       updatedAt: mediaFile.updatedAt,
     };

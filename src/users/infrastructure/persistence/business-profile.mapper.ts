@@ -2,7 +2,7 @@
 import { Types } from 'mongoose';
 
 //? Imports de usuario
-import { BusinessProfileEntity } from '@users/domain/entities';
+import { BusinessProfileEntity, BusinessProfileInterface } from '@users/domain/entities';
 import { BusinessProfile } from '@users/infrastructure/persistence/schemas';
 import { AddresMapper, MediaFileMapper, PhoneMapper } from '@common/infrastructure/persistence';
 
@@ -16,7 +16,7 @@ export class BusinessProfileMapper {
       name: profile.name,
       description: profile.description,
       type: profile.type,
-      avatar: MediaFileMapper.toDomain(profile.avatar),
+      avatar: profile.avatar ? MediaFileMapper.toDomain(profile.avatar) : null,
       taxId: profile.taxId,
       email: profile.email,
       phone: PhoneMapper.toDomain(profile.phone),
@@ -43,6 +43,28 @@ export class BusinessProfileMapper {
       email: profile.email,
       phone: PhoneMapper.toPersistence(profile.phone),
       address: AddresMapper.toPersistence(profile.address),
+      availableToTravel: profile.availableToTravel,
+      ownTransportation: profile.ownTransportation,
+      offeredStyles: profile.offeredStyles,
+      createdAt: profile.createdAt,
+      updatedAt: profile.updatedAt,
+    };
+  }
+
+  /**
+   * Transforma la Entidad de Dominio pura en un objeto plano para la respuesta HTTP (sin prefijos `_`).
+   */
+  public static toResponse(profile: BusinessProfileEntity): BusinessProfileInterface {
+    return {
+      id: profile.id,
+      name: profile.name,
+      description: profile.description,
+      type: profile.type,
+      avatar: profile.avatar ? MediaFileMapper.toResponse(profile.avatar) : null,
+      taxId: profile.taxId,
+      email: profile.email,
+      phone: PhoneMapper.toResponse(profile.phone),
+      address: AddresMapper.toResponse(profile.address),
       availableToTravel: profile.availableToTravel,
       ownTransportation: profile.ownTransportation,
       offeredStyles: profile.offeredStyles,

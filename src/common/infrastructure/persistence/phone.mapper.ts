@@ -1,5 +1,5 @@
 //? Imports de usuario
-import { PhoneEntity } from '@common/domain/entities';
+import { PhoneEntity, PhoneInterface } from '@common/domain/entities';
 import { Phone } from '@common/infrastructure/persistence/schemas';
 
 export class PhoneMapper {
@@ -18,6 +18,17 @@ export class PhoneMapper {
    * Transforma la Entidad de Dominio pura en un objeto plano que Mongoose pueda guardar.
    */
   public static toPersistence(phone: PhoneEntity): Record<string, any> {
+    return {
+      cca2: phone.cca2,
+      code: phone.code,
+      number: phone.number,
+    };
+  }
+
+  /**
+   * Transforma la Entidad de Dominio pura en un objeto plano para la respuesta HTTP (sin prefijos `_`).
+   */
+  public static toResponse(phone: PhoneEntity): PhoneInterface {
     return {
       cca2: phone.cca2,
       code: phone.code,

@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
 import { PhoneMapper } from '@common/infrastructure/persistence';
 
 import { Users } from '@users/infrastructure/persistence/schemas';
-import { UserEntity } from '@users/domain/entities';
+import { UserEntity, UserInterface } from '@users/domain/entities';
 
 import { BusinessProfileMapper } from '@users/infrastructure/persistence/business-profile.mapper';
 import { PersonalProfileMapper } from '@users/infrastructure/persistence/personal-profile.mapper';
@@ -59,6 +59,31 @@ export class UserMapper {
         : null,
       businessProfiles: user.businessProfiles.map((profile) =>
         BusinessProfileMapper.toPersistence(profile),
+      ),
+      role: user.role,
+      status: user.status,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
+  }
+
+  /**
+   * Transforma la Entidad de Dominio pura en un objeto plano para la respuesta HTTP (sin prefijos `_`).
+   */
+  public static toResponse(user: UserEntity): UserInterface {
+    return {
+      id: user.id,
+      uid: user.uid,
+      name: user.name,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone ? PhoneMapper.toResponse(user.phone) : null,
+      activeProfileType: user.activeProfileType,
+      personalProfile: user.personalProfile
+        ? PersonalProfileMapper.toResponse(user.personalProfile)
+        : null,
+      businessProfiles: user.businessProfiles.map((profile) =>
+        BusinessProfileMapper.toResponse(profile),
       ),
       role: user.role,
       status: user.status,

@@ -88,6 +88,7 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 - **Mapper (Mapeador):** Clase utilitaria de la capa de Infraestructura que traduce los datos entre dos mundos.
   - `toDomain`: Convierte un documento de MongoDB en una `Entity` pura.
   - `toPersistence`: Convierte una `Entity` pura en un formato que Mongoose entienda.
+  - `toResponse`: Convierte una `Entity` pura en un objeto plano para la respuesta HTTP, sin las propiedades privadas (`_`).
 
 ---
 ---

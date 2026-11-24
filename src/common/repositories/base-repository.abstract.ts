@@ -23,6 +23,7 @@ export abstract class BaseRepository<T, D extends Document> implements BaseRepos
     const DB_ENTITY = this.mapToDb(entity);
     const ENTITY = new this.model(DB_ENTITY);
 
-    return (await ENTITY.save()) as unknown as T;
+    const DOCUMENT = await ENTITY.save();
+    return this.mapToDomain(DOCUMENT as unknown as D);
   }
 }
