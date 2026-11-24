@@ -22,7 +22,7 @@ src/
  │   │       └── jwt-payload.interface.ts   # JwtPayload { id }
  │   ├── application/
  │   │   └── services/
- │   │       └── jwt.service.ts              # AuthService.sign(user)
+ │   │       └── auth.service.ts             # AuthService.sign(user)
  │   ├── infrastructure/
  │   │   ├── strategies/
  │   │   │   └── jwt.strategy.ts             # JwtStrategy (passport-jwt)

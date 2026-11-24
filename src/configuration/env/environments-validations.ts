@@ -21,7 +21,7 @@ export const environmentsValidations = joi.object({
   //? JWT
   JWT_EXPIRATION_TIME: joi.string().required(),
   JWT_AUDIENCE: joi.string().required(),
-  JWT_SECRET: joi.string().required(),
+  JWT_SECRET: joi.string().min(32).required(),
   JWT_PRIVATE: joi.string().required(),
   JWT_PUBLIC: joi.string().required(),
 });

@@ -1,1 +1,1 @@
-export { AuthService } from '@auth/application/services/jwt.service';
+export { AuthService } from '@auth/application/services/auth.service';
