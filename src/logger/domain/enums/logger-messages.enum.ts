@@ -11,7 +11,6 @@ export enum LoggerApiKey {
 }
 
 export enum LoggerJwt {
-  ERROR = 'ERROR_JWT_REQUEST',
   NOT_FOUND = 'JWT not found in the request',
   EXPIRED = 'Expired JWT token',
   NOT_BEFORE = 'JWT token not yet reached its start date',

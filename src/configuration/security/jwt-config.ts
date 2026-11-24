@@ -45,12 +45,6 @@ export class JwtConfigService implements JwtOptionsFactory {
 
       //? Provides the security key used to sign and verify JWT tokens
       secret: this.configService.security.jwt.secret,
-
-      //? Can be shared and used by anyone to encrypt information
-      publicKey: this.configService.security.jwt.public_key,
-
-      //? Used to decrypt encrypted information
-      privateKey: this.configService.security.jwt.private_key,
     };
   }
 }

@@ -19,8 +19,6 @@ export default registerAs('config', () => {
         expiration_time: environments.JWT_EXPIRATION_TIME,
         audience: environments.JWT_AUDIENCE,
         secret: environments.JWT_SECRET,
-        public_key: environments.JWT_PUBLIC,
-        private_key: environments.JWT_PRIVATE,
       },
     },
 
