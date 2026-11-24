@@ -36,8 +36,8 @@ export class Users extends Document {
   @Prop({ required: true, type: String, unique: true, lowercase: true, trim: true })
   email: string;
 
-  @Prop({ required: true, type: PhoneSchema, deafult: {} })
-  phone: Phone;
+  @Prop({ required: false, type: PhoneSchema, default: {} })
+  phone?: Phone;
 
   //? Tipo de perfil
   @Prop({ required: true, type: String, enum: ProfileTypeEnum })
@@ -69,6 +69,11 @@ export const UsersSchema = SchemaFactory.createForClass(Users);
 
 //* Índices únicos dispersos (sparse) para campos opcionales y subdocumentos
 UsersSchema.index({ 'phone.code': 1, 'phone.number': 1 }, { unique: true, sparse: true });
+//* Índice parcial: `sparse` no basta porque el alias vacío se guarda como `null` y `null` sí se indexa
+UsersSchema.index(
+  { 'personalProfile.alias': 1 },
+  { unique: true, partialFilterExpression: { 'personalProfile.alias': { $gt: '' } } },
+);
 UsersSchema.index({ 'businessProfiles.email': 1 }, { unique: true, sparse: true });
 UsersSchema.index(
   { 'businessProfiles.phone.code': 1, 'businessProfiles.phone.number': 1 },

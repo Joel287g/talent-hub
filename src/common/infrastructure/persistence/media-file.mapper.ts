@@ -19,6 +19,7 @@ export class MediaFileMapper {
       extension: mediaFile.extension,
       mimeType: mediaFile.mimeType,
       size: mediaFile.size,
+      duration: mediaFile.duration,
       createdAt: mediaFile.createdAt,
       updatedAt: mediaFile.updatedAt,
     });
@@ -37,6 +38,7 @@ export class MediaFileMapper {
       extension: mediaFile.extension,
       mimeType: mediaFile.mimeType,
       size: mediaFile.size,
+      duration: mediaFile.duration,
       createdAt: mediaFile.createdAt,
       updatedAt: mediaFile.updatedAt,
     };

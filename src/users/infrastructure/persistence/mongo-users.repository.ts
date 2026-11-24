@@ -55,9 +55,9 @@ export class MongoDBUsersRepository
     number: string;
   }): Promise<UserEntity | null> {
     const USER = await this.usersModel.findOne({
-      cca2: phone.cca2,
-      code: phone.code,
-      number: phone.number,
+      'phone.cca2': phone.cca2,
+      'phone.code': phone.code,
+      'phone.number': phone.number,
     });
     return this.mapToDomain(USER);
   }

@@ -23,7 +23,7 @@ erDiagram
         string lastName "Apellido del usuario"
 
         string email UK "Correo electrónico del usuario"
-        Phone phone UK "Teléfono del usuario"
+        Phone phone UK "Teléfono del usuario (opcional)"
 
         ProfileTypeEnum activeProfileType "PERSONAL | BUSINESS"
 
@@ -38,7 +38,7 @@ erDiagram
     }
 
     PERSONAL_PROFILE {
-        string alias "Nombre artístico"
+        string alias UK "Nombre artístico (opcional, único si se informa)"
         string headline "Titular profesional"
         string biography "Biografía del artista"
         MediaFile avatar "Foto de perfil"

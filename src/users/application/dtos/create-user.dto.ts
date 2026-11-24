@@ -38,7 +38,6 @@ export class CreateUserDto {
   lastName: string;
 
   @ApiProperty({ required: true, example: 'valeria.mendoza@correo.com' })
-  @IsOptional()
   @IsEmail()
   email: string;
 

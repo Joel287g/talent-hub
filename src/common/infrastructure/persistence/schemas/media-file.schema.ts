@@ -77,7 +77,7 @@ export class MediaFile {
   @Prop({
     required: false,
     type: Number,
-    min: 1,
+    min: 0,
   })
   duration?: number;
 

@@ -27,9 +27,8 @@ export class FindUserByContactUseCase {
     phone?: { cca2: string; code: string; number: string },
     throwIfNotFound = true,
   ): Promise<UserEntity | null> {
-    const USER = email
-      ? await this.usersRepository.findByEmail(email)
-      : await this.usersRepository.findByPhone(phone);
+    const USER_BY_EMAIL = email ? await this.usersRepository.findByEmail(email) : null;
+    const USER = USER_BY_EMAIL ?? (phone ? await this.usersRepository.findByPhone(phone) : null);
 
     if (!USER && throwIfNotFound) {
       throw UserErrors.notFound('USER-APP-USE-FIND_USER_BY_CONT-001');

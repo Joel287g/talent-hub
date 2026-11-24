@@ -24,7 +24,7 @@ export class PersonalProfile {
   @Prop({ required: false, type: String, trim: true })
   biography?: string;
 
-  @Prop({ required: false, type: String, unique: true, trim: true })
+  @Prop({ required: false, type: String, trim: true })
   alias?: string;
 
   @Prop({ required: false, type: MediaFileSchema, default: {} })
