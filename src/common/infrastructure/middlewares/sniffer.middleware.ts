@@ -2,7 +2,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 
 //? Imports de usuario
-import { extractHeaders } from '@common/infrastructure/helpers';
+import { extractHeaders, redactSensitive } from '@common/infrastructure/helpers';
 
 import { CreateSnifferUseCase } from '@sniffer/application/use-cases';
 import { CreateSnifferDto } from '@sniffer/application/dtos';
@@ -73,11 +73,12 @@ export class SnifferMiddleware implements NestMiddleware {
       SNIFFER.userId = request.user?.id;
       SNIFFER.statusCode = response.statusCode;
       SNIFFER.processingTime = Date.now() - NOW;
-      SNIFFER.response = responseData;
+      SNIFFER.response = redactSensitive(responseData);
 
       const IS_SUCCESS = response.statusCode >= 200 && response.statusCode < 400;
 
-      this.handleTelemetry(IS_SUCCESS, SNIFFER);
+      //! Nunca registrar el original: contiene el token de sesión y la API key
+      this.handleTelemetry(IS_SUCCESS, redactSensitive(SNIFFER));
     });
 
     next();

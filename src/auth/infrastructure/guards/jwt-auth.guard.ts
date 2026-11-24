@@ -6,7 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 //? Imports de usuario
 import { GuardsDecorators } from '@common/domain/enums';
-import { extractHeader } from '@common/infrastructure/helpers';
+import { extractHeader, redactSensitive } from '@common/infrastructure/helpers';
 
 import { LoggerService } from '@logger/application/services';
 import { LoggerJwt, LoggerTypes } from '@logger/domain/enums';
@@ -106,7 +106,7 @@ export class JwtAuthGuard extends AuthGuard(JWT_STRATEGY) {
         type: LoggerTypes.JWT,
         message,
         data: {
-          url: request.url,
+          url: redactSensitive(request.url),
           method: request.method,
           ip: request.ip,
           userAgent: extractHeader(request, 'user-agent'),

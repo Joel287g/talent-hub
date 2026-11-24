@@ -75,6 +75,8 @@ Cada fallo de token se registra con `LoggerTypes.JWT` (sin cabeceras, para no gu
 
 Como el `SnifferMiddleware` se ejecuta antes que los guards, las peticiones rechazadas también quedan en la colección `sniffer`. En las autenticadas se guarda además el `userId`.
 
+> //! **Seguridad:** antes de registrar nada en `sniffer`, `logger` o la consola, `redactSensitive` (`@common/infrastructure/helpers`) sustituye por `[REDACTED]` el token, la API key, las cookies, las contraseñas y cualquier JWT que aparezca en un texto. Si se añade un campo sensible nuevo, hay que incluirlo en `SENSITIVE_KEYS`.
+
 Todos los errores son `BaseException`, por lo que los traduce el `DomainExceptionFilter`.
 
 ---
