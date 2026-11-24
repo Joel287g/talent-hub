@@ -29,7 +29,7 @@ export class CreateUserService {
     );
 
     if (EXISTING_USER_BY_UID || EXISTING_USER_BY_CONTACT) {
-      throw UserErrors.alreadyExists("USER-APP-SER-CREA_USER-001");
+      throw UserErrors.alreadyExists('USER-APP-SER-CREA_USER-001');
     }
 
     return await this.createUserUseCase.execute(payload);

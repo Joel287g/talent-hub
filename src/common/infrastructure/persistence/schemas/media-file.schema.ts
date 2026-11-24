@@ -15,7 +15,7 @@ export class MediaFile {
   @Prop({
     required: true,
     type: Types.ObjectId,
-    default: () => new Types.ObjectId()
+    default: () => new Types.ObjectId(),
   })
   _id: Types.ObjectId;
 

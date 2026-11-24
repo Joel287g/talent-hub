@@ -98,4 +98,15 @@ Si un script detecta una infracción, interrumpe el proceso con `process.exit(1)
 
 ---
 
+## 5. Formato y Finales de Línea (`LF`)
+
+Todos los ficheros de texto usan finales de línea **`LF`**, tanto en el repositorio como en la copia de trabajo, también en Windows:
+
+- **`.prettierrc`** (`"endOfLine": "lf"`): `npm run format` escribe siempre en `LF`.
+- **`.gitattributes`** (`* text=auto eol=lf`): Git extrae los ficheros en `LF` y prevalece sobre el `core.autocrlf` de cada equipo.
+
+//! Ambos valores deben coincidir: si Git extrae en `CRLF` y Prettier escribe en `LF`, los ficheros aparecen como modificados sin tener ningún cambio real.
+
+---
+
 **Main menu:** [README.md](../../README.md) || **Previous:** [Manejo de Excepciones y Logging](../guides/exception-handling.md) || **Next:** [Autenticación (JWT + Passport)](../guides/authentication.md)

@@ -1,2 +1,2 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Auto detect text files and force LF both in the repository and in the working tree (same as Prettier "endOfLine": "lf")
+* text=auto eol=lf

@@ -226,7 +226,10 @@ function validateFileArchitecture(
     }
 
     //* Regla de Dominio: domain -> SOLO domain
-    if (sourceLayer === 'domain' && (targetLayer === 'application' || targetLayer === 'infrastructure')) {
+    if (
+      sourceLayer === 'domain' &&
+      (targetLayer === 'application' || targetLayer === 'infrastructure')
+    ) {
       violations.push({
         filePath: relativeFile,
         importPath,
