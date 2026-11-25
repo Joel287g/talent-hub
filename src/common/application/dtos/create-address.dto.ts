@@ -3,6 +3,9 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
+//? Imports de usuario
+import { Trim } from '@common/application/decorators';
+
 export class CreateAddressDto {
   @ApiProperty({
     description: 'País de residencia (Required)',
@@ -10,6 +13,7 @@ export class CreateAddressDto {
   })
   @IsNotEmpty()
   @IsString()
+  @Trim()
   country: string;
 
   @ApiProperty({
@@ -18,6 +22,7 @@ export class CreateAddressDto {
   })
   @IsNotEmpty()
   @IsString()
+  @Trim()
   city: string;
 
   @ApiProperty({
@@ -26,6 +31,7 @@ export class CreateAddressDto {
   })
   @IsNotEmpty()
   @IsString()
+  @Trim()
   postalCode: string;
 
   @ApiProperty({
@@ -34,5 +40,6 @@ export class CreateAddressDto {
   })
   @IsNotEmpty()
   @IsString()
+  @Trim()
   street: string;
 }

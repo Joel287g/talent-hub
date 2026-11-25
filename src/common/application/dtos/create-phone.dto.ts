@@ -1,7 +1,10 @@
 //? Imports de codigo
-import { IsNotEmpty, IsString, IsUppercase, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, IsUppercase, Length, MaxLength, MinLength } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
+
+//? Imports de usuario
+import { Trim } from '@common/application/decorators';
 
 export class CreatePhoneDto {
   @ApiProperty({
@@ -12,6 +15,8 @@ export class CreatePhoneDto {
   @IsNotEmpty()
   @IsString()
   @IsUppercase()
+  @Length(2, 2)
+  @Trim()
   cca2: string;
 
   @ApiProperty({
@@ -23,6 +28,7 @@ export class CreatePhoneDto {
   @IsString()
   @MinLength(1)
   @MaxLength(5)
+  @Trim()
   code: string;
 
   @ApiProperty({
@@ -34,5 +40,6 @@ export class CreatePhoneDto {
   @IsString()
   @MinLength(7)
   @MaxLength(15)
+  @Trim()
   number: string;
 }

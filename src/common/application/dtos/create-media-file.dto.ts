@@ -4,14 +4,15 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsPositive,
   IsString,
   IsUrl,
+  MaxLength,
   Min,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 //? Imports de usuario
+import { Trim } from '@common/application/decorators';
 import { MediaExtension, MediaMimeType } from '@common/domain/enums';
 
 export class CreateMediaFileDto {
@@ -22,6 +23,7 @@ export class CreateMediaFileDto {
   })
   @IsUrl()
   @IsNotEmpty()
+  @Trim()
   url: string;
 
   @ApiProperty({
@@ -31,6 +33,7 @@ export class CreateMediaFileDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Trim()
   key: string;
 
   @ApiProperty({
@@ -40,6 +43,7 @@ export class CreateMediaFileDto {
   })
   @IsOptional()
   @IsUrl()
+  @Trim()
   thumbnailUrl?: string;
 
   @ApiProperty({
@@ -49,6 +53,8 @@ export class CreateMediaFileDto {
   })
   @IsString()
   @IsNotEmpty()
+  @MaxLength(255)
+  @Trim()
   originalName: string;
 
   @ApiProperty({
@@ -77,7 +83,7 @@ export class CreateMediaFileDto {
     example: 784320,
   })
   @IsNumber()
-  @IsPositive()
+  @Min(1)
   size: number;
 
   @ApiProperty({

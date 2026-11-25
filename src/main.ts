@@ -42,9 +42,6 @@ async function main() {
 
       //? transforma los objetos JSON a objetos de tipo DTO
       transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
     }),
   );
 

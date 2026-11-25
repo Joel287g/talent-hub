@@ -162,6 +162,10 @@ export const UserErrors = new UserErrorsFactory();
 Todo error previsible se ataja **antes** de que lo lance la base de datos o el servidor, y se responde con un error controlado:
 
 - **Formato de entrada** (campos ausentes, tipos, longitudes): lo rechaza el DTO con un **400**.
+  - Las restricciones del DTO (longitudes, mínimos, obligatoriedad) deben coincidir con las del schema de Mongoose.
+  - Los textos llevan `@Trim()` (`@common/application/decorators`), para que un valor con solo espacios no supere `@IsNotEmpty()`.
+  - Los objetos anidados llevan `@IsObject()`, y además `@IsDefined()` si son obligatorios: `@ValidateNested()` por sí solo acepta `undefined` y `null`.
+  - Un `@ValidateIf()` nunca debe dejar sin validar un dato que llegue informado.
 - **Unicidad** (`uid`, `email`, `phone`, `alias`, contacto de empresa): se consulta mediante un Caso de Uso antes de persistir y se lanza un **409** del catálogo del módulo (ej. `UserErrors.aliasAlreadyExists()`).
 - **Coherencia:** la consulta previa debe comparar exactamente los mismos campos que el índice único. Ej: el teléfono se compara siempre completo (`cca2` + `code` + `number`), porque varios países comparten prefijo.
 
