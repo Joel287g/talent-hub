@@ -23,7 +23,7 @@ erDiagram
         string lastName "Apellido del usuario"
 
         string email UK "Correo electrónico del usuario"
-        Phone phone UK "Teléfono del usuario (opcional)"
+        Phone phone UK "Teléfono del usuario (opcional, único por cca2 + code + number)"
 
         ProfileTypeEnum activeProfileType "PERSONAL | BUSINESS"
 
@@ -65,7 +65,7 @@ erDiagram
         string taxId "Número de identificación fiscal de la empresa"
 
         string email UK "Correo electrónico de la empresa"
-        Phone phone UK "Teléfono de la empresa"
+        Phone phone UK "Teléfono de la empresa (único por cca2 + code + number)"
 
         Address address "Dirección de dirección de la empresa"
 

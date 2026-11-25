@@ -9,6 +9,13 @@ export interface UsersRepository extends BaseRepositoryInterface<UserEntity> {
   findByUid(uid: string): Promise<UserEntity | null>;
   findByEmail(email: string): Promise<UserEntity | null>;
   findByPhone(phone: { cca2: string; code: string; number: string }): Promise<UserEntity | null>;
+  findByAlias(alias: string): Promise<UserEntity | null>;
+  findByBusinessEmail(email: string): Promise<UserEntity | null>;
+  findByBusinessPhone(phone: {
+    cca2: string;
+    code: string;
+    number: string;
+  }): Promise<UserEntity | null>;
   create(entity: UserEntity): Promise<UserEntity>;
   exists(id: string): Promise<boolean>;
 }

@@ -24,6 +24,7 @@ Las reglas, instrucciones y direcciones del proyecto viven en `docs/`. **Todo c�
 - **Inyección por `Symbol`** para los puertos (`USERS_REPOSITORY = Symbol('USERS_REPOSITORY')`).
 - **Entidades ricas** con `static create()`; nada de modelos anémicos.
 - **Casos de uso** con un único `execute()`, solo orquestan y **sin `try/catch`**: los errores se lanzan desde el catálogo de errores del dominio y los filtros globales los traducen a HTTP.
+- **Anticipar los errores:** todo error previsible se ataja antes de que lo lance la BD o el servidor (formato ➔ 400 en el DTO; unicidad ➔ consulta previa y 409 del catálogo). Los índices únicos son solo la última defensa.
 - **Imports:** prohibidas las rutas relativas (`./`, `../`). Desde otra carpeta se importa el barril (`@common/domain/exceptions`); dentro de la misma carpeta, el fichero hermano directo (`@common/domain/exceptions/base-exception`). Los `*.module.ts` se importan directamente.
 - **Bloques de imports:** `//? Imports de codigo` (nativos de Node, línea en blanco, librerías) y `//? Imports de usuario` (código de `src/`).
 - **Comentarios BetterComments:** `//?` informativo, `//*` importante, `//!` advertencia, `//TODO:` pendiente.

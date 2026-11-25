@@ -17,6 +17,18 @@ class UserErrorsFactory extends BaseErrors {
   ): BaseException<UserErrorsEnum> {
     return new BaseException<UserErrorsEnum>(UserErrorsEnum.INVALID_INITIAL_PROFILE, 400, code);
   }
+
+  public aliasAlreadyExists(
+    code: string = 'USER-DOM-EXC-USER_ERRO-004',
+  ): BaseException<UserErrorsEnum> {
+    return new BaseException<UserErrorsEnum>(UserErrorsEnum.ALIAS_ALREADY_EXISTS, 409, code);
+  }
+
+  public businessAlreadyExists(
+    code: string = 'USER-DOM-EXC-USER_ERRO-005',
+  ): BaseException<UserErrorsEnum> {
+    return new BaseException<UserErrorsEnum>(UserErrorsEnum.BUSINESS_ALREADY_EXISTS, 409, code);
+  }
 }
 
 export const UserErrors = new UserErrorsFactory();

@@ -127,7 +127,7 @@ Para evitar el uso directo de excepciones de NestJS en los Casos de Uso (preveni
 ```text
 src/users/domain/exceptions/
  ├── enums/
- │   ├── user-errors.enum.ts      # UserErrorsEnum (USER-NOT_FOUND, USER-ALREADY_EXISTS, ...)
+ │   ├── user-errors.enum.ts      # UserErrorsEnum (USER-NOT_FOUND, USER-ALREADY_EXISTS, USER-ALIAS_ALREADY_EXISTS, ...)
  │   └── index.ts
  ├── user-errors.exceptions.ts    # UserErrorsFactory extends BaseErrors
  └── index.ts                     # export { UserErrors }
@@ -154,6 +154,18 @@ export const UserErrors = new UserErrorsFactory();
 - Los códigos únicos (`USER-DOM-EXC-USER_ERRO-001`) se generan con la extensión [Error codes generator](https://marketplace.visualstudio.com/items?itemName=Joel287g.error-codes-generator) a partir del marcador `'ERROR_GENERATOR'` (ver [Glosario](../architecture/glossary.md)).
 - Al lanzar un error se pasa el código único del punto exacto donde ocurre, para poder rastrearlo (ej. `throw UserErrors.notFound('USER-APP-USE-FIND_USER_BY_UID-001')`). Si se omite, se usa el código por defecto del catálogo.
 - Los Casos de Uso, Servicios y Entidades lanzan estos errores directamente sin necesidad de bloques `try/catch`, y el `DomainExceptionFilter` los traduce a la respuesta HTTP.
+
+---
+
+### 6. Premisa: Anticipar los Errores
+
+Todo error previsible se ataja **antes** de que lo lance la base de datos o el servidor, y se responde con un error controlado:
+
+- **Formato de entrada** (campos ausentes, tipos, longitudes): lo rechaza el DTO con un **400**.
+- **Unicidad** (`uid`, `email`, `phone`, `alias`, contacto de empresa): se consulta mediante un Caso de Uso antes de persistir y se lanza un **409** del catálogo del módulo (ej. `UserErrors.aliasAlreadyExists()`).
+- **Coherencia:** la consulta previa debe comparar exactamente los mismos campos que el índice único. Ej: el teléfono se compara siempre completo (`cca2` + `code` + `number`), porque varios países comparten prefijo.
+
+> //! Los índices únicos y el `MongooseExceptionFilter` se mantienen como última defensa: dos peticiones simultáneas pueden superar a la vez la consulta previa.
 
 ---
 

@@ -68,7 +68,11 @@ export class Users extends Document {
 export const UsersSchema = SchemaFactory.createForClass(Users);
 
 //* Índices únicos dispersos (sparse) para campos opcionales y subdocumentos
-UsersSchema.index({ 'phone.code': 1, 'phone.number': 1 }, { unique: true, sparse: true });
+//* El teléfono se identifica siempre completo: varios países comparten prefijo (ej. US y CA con +1)
+UsersSchema.index(
+  { 'phone.cca2': 1, 'phone.code': 1, 'phone.number': 1 },
+  { unique: true, sparse: true },
+);
 //* Índice parcial: `sparse` no basta porque el alias vacío se guarda como `null` y `null` sí se indexa
 UsersSchema.index(
   { 'personalProfile.alias': 1 },
@@ -76,6 +80,10 @@ UsersSchema.index(
 );
 UsersSchema.index({ 'businessProfiles.email': 1 }, { unique: true, sparse: true });
 UsersSchema.index(
-  { 'businessProfiles.phone.code': 1, 'businessProfiles.phone.number': 1 },
+  {
+    'businessProfiles.phone.cca2': 1,
+    'businessProfiles.phone.code': 1,
+    'businessProfiles.phone.number': 1,
+  },
   { unique: true, sparse: true },
 );

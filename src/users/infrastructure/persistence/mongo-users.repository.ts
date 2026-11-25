@@ -61,5 +61,32 @@ export class MongoDBUsersRepository
     });
     return this.mapToDomain(USER);
   }
+
+  async findByAlias(alias: string): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findOne({ 'personalProfile.alias': alias });
+    return this.mapToDomain(USER);
+  }
+
+  async findByBusinessEmail(email: string): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findOne({ 'businessProfiles.email': email });
+    return this.mapToDomain(USER);
+  }
+
+  async findByBusinessPhone(phone: {
+    cca2: string;
+    code: string;
+    number: string;
+  }): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findOne({
+      businessProfiles: {
+        $elemMatch: {
+          'phone.cca2': phone.cca2,
+          'phone.code': phone.code,
+          'phone.number': phone.number,
+        },
+      },
+    });
+    return this.mapToDomain(USER);
+  }
   //#endregion
 }
