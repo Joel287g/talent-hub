@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 //? Imports de usuario
 import { BaseRepository } from '@common/repositories';
 import { UsersRepository } from '@users/domain/repositories';
-import { Users } from '@users/infrastructure/persistence/schemas';
+import { ALIAS_COLLATION, Users } from '@users/infrastructure/persistence/schemas';
 import { UserEntity } from '@users/domain/entities';
 import { UserMapper } from '@users/infrastructure/persistence/user.mapper';
 
@@ -63,7 +63,10 @@ export class MongoDBUsersRepository
   }
 
   async findByAlias(alias: string): Promise<UserEntity | null> {
-    const USER = await this.usersModel.findOne({ 'personalProfile.alias': alias });
+    //* Misma collation que el índice único: "Vale" y "vale" son el mismo alias
+    const USER = await this.usersModel
+      .findOne({ 'personalProfile.alias': alias })
+      .collation(ALIAS_COLLATION);
     return this.mapToDomain(USER);
   }
 

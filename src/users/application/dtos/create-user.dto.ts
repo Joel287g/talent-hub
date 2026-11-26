@@ -4,19 +4,22 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsDefined,
   IsEmail,
   IsEnum,
   IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
+  MaxLength,
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 //? Imports de usuario
-import { Trim } from '@common/application/decorators';
+import { TEXT_MAX_LENGTH } from '@common/application/constants';
+import { IsSafeText, Trim } from '@common/application/decorators';
 import { CreatePhoneDto } from '@common/application/dtos';
 
 import { CreateBusinessProfileDto } from '@users/application/dtos/create-business-profile.dto';
@@ -31,33 +34,40 @@ const isEmptyList = (value: unknown): boolean => Array.isArray(value) && value.l
 
 export class CreateUserDto {
   @ApiProperty({ required: true, example: 'gcp_uid_9f8e7d6c5b4a3210' })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  @MaxLength(TEXT_MAX_LENGTH.UID)
+  @IsSafeText()
   @Trim()
   uid: string;
 
   @ApiProperty({ required: true, example: 'Valeria' })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  @MaxLength(TEXT_MAX_LENGTH.NAME)
+  @IsSafeText()
   @Trim()
   name: string;
 
   @ApiProperty({ required: true, example: 'Mendoza' })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  @MaxLength(TEXT_MAX_LENGTH.NAME)
+  @IsSafeText()
   @Trim()
   lastName: string;
 
   @ApiProperty({ required: true, example: 'valeria.mendoza@correo.com' })
   @IsEmail()
+  @MaxLength(TEXT_MAX_LENGTH.EMAIL)
   @Trim()
   email: string;
 
   @ApiProperty({ required: false, type: CreatePhoneDto })
   @IsOptional()
+  @IsObject()
   @ValidateNested()
   @Type(() => CreatePhoneDto)
-  @IsObject()
   phone?: CreatePhoneDto;
 
   @ApiProperty({ required: true, enum: ProfileTypeEnum, example: ProfileTypeEnum.PERSONAL })
@@ -70,10 +80,10 @@ export class CreateUserDto {
     (dto: CreateUserDto) =>
       dto.activeProfileType === ProfileTypeEnum.PERSONAL || isProvided(dto.personalProfile),
   )
-  @IsNotEmpty({})
+  @IsDefined()
+  @IsObject()
   @ValidateNested()
   @Type(() => CreatePersonalProfileDto)
-  @IsObject()
   personalProfile?: CreatePersonalProfileDto;
 
   @ApiProperty({ required: false, type: [CreateBusinessProfileDto] })

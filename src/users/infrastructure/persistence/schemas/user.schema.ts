@@ -67,6 +67,9 @@ export class Users extends Document {
 
 export const UsersSchema = SchemaFactory.createForClass(Users);
 
+//* Comparación del alias sin distinguir mayúsculas (compartida por el índice y la consulta previa)
+export const ALIAS_COLLATION = { locale: 'es', strength: 2 };
+
 //* Índices únicos dispersos (sparse) para campos opcionales y subdocumentos
 //* El teléfono se identifica siempre completo: varios países comparten prefijo (ej. US y CA con +1)
 UsersSchema.index(
@@ -74,9 +77,14 @@ UsersSchema.index(
   { unique: true, sparse: true },
 );
 //* Índice parcial: `sparse` no basta porque el alias vacío se guarda como `null` y `null` sí se indexa
+//* `strength: 2` ignora mayúsculas ("Vale" = "vale") pero no las tildes. La consulta previa debe usar la misma
 UsersSchema.index(
   { 'personalProfile.alias': 1 },
-  { unique: true, partialFilterExpression: { 'personalProfile.alias': { $gt: '' } } },
+  {
+    unique: true,
+    partialFilterExpression: { 'personalProfile.alias': { $gt: '' } },
+    collation: ALIAS_COLLATION,
+  },
 );
 UsersSchema.index({ 'businessProfiles.email': 1 }, { unique: true, sparse: true });
 UsersSchema.index(

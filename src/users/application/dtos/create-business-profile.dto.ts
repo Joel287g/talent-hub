@@ -1,6 +1,7 @@
 //? Imports de codigo
 import { Type } from 'class-transformer';
 import {
+  ArrayUnique,
   IsArray,
   IsBoolean,
   IsDefined,
@@ -10,19 +11,27 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  Matches,
+  MaxLength,
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 //? Imports de usuario
-import { Trim } from '@common/application/decorators';
-import { CreateAddressDto, CreateMediaFileDto, CreatePhoneDto } from '@common/application/dtos';
+import { TEXT_MAX_LENGTH } from '@common/application/constants';
+import { IsSafeText, Trim } from '@common/application/decorators';
+import { CreateAddressDto, CreateAvatarDto, CreatePhoneDto } from '@common/application/dtos';
 import { BusinessTypeEnum, DanceStyleEnum } from '@users/domain/enums';
+
+//* Letras, dígitos y guiones; hasta 20 caracteres (cubre los formatos fiscales habituales)
+const TAX_ID = /^[A-Za-z0-9-]{1,20}$/;
 
 export class CreateBusinessProfileDto {
   @ApiProperty({ required: true })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
+  @MaxLength(TEXT_MAX_LENGTH.NAME)
+  @IsSafeText()
   @Trim()
   name: string;
 
@@ -33,39 +42,43 @@ export class CreateBusinessProfileDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  @Trim()
+  @MaxLength(TEXT_MAX_LENGTH.LONG_TEXT)
+  @IsSafeText({ multiline: true })
+  @Trim({ emptyToNull: true })
   description?: string;
 
-  @ApiProperty({ required: false, type: CreateMediaFileDto })
+  @ApiProperty({ required: false, type: CreateAvatarDto })
   @IsOptional()
-  @ValidateNested()
-  @Type(() => CreateMediaFileDto)
   @IsObject()
-  avatar?: CreateMediaFileDto;
+  @ValidateNested()
+  @Type(() => CreateAvatarDto)
+  avatar?: CreateAvatarDto;
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()
-  @Trim()
+  @Matches(TAX_ID, { message: 'taxId may only contain letters, digits and "-" (max 20)' })
+  @Trim({ emptyToNull: true })
   taxId?: string;
 
   @ApiProperty({ required: true })
   @IsEmail()
+  @MaxLength(TEXT_MAX_LENGTH.EMAIL)
   @Trim()
   email: string;
 
   @ApiProperty({ required: true, type: CreatePhoneDto })
-  @ValidateNested()
-  @Type(() => CreatePhoneDto)
   @IsDefined()
   @IsObject()
+  @ValidateNested()
+  @Type(() => CreatePhoneDto)
   phone: CreatePhoneDto;
 
   @ApiProperty({ required: true, type: CreateAddressDto })
-  @ValidateNested()
-  @Type(() => CreateAddressDto)
   @IsDefined()
   @IsObject()
+  @ValidateNested()
+  @Type(() => CreateAddressDto)
   address: CreateAddressDto;
 
   @ApiProperty({
@@ -74,6 +87,7 @@ export class CreateBusinessProfileDto {
     isArray: true,
   })
   @IsArray()
+  @ArrayUnique()
   @IsEnum(DanceStyleEnum, { each: true })
   offeredStyles: DanceStyleEnum[];
 

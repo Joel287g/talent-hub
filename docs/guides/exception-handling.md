@@ -166,6 +166,9 @@ Todo error previsible se ataja **antes** de que lo lance la base de datos o el s
   - Los textos llevan `@Trim()` (`@common/application/decorators`), para que un valor con solo espacios no supere `@IsNotEmpty()`.
   - Los objetos anidados llevan `@IsObject()`, y además `@IsDefined()` si son obligatorios: `@ValidateNested()` por sí solo acepta `undefined` y `null`.
   - Un `@ValidateIf()` nunca debe dejar sin validar un dato que llegue informado.
+  - Los textos libres llevan `@MaxLength()` con los límites de `TEXT_MAX_LENGTH` (`@common/application/constants`) y `@IsSafeText()`, que rechaza `<`, `>` y los caracteres invisibles.
+  - Los textos opcionales usan `@Trim({ emptyToNull: true })`: un texto vacío equivale a no informarlo (`null`).
+  - Los datos que identifican un registro se validan con un formato único para que la consulta previa detecte los duplicados (ej. `code` siempre con `+`, `number` solo dígitos, códigos ISO en mayúsculas).
 - **Unicidad** (`uid`, `email`, `phone`, `alias`, contacto de empresa): se consulta mediante un Caso de Uso antes de persistir y se lanza un **409** del catálogo del módulo (ej. `UserErrors.aliasAlreadyExists()`).
 - **Coherencia:** la consulta previa debe comparar exactamente los mismos campos que el índice único. Ej: el teléfono se compara siempre completo (`cca2` + `code` + `number`), porque varios países comparten prefijo.
 

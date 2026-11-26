@@ -1,18 +1,32 @@
 //? Imports de codigo
-import { IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsISO31661Alpha2,
+  IsNotEmpty,
+  IsString,
+  IsUppercase,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 //? Imports de usuario
-import { Trim } from '@common/application/decorators';
+import { TEXT_MAX_LENGTH } from '@common/application/constants';
+import { IsSafeText, Trim } from '@common/application/decorators';
+
+//* Letras, dígitos, espacios y guiones; de 3 a 10 caracteres (cubre los formatos internacionales)
+const POSTAL_CODE = /^[A-Za-z0-9][A-Za-z0-9 -]{1,8}[A-Za-z0-9]$/;
 
 export class CreateAddressDto {
   @ApiProperty({
-    description: 'País de residencia (Required)',
+    description: 'Código ISO alfa-2 del país de residencia (Required)',
     required: true,
+    example: 'ES',
   })
   @IsNotEmpty()
   @IsString()
+  @IsUppercase()
+  @IsISO31661Alpha2()
   @Trim()
   country: string;
 
@@ -22,6 +36,8 @@ export class CreateAddressDto {
   })
   @IsNotEmpty()
   @IsString()
+  @MaxLength(TEXT_MAX_LENGTH.CITY)
+  @IsSafeText()
   @Trim()
   city: string;
 
@@ -31,6 +47,7 @@ export class CreateAddressDto {
   })
   @IsNotEmpty()
   @IsString()
+  @Matches(POSTAL_CODE, { message: 'postalCode must be a valid postal code' })
   @Trim()
   postalCode: string;
 
@@ -40,6 +57,8 @@ export class CreateAddressDto {
   })
   @IsNotEmpty()
   @IsString()
+  @MaxLength(TEXT_MAX_LENGTH.STREET)
+  @IsSafeText()
   @Trim()
   street: string;
 }

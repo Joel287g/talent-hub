@@ -38,10 +38,10 @@ erDiagram
     }
 
     PERSONAL_PROFILE {
-        string alias UK "Nombre artístico (opcional, único si se informa)"
+        string alias UK "Nombre artístico (opcional, único sin distinguir mayúsculas)"
         string headline "Titular profesional"
         string biography "Biografía del artista"
-        MediaFile avatar "Foto de perfil"
+        MediaFile avatar "Foto de perfil (solo imagen, máx. 10 MB)"
 
         Address address "Dirección de residencia"
 
@@ -80,12 +80,12 @@ erDiagram
 
     PHONE {
         string cca2 "Código ISO alfa-2 (2 chars, ej. ES)"
-        string code "Prefijo telefónico (1..5 chars, ej. +34)"
-        string number "Número local (7..15 chars)"
+        string code "Prefijo telefónico: + y 1..4 dígitos (ej. +34)"
+        string number "Número local: 7..15 dígitos"
     }
 
     ADDRESS {
-        string country "Pais de residencia"
+        string country "Código ISO alfa-2 del país (ej. ES)"
         string city "Ciudad de residencia"
         string postalCode "Código postal de residencia"
         string street "Dirección de residencia"

@@ -1,4 +1,8 @@
-export { Users, UsersSchema } from '@users/infrastructure/persistence/schemas/user.schema';
+export {
+  Users,
+  UsersSchema,
+  ALIAS_COLLATION,
+} from '@users/infrastructure/persistence/schemas/user.schema';
 
 export {
   PersonalProfile,
