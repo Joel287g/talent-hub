@@ -7,9 +7,9 @@ export interface SnifferInterface {
   userId?: string;
   url: string;
   ip: string;
-  request: any;
+  request?: any;
   response?: any;
-  headers?: any;
+  headers: any;
   method: MethodsHttp;
   statusCode: number;
   processingTime: number;
@@ -28,9 +28,9 @@ export class SnifferEntity {
   private readonly _userId?: string;
   private readonly _url: string;
   private readonly _ip: string;
-  private readonly _request: any;
+  private readonly _request?: any;
   private readonly _response?: any;
-  private readonly _headers?: any;
+  private readonly _headers: any;
   private readonly _method: MethodsHttp;
   private readonly _statusCode: number;
   private readonly _processingTime: number;
@@ -41,6 +41,7 @@ export class SnifferEntity {
   private readonly _updatedAt: Date;
 
   constructor(sniffer: SnifferInterface) {
+    this._id = sniffer.id ?? null;
     this._auth = sniffer.auth;
     this._userId = sniffer.userId;
     this._url = sniffer.url;
@@ -74,13 +75,13 @@ export class SnifferEntity {
   public get ip(): string {
     return this._ip;
   }
-  public get request(): any {
+  public get request(): any | undefined {
     return this._request;
   }
   public get response(): any | undefined {
     return this._response;
   }
-  public get headers(): any | undefined {
+  public get headers(): any {
     return this._headers;
   }
   public get method(): MethodsHttp {

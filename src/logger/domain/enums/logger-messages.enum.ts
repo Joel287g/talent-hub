@@ -19,3 +19,6 @@ export enum LoggerJwt {
   ANOTHER = 'Another type of error with the JWT token',
   INVALID_SIGNATURE = 'Has an invalid signature',
 }
+
+//* Cualquier mensaje admitido en el registro (el schema de `logger` solo acepta estos valores)
+export type LoggerMessage = LoggerSniffer | LoggerApiKey | LoggerJwt;

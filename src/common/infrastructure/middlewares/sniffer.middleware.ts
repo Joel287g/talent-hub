@@ -2,10 +2,11 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 
 //? Imports de usuario
+import { MethodsHttp } from '@common/domain/enums';
 import { extractHeaders, redactSensitive } from '@common/infrastructure/helpers';
 
 import { CreateSnifferUseCase } from '@sniffer/application/use-cases';
-import { CreateSnifferDto } from '@sniffer/application/dtos';
+import { CreateSnifferType } from '@sniffer/domain/entities';
 
 import { LoggerService } from '@logger/application/services';
 import { LoggerTypes, LoggerLevel, LoggerSniffer } from '@logger/domain/enums';
@@ -34,8 +35,8 @@ export class SnifferMiddleware implements NestMiddleware {
       'authorization',
     ]);
 
-    const METHOD = request.method;
-    const CONTENT = METHOD === 'GET' ? 'query' : 'body';
+    const METHOD: MethodsHttp = request.method;
+    const CONTENT = METHOD === MethodsHttp.GET ? 'query' : 'body';
     const BODY = request[CONTENT];
 
     //? 2. Atrapar el cuerpo de la respuesta (exitosa o de error) sin modificarlo
@@ -51,8 +52,8 @@ export class SnifferMiddleware implements NestMiddleware {
       };
     }
 
-    //? 3. Construcción inicial del DTO (Sin statusCode ni processingTime aún)
-    const SNIFFER: CreateSnifferDto = {
+    //? 3. Construcción inicial del registro (Sin statusCode ni processingTime aún)
+    const SNIFFER: CreateSnifferType = {
       auth: AUTHORIZATION,
       url: request.originalUrl,
       ip: IP || IP_2 || request.ip || 'unknown',
@@ -84,7 +85,7 @@ export class SnifferMiddleware implements NestMiddleware {
     next();
   }
 
-  private handleTelemetry(isSuccess: boolean, sniffer: CreateSnifferDto): void {
+  private handleTelemetry(isSuccess: boolean, sniffer: CreateSnifferType): void {
     const MESSAGE = isSuccess ? LoggerSniffer.SUCCESS : LoggerSniffer.FAILURE;
     const LOGGER_LEVEL = isSuccess
       ? String(LoggerLevel.LOG).toLowerCase()

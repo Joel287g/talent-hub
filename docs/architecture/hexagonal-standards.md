@@ -26,6 +26,8 @@ Contiene los casos de uso del sistema. Define "qué" hace la aplicación, orques
 
 - **`use-cases/`**: Clases con un único método (`execute`). No contienen lógica de negocio pura, solo orquestan.
 - **`dtos/`**: Objetos de transferencia de datos para la entrada a los casos de uso.
+  - Solo para datos que llegan por HTTP: sus decoradores (`class-validator`) únicamente se ejecutan en el `ValidationPipe` del Controller.
+  - Los datos que construye el propio código (ej. la telemetría del `SnifferMiddleware` o los registros de `LoggerService`) no usan DTOs, sino los tipos `Create*Type` de la entidad (ej. `CreateSnifferType`, `CreateLoggerType`). Los valida TypeScript al compilar y el schema de Mongoose al guardar.
 
 ### 🟥 Capa de Infraestructura (`/infrastructure`)
 

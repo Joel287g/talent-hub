@@ -1,7 +1,6 @@
 //? Imports de codigo
 import { Document, Types } from 'mongoose';
 
-import { HttpStatus } from '@nestjs/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
@@ -27,20 +26,22 @@ export class Sniffer extends Document {
   @Prop({ required: true, type: String })
   ip: string;
 
-  @Prop({ required: true, type: Object })
-  request: any;
+  //* Opcional: una petición sin cuerpo (ej. POST vacío u OPTIONS) llega con `undefined`
+  @Prop({ required: false, type: Object })
+  request?: any;
 
   @Prop({ required: false, type: Object })
   response?: any;
 
-  @Prop({ required: false, type: Object })
-  headers?: any;
+  @Prop({ required: true, type: Object })
+  headers: any;
 
   @Prop({ required: true, type: String, enum: MethodsHttp })
   method: MethodsHttp;
 
-  @Prop({ required: true, type: Number, enum: HttpStatus })
-  statusCode: HttpStatus;
+  //* Rango HTTP completo: el enum `HttpStatus` no incluye todos los códigos (ej. 431)
+  @Prop({ required: true, type: Number, min: 100, max: 599 })
+  statusCode: number;
 
   @Prop({ required: true, type: Number })
   processingTime: number;

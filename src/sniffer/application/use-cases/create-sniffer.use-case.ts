@@ -1,10 +1,9 @@
-//? Imports de codigp
+//? Imports de codigo
 import { Inject, Injectable } from '@nestjs/common';
 
-//? Imports de sniffer
-import { CreateSnifferDto } from '@sniffer/application/dtos';
+//? Imports de usuario
 import { SNIFFER_REPOSITORY, SnifferRepository } from '@sniffer/domain/repositories';
-import { SnifferEntity } from '@sniffer/domain/entities';
+import { CreateSnifferType, SnifferEntity } from '@sniffer/domain/entities';
 
 @Injectable()
 export class CreateSnifferUseCase {
@@ -13,7 +12,7 @@ export class CreateSnifferUseCase {
     private readonly snifferRepository: SnifferRepository,
   ) {}
 
-  async execute(payload: CreateSnifferDto): Promise<SnifferEntity> {
+  async execute(payload: CreateSnifferType): Promise<SnifferEntity> {
     const ENTITY = SnifferEntity.create(payload);
     return await this.snifferRepository.create(ENTITY);
   }

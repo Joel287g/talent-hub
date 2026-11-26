@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
-import { LoggerLevel, LoggerTypes, LoggerMessages } from '@logger/domain/enums';
+import { LoggerLevel, LoggerMessage, LoggerMessages, LoggerTypes } from '@logger/domain/enums';
 
 @Schema({
   _id: true,
@@ -21,7 +21,7 @@ export class Logger extends Document {
       Object.values(value).map((value) => value),
     ),
   })
-  message: (typeof LoggerMessages)[keyof typeof LoggerMessages];
+  message: LoggerMessage;
 
   @Prop({ required: true, type: String, enum: LoggerLevel })
   level: LoggerLevel;
@@ -29,8 +29,8 @@ export class Logger extends Document {
   @Prop({ required: true, type: String, enum: LoggerTypes })
   type: LoggerTypes;
 
-  @Prop({ required: true, type: {}, default: {} })
-  data: unknown;
+  @Prop({ required: true, type: {} })
+  data: Record<string, unknown>;
 }
 
 export const LoggerSchema = SchemaFactory.createForClass(Logger);

@@ -3,8 +3,7 @@ import { Injectable, Inject, Logger } from '@nestjs/common';
 
 //? Imports de usuario
 import { LOGGER_REPOSITORY, LoggerRepository } from '@logger/application/ports';
-import { LoggerCreateDto } from '@logger/application/dtos';
-import { LoggerEntity } from '@logger/domain/entities';
+import { CreateLoggerPayloadType, LoggerEntity } from '@logger/domain/entities';
 import { LoggerLevel } from '@logger/domain/enums';
 
 @Injectable()
@@ -21,7 +20,7 @@ export class LoggerService {
 
   private async generateLog(
     level: LoggerLevel,
-    logger: LoggerCreateDto,
+    logger: CreateLoggerPayloadType,
     contextDetail: string[] = [],
   ): Promise<void> {
     const contextString = [this.defaultContext, ...contextDetail].join('-');
@@ -39,27 +38,27 @@ export class LoggerService {
     await this.loggerRepository.save(logEntity);
   }
 
-  public async error(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
+  public async error(logger: CreateLoggerPayloadType, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.ERROR, logger, contextDetail);
   }
 
-  public async log(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
+  public async log(logger: CreateLoggerPayloadType, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.LOG, logger, contextDetail);
   }
 
-  public async warning(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
+  public async warning(logger: CreateLoggerPayloadType, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.WARN, logger, contextDetail);
   }
 
-  public async debug(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
+  public async debug(logger: CreateLoggerPayloadType, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.DEBUG, logger, contextDetail);
   }
 
-  public async verbose(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
+  public async verbose(logger: CreateLoggerPayloadType, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.VERBOSE, logger, contextDetail);
   }
 
-  public async fatal(logger: LoggerCreateDto, ...contextDetail: string[]): Promise<void> {
+  public async fatal(logger: CreateLoggerPayloadType, ...contextDetail: string[]): Promise<void> {
     await this.generateLog(LoggerLevel.FATAL, logger, contextDetail);
   }
 }
