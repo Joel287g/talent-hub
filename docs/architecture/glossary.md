@@ -56,7 +56,7 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 - **FilterException:** Interfaz definida en la capa de Infraestructura compartida que dicta el contrato de respuesta JSON estricto y uniforme para cualquier excepción capturada en la aplicación.
 - **Fuga de Infraestructura (Infrastructure Leak):** Antipatrón arquitectónico que ocurre cuando detalles técnicos de librerías externas (como usar `Types.ObjectId` de Mongoose dentro de un DTO o Caso de Uso) contaminan el Dominio o la capa de Aplicación. Rompe por completo el aislamiento de la Arquitectura Hexagonal.
 
-- **Firebase Admin SDK (`firebase-admin`):** Librería de servidor de Firebase. En nuestro proyecto solo verifica el ID token que Firebase Authentication emite al frontend. La configura el `FirebaseConfigService` y se inyecta con el token `FIREBASE_AUTH`, únicamente en la capa de Infraestructura.
+- **Firebase Admin SDK (`firebase-admin`):** Librería de servidor de Firebase. En nuestro proyecto solo verifica el ID token que Firebase Authentication emite al frontend. La configura el `FirebaseConfigService` y se inyecta con el token `FIREBASE_AUTH`, únicamente en el adaptador `FirebaseIdentityProvider`.
 
 ---
 ---
@@ -106,7 +106,8 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 ## P
 
 - **Primitive Obsession (Obsesión por Primitivos):** Antipatrón de diseño donde se utilizan tipos primitivos (`string`, `number`) para representar conceptos de negocio complejos (ej. usar un `string` para un UID en lugar de una clase propia).
-- **Puerto (Port):** Interfaz definida en la capa de Dominio que dicta un contrato estricto de lo que el sistema necesita hacer (ej. `UsersRepository`), sin importar cómo se implemente técnicamente.
+- **Proveedor de Identidad (Identity Provider):** Servicio externo que autentica al usuario y emite un token que lo identifica (en nuestro caso, Firebase Authentication). El dominio lo abstrae con el puerto `IdentityProvider` (`IDENTITY_PROVIDER`), que devuelve una `VerifiedIdentity` (`uid`, `email`, `emailVerified`, `provider`). Su adaptador es `FirebaseIdentityProvider`.
+- **Puerto (Port):** Interfaz definida en la capa de Dominio que dicta un contrato estricto de lo que el sistema necesita hacer (ej. `UsersRepository`, `IdentityProvider`), sin importar cómo se implemente técnicamente.
 
 ---
 ---

@@ -11,8 +11,10 @@ import { LoggerModule } from '@logger/logger.module';
 import { UsersModule } from '@users/users.module';
 
 import { AuthService } from '@auth/application/services';
+import { IDENTITY_PROVIDER } from '@auth/domain/ports';
 import { JwtStrategy, JWT_STRATEGY } from '@auth/infrastructure/strategies';
 import { JwtAuthGuard } from '@auth/infrastructure/guards';
+import { FirebaseIdentityProvider } from '@auth/infrastructure/providers';
 
 @Module({
   imports: [
@@ -39,6 +41,12 @@ import { JwtAuthGuard } from '@auth/infrastructure/guards';
       useFactory: (firebaseConfigService: FirebaseConfigService) =>
         firebaseConfigService.createAuth(),
       inject: [FirebaseConfigService],
+    },
+
+    //? Ports
+    {
+      provide: IDENTITY_PROVIDER,
+      useClass: FirebaseIdentityProvider,
     },
 
     //* Guard global: toda ruta exige JWT salvo las marcadas con @PublicJwt()

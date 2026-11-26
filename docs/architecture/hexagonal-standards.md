@@ -17,6 +17,7 @@ Es el núcleo de la aplicación. **NO puede importar nada de `application` ni de
 
 - **`entities/`**: Modelos ricos que encapsulan el estado y las reglas de negocio.
 - **`repositories/`**: Interfaces (Puertos) que dictan cómo interactuar con los datos.
+- **`ports/`**: Interfaces (Puertos) de servicios externos que no son persistencia, junto a su token `Symbol` (ej. `IDENTITY_PROVIDER` / `IdentityProvider` en `auth`).
 - **`enums/`**: Enumeraciones estrictamente ligadas a conceptos de negocio (ej. `UserStatus`).
 - **`value-objects/`**: (Opcional) Clases inmutables que autovalidan tipos primitivos (ej. `UidValueObject`).
 
@@ -38,6 +39,7 @@ Contiene todos los detalles técnicos y de framework. Es la única capa que cono
   - `schemas/`: Definición de la estructura de base de datos (Mongoose).
   - `mappers/`: Traductores que convierten Documentos de BD a Entidades puras y viceversa (`toDomain` / `toPersistence`), y Entidades en respuestas HTTP (`toResponse`).
   - `mongo-*.repository.ts`: Adaptadores concretos que implementan los puertos del dominio.
+- **`providers/`**: Adaptadores de servicios externos que implementan los puertos de `domain/ports/` (ej. `FirebaseIdentityProvider`). Traducen los errores de la librería al catálogo de errores del módulo.
 
 ## 3. Reglas de Oro del Proyecto
 

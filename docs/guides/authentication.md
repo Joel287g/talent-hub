@@ -14,16 +14,23 @@ La autenticación vive en su propio módulo (`src/auth`, alias `@auth`), con su 
 src/
  ├── auth/
  │   ├── domain/
+ │   │   ├── enums/
+ │   │   │   └── sign-in-provider.enum.ts   # SignInProviderEnum (EMAIL_PASSWORD | GOOGLE)
  │   │   ├── exceptions/
  │   │   │   ├── enums/
  │   │   │   │   └── auth-errors.enum.ts    # AuthErrorsEnum (AUTH-INVALID_TOKEN, ...)
  │   │   │   └── auth-errors.exceptions.ts  # AuthErrors
- │   │   └── interfaces/
- │   │       └── jwt-payload.interface.ts   # JwtPayload { id }
+ │   │   ├── interfaces/
+ │   │   │   ├── jwt-payload.interface.ts   # JwtPayload { id }
+ │   │   │   └── verified-identity.interface.ts # VerifiedIdentity { uid, email, emailVerified, provider }
+ │   │   └── ports/
+ │   │       └── identity-provider.port.ts  # IDENTITY_PROVIDER + IdentityProvider.verifyToken()
  │   ├── application/
  │   │   └── services/
  │   │       └── auth.service.ts             # AuthService.sign(user)
  │   ├── infrastructure/
+ │   │   ├── providers/
+ │   │   │   └── firebase-identity.provider.ts # FirebaseIdentityProvider (adaptador de IDENTITY_PROVIDER)
  │   │   ├── strategies/
  │   │   │   └── jwt.strategy.ts             # JwtStrategy (passport-jwt)
  │   │   └── guards/
@@ -118,7 +125,38 @@ export class UsersController {
 El inicio de sesión lo hace Firebase Authentication (métodos activos: **correo/contraseña** y **Google**). El backend solo usa `firebase-admin` para **verificar** el ID token de Firebase y nunca gestiona contraseñas.
 
 - **`FirebaseConfigService`** (`@configuration/security`): única fuente de configuración. Inicializa la app de Firebase una sola vez (reutiliza la existente con la recarga en caliente) y devuelve su `Auth`.
-- **`FIREBASE_AUTH`**: token `Symbol` con la instancia de `Auth`, registrado en el `AuthModule`. Solo deben inyectarlo los adaptadores de infraestructura, nunca los casos de uso.
+- **`FIREBASE_AUTH`**: token `Symbol` con la instancia de `Auth`, registrado en el `AuthModule`. Solo lo inyecta el `FirebaseIdentityProvider`, nunca los casos de uso.
+
+### Puerto `IDENTITY_PROVIDER`
+
+Los casos de uso no conocen Firebase: dependen del puerto `IdentityProvider` (`@auth/domain/ports`), cuyo único método `verifyToken(token)` devuelve una `VerifiedIdentity`:
+
+```typescript
+interface VerifiedIdentity {
+  uid: string; //? UserEntity.uid
+  email: string; //? Siempre en minúsculas
+  emailVerified: boolean;
+  provider: SignInProviderEnum; //? EMAIL_PASSWORD | GOOGLE
+}
+```
+
+El adaptador `FirebaseIdentityProvider` (`@auth/infrastructure/providers`) llama a `verifyIdToken(token, true)`. Además de la firma, la expiración y la audiencia (`FIREBASE_PROJECT_ID`), comprueba en Firebase que la sesión no esté revocada ni la cuenta deshabilitada. Esto supone una consulta extra a Firebase, así que solo debe usarse al canjear el token (login o registro), nunca en cada petición.
+
+Los errores de `firebase-admin` se traducen al catálogo `AuthErrors`:
+
+| Situación                                                    | Error                                    | Código                       |
+| :----------------------------------------------------------- | :--------------------------------------- | :--------------------------- |
+| Token vacío (no se llama a Firebase)                         | **401** `AUTH-INVALID_IDENTITY_TOKEN`    | `AUTH-INF-PRO-FIRE_IDEN-001` |
+| Token mal formado, firma inválida o de otro proyecto         | **401** `AUTH-INVALID_IDENTITY_TOKEN`    | `AUTH-INF-PRO-FIRE_IDEN-002` |
+| Token expirado                                               | **401** `AUTH-INVALID_IDENTITY_TOKEN`    | `AUTH-INF-PRO-FIRE_IDEN-003` |
+| Sesión revocada (`revokeRefreshTokens`)                      | **401** `AUTH-INVALID_IDENTITY_TOKEN`    | `AUTH-INF-PRO-FIRE_IDEN-004` |
+| Cuenta deshabilitada en Firebase                             | **401** `AUTH-INVALID_IDENTITY_TOKEN`    | `AUTH-INF-PRO-FIRE_IDEN-005` |
+| Cuenta borrada en Firebase                                   | **401** `AUTH-INVALID_IDENTITY_TOKEN`    | `AUTH-INF-PRO-FIRE_IDEN-006` |
+| Método no admitido (anónimo, teléfono, token personalizado…) | **403** `AUTH-UNSUPPORTED_SIGN_IN_PROVIDER` | `AUTH-INF-PRO-FIRE_IDEN-007` |
+| Token sin email                                              | **401** `AUTH-INVALID_IDENTITY_TOKEN`    | `AUTH-INF-PRO-FIRE_IDEN-008` |
+| Red, permisos de la cuenta de servicio o error interno       | **503** `AUTH-IDENTITY_PROVIDER_UNAVAILABLE` | `AUTH-INF-PRO-FIRE_IDEN-009` |
+
+> //! Para admitir un método de inicio de sesión nuevo, hay que activarlo en Firebase Console **y** añadirlo a `SignInProviderEnum` y a `SIGN_IN_PROVIDERS` del adaptador. Si no, sus tokens se rechazan con 403.
 
 ### Variables de entorno
 
@@ -153,7 +191,6 @@ Con el emulador (`firebase emulators:start --only auth --project demo-talent-hub
 
 ## 6. Pendiente
 
-- //TODO: Puerto `IDENTITY_PROVIDER` y adaptador `FirebaseIdentityProvider` (`verifyIdToken`) sobre `FIREBASE_AUTH`.
 - //TODO: Endpoints `POST /auth/login` y `POST /auth/register` que verifiquen el ID token de Firebase y firmen el JWT con `AuthService.sign(user)`. El `uid` y el `email` del registro deben salir del token verificado, no del body.
 - //TODO: Renovación de la sesión (nuevo ID token de Firebase ➔ `/auth/login`).
 

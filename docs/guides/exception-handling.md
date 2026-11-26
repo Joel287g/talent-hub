@@ -149,11 +149,12 @@ class UserErrorsFactory extends BaseErrors {
 export const UserErrors = new UserErrorsFactory();
 ```
 
-- Cada catálogo pertenece a un único contexto: los errores de autenticación (`AUTH-INVALID_TOKEN`, `AUTH-INVALID_SESSION`, `AUTH-INACTIVE_USER`) viven en `AuthErrors` (`src/auth/domain/exceptions/`), separados de los de usuario (ver [Guía de Autenticación](./authentication.md)).
+- Cada catálogo pertenece a un único contexto: los errores de autenticación (`AUTH-INVALID_TOKEN`, `AUTH-INVALID_SESSION`, `AUTH-INACTIVE_USER`, `AUTH-INVALID_IDENTITY_TOKEN`, `AUTH-UNSUPPORTED_SIGN_IN_PROVIDER`, `AUTH-IDENTITY_PROVIDER_UNAVAILABLE`) viven en `AuthErrors` (`src/auth/domain/exceptions/`), separados de los de usuario (ver [Guía de Autenticación](./authentication.md)).
 - Los errores transversales que no pertenecen a ningún módulo (ej. decoradores de `common`) usan la instancia `CommonErrors` (`src/common/domain/exceptions/common-errors.exceptions.ts`), que hereda todos los métodos de `BaseErrors` (ej. `throw CommonErrors.internalServerErrorException('COMM-INF-DEC-GET_USER-001')`).
 - Los códigos únicos (`USER-DOM-EXC-USER_ERRO-001`) se generan con la extensión [Error codes generator](https://marketplace.visualstudio.com/items?itemName=Joel287g.error-codes-generator) a partir del marcador `'ERROR_GENERATOR'` (ver [Glosario](../architecture/glossary.md)).
 - Al lanzar un error se pasa el código único del punto exacto donde ocurre, para poder rastrearlo (ej. `throw UserErrors.notFound('USER-APP-USE-FIND_USER_BY_UID-001')`). Si se omite, se usa el código por defecto del catálogo.
 - Los Casos de Uso, Servicios y Entidades lanzan estos errores directamente sin necesidad de bloques `try/catch`, y el `DomainExceptionFilter` los traduce a la respuesta HTTP.
+- Los adaptadores de infraestructura que hablan con servicios externos (ej. `FirebaseIdentityProvider`) **sí** capturan los errores de la librería y los traducen al catálogo del módulo, adjuntando el error original como `cause`. Así ninguna excepción de terceros llega a los Casos de Uso.
 
 ---
 
