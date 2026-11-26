@@ -79,7 +79,7 @@ Todas las respuestas de error del backend devuelven una estructura JSON uniforme
   "name": "MongoServerError",
   "statusCode": 409,
   "method": "POST",
-  "url": "/api/users/create",
+  "url": "/api/auth/register",
   "timestamp": "2026-09-16T21:49:19.468Z",
   "additionalException": {
     "errorResponse": {
@@ -102,11 +102,11 @@ Todas las respuestas de error del backend devuelven una estructura JSON uniforme
   "name": "BadRequestException",
   "statusCode": 400,
   "method": "POST",
-  "url": "/api/users/create",
+  "url": "/api/auth/register",
   "timestamp": "2026-09-16T21:50:17.521Z",
   "additionalException": {
     "response": {
-      "message": ["uid should not be empty"],
+      "message": ["name should not be empty"],
       "error": "Bad Request",
       "statusCode": 400
     },

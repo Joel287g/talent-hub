@@ -27,6 +27,7 @@ import * as usersUseCases from '@users/application/use-cases';
       useClass: MongoDBUsersRepository,
     },
   ],
-  exports: [USERS_REPOSITORY],
+  //? Consumidos por el AuthModule (JwtStrategy, login y registro)
+  exports: [USERS_REPOSITORY, usersServices.CreateUserService, usersUseCases.FindUserByUidUseCase],
 })
 export class UsersModule {}

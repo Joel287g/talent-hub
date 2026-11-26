@@ -11,7 +11,7 @@ import {
   FindUserByBusinessContactUseCase,
 } from '@users/application/use-cases';
 
-import { UserEntity } from '@users/domain/entities';
+import { UserEntity, UserIdentityType } from '@users/domain/entities';
 import { UserErrors } from '@users/domain/exceptions';
 
 @Injectable()
@@ -24,10 +24,18 @@ export class CreateUserService {
     private readonly createUserUseCase: CreateUserUseCase,
   ) {}
 
-  public async execute(payload: CreateUserDto): Promise<UserEntity> {
-    const EXISTING_USER_BY_UID = await this.findUserByUidUseCase.execute(payload.uid, false);
+  /**
+   * Registra un usuario tras comprobar que su identidad, contacto, alias y empresas no estén ya en uso.
+   *
+   * @param {UserIdentityType} identity - `uid` y `email` del token verificado del proveedor de identidad.
+   * @param {CreateUserDto} payload - Datos del onboarding recibidos en el body.
+   * @returns {Promise<UserEntity>} Usuario creado.
+   * @throws {BaseException} 409 si el usuario, su alias o alguna de sus empresas ya existen.
+   */
+  public async execute(identity: UserIdentityType, payload: CreateUserDto): Promise<UserEntity> {
+    const EXISTING_USER_BY_UID = await this.findUserByUidUseCase.execute(identity.uid, false);
     const EXISTING_USER_BY_CONTACT = await this.finsUserByContact.execute(
-      payload.email,
+      identity.email,
       payload.phone,
       false,
     );
@@ -57,6 +65,6 @@ export class CreateUserService {
       }
     }
 
-    return await this.createUserUseCase.execute(payload);
+    return await this.createUserUseCase.execute(identity, payload);
   }
 }

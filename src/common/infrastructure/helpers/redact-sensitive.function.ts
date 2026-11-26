@@ -13,6 +13,7 @@ const SENSITIVE_KEYS = [
   'accesstoken',
   'refreshtoken',
   'idtoken',
+  'firebasetoken',
   'password',
   'secret',
 ];

@@ -31,6 +31,9 @@ export interface UserInterface {
   updatedAt?: Date;
 }
 
+//* Datos de la identidad del usuario: nunca llegan en el body, salen del token verificado
+export type UserIdentityType = Pick<UserInterface, 'uid' | 'email'>;
+
 export type CreateUserType = Omit<
   UserInterface,
   'id' | 'personalProfile' | 'businessProfiles' | 'role' | 'status' | 'createdAt' | 'updatedAt'

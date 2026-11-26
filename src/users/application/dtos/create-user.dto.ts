@@ -5,7 +5,6 @@ import {
   ArrayMinSize,
   IsArray,
   IsDefined,
-  IsEmail,
   IsEnum,
   IsNotEmpty,
   IsObject,
@@ -32,15 +31,8 @@ const isProvided = (value: unknown): boolean => value !== undefined && value !==
 //? Una lista vacía equivale a no informar ninguna empresa
 const isEmptyList = (value: unknown): boolean => Array.isArray(value) && value.length === 0;
 
+//! El uid y el email no se reciben en el body: salen del token verificado del proveedor de identidad
 export class CreateUserDto {
-  @ApiProperty({ required: true, example: 'gcp_uid_9f8e7d6c5b4a3210' })
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(TEXT_MAX_LENGTH.UID)
-  @IsSafeText()
-  @Trim()
-  uid: string;
-
   @ApiProperty({ required: true, example: 'Valeria' })
   @IsNotEmpty()
   @IsString()
@@ -56,12 +48,6 @@ export class CreateUserDto {
   @IsSafeText()
   @Trim()
   lastName: string;
-
-  @ApiProperty({ required: true, example: 'valeria.mendoza@correo.com' })
-  @IsEmail()
-  @MaxLength(TEXT_MAX_LENGTH.EMAIL)
-  @Trim()
-  email: string;
 
   @ApiProperty({ required: false, type: CreatePhoneDto })
   @IsOptional()

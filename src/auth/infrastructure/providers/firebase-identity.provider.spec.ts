@@ -61,6 +61,14 @@ describe(FirebaseIdentityProvider.name, () => {
       expect(verifyIdToken).toHaveBeenCalledWith('id-token', true);
     });
 
+    it('ignora los espacios y saltos de línea alrededor del token', async () => {
+      verifyIdToken.mockResolvedValue(buildDecodedToken());
+
+      await provider.verifyToken('  id-token\n');
+
+      expect(verifyIdToken).toHaveBeenCalledWith('id-token', true);
+    });
+
     it('identifica el inicio de sesión con Google', async () => {
       verifyIdToken.mockResolvedValue(buildDecodedToken({}, 'google.com'));
 

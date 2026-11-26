@@ -8,4 +8,9 @@ export {
   CreatePersonalProfileType,
   PersonalProfileEntity,
 } from '@users/domain/entities/personal-profile.entity';
-export { UserInterface, CreateUserType, UserEntity } from '@users/domain/entities/user.entity';
+export {
+  UserInterface,
+  CreateUserType,
+  UserIdentityType,
+  UserEntity,
+} from '@users/domain/entities/user.entity';

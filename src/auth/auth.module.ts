@@ -10,15 +10,16 @@ import { FIREBASE_AUTH, FirebaseConfigService, JwtConfigService } from '@configu
 import { LoggerModule } from '@logger/logger.module';
 import { UsersModule } from '@users/users.module';
 
-import { AuthService } from '@auth/application/services';
+import { AuthService, LoginService, RegisterService } from '@auth/application/services';
 import { IDENTITY_PROVIDER } from '@auth/domain/ports';
+import { AuthController } from '@auth/infrastructure/controllers';
 import { JwtStrategy, JWT_STRATEGY } from '@auth/infrastructure/strategies';
 import { JwtAuthGuard } from '@auth/infrastructure/guards';
 import { FirebaseIdentityProvider } from '@auth/infrastructure/providers';
 
 @Module({
   imports: [
-    //? Modules (UsersModule exporta USERS_REPOSITORY, que consume la JwtStrategy)
+    //? Modules (UsersModule exporta USERS_REPOSITORY, FindUserByUidUseCase y CreateUserService)
     LoggerModule,
     UsersModule,
 
@@ -26,9 +27,12 @@ import { FirebaseIdentityProvider } from '@auth/infrastructure/providers';
     PassportModule.register({ defaultStrategy: JWT_STRATEGY }),
     JwtModule.registerAsync({ useClass: JwtConfigService }),
   ],
+  controllers: [AuthController],
   providers: [
     //? Services
     AuthService,
+    LoginService,
+    RegisterService,
 
     //? Strategies
     JwtConfigService,

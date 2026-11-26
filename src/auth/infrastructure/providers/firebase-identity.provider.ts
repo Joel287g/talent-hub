@@ -43,12 +43,15 @@ export class FirebaseIdentityProvider implements IdentityProvider {
   ) {}
 
   public async verifyToken(token: string): Promise<VerifiedIdentity> {
+    //? Un espacio o salto de línea al copiar y pegar el token haría fallar la decodificación
+    const TOKEN = token?.trim();
+
     //* Se ataja antes de llamar a Firebase
-    if (!token?.trim()) {
+    if (!TOKEN) {
       throw AuthErrors.invalidIdentityToken('AUTH-INF-PRO-FIRE_IDEN-001');
     }
 
-    const DECODED_TOKEN = await this.decode(token);
+    const DECODED_TOKEN = await this.decode(TOKEN);
 
     return this.toIdentity(DECODED_TOKEN);
   }
