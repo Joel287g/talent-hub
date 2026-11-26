@@ -20,6 +20,17 @@ export default registerAs('config', () => {
         audience: environments.JWT_AUDIENCE,
         secret: environments.JWT_SECRET,
       },
+
+      firebase: {
+        project_id: environments.FIREBASE_PROJECT_ID,
+        client_email: environments.FIREBASE_CLIENT_EMAIL,
+
+        //? En el .env la clave llega en una sola línea con "\n" escritos como texto
+        private_key: environments.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+
+        //? Si existe, firebase-admin verifica los tokens contra el emulador local
+        auth_emulator_host: environments.FIREBASE_AUTH_EMULATOR_HOST,
+      },
     },
 
     //? Database

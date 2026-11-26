@@ -56,6 +56,8 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 - **FilterException:** Interfaz definida en la capa de Infraestructura compartida que dicta el contrato de respuesta JSON estricto y uniforme para cualquier excepción capturada en la aplicación.
 - **Fuga de Infraestructura (Infrastructure Leak):** Antipatrón arquitectónico que ocurre cuando detalles técnicos de librerías externas (como usar `Types.ObjectId` de Mongoose dentro de un DTO o Caso de Uso) contaminan el Dominio o la capa de Aplicación. Rompe por completo el aislamiento de la Arquitectura Hexagonal.
 
+- **Firebase Admin SDK (`firebase-admin`):** Librería de servidor de Firebase. En nuestro proyecto solo verifica el ID token que Firebase Authentication emite al frontend. La configura el `FirebaseConfigService` y se inyecta con el token `FIREBASE_AUTH`, únicamente en la capa de Infraestructura.
+
 ---
 ---
 
@@ -68,6 +70,7 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 
 ## I
 
+- **ID Token de Firebase:** JWT firmado por Google (`RS256`, válido 1 hora) que Firebase Authentication entrega al cliente tras iniciar sesión. Identifica al usuario por su `uid`. El backend lo verifica con el Firebase Admin SDK y lo canjea por su propio JWT; nunca lo usa para las peticiones normales.
 - **Interceptor:** Componente de la capa de Infraestructura (nativo en NestJS) que envuelve el flujo de la petición HTTP. Permite ejecutar lógica antes y después de que la petición alcance el Caso de Uso (Controller). Es el lugar ideal para aislar lógica transversal (cross-cutting concerns) como logging o mutación de respuestas, manteniendo los Casos de Uso limpios.
 - **Inyección de Dependencias (DI):** Patrón de diseño en el que las clases no crean a sus propias dependencias (ej. no hacen `new Repository()`), sino que las reciben por el constructor. NestJS se encarga de inyectarlas usando un contenedor IoC (Inversion of Control).
 

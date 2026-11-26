@@ -29,6 +29,9 @@ src/
  │   │   └── guards/
  │   │       └── jwt-auth.guard.ts           # JwtAuthGuard (APP_GUARD global)
  │   └── auth.module.ts                      # PassportModule + JwtModule + APP_GUARD
+ ├── configuration/
+ │   └── security/
+ │       └── firebase-config.ts              # FirebaseConfigService + FIREBASE_AUTH (Admin SDK)
  ├── common/
  │   └── infrastructure/
  │       └── decorators/
@@ -110,9 +113,49 @@ export class UsersController {
 
 ---
 
-## 5. Pendiente
+## 5. Configuración de Firebase (Admin SDK)
 
-- //TODO: Endpoint de **login** que firme el token con `AuthService.sign(user)` (exportado por el `AuthModule`) y su renovación.
+El inicio de sesión lo hace Firebase Authentication (métodos activos: **correo/contraseña** y **Google**). El backend solo usa `firebase-admin` para **verificar** el ID token de Firebase y nunca gestiona contraseñas.
+
+- **`FirebaseConfigService`** (`@configuration/security`): única fuente de configuración. Inicializa la app de Firebase una sola vez (reutiliza la existente con la recarga en caliente) y devuelve su `Auth`.
+- **`FIREBASE_AUTH`**: token `Symbol` con la instancia de `Auth`, registrado en el `AuthModule`. Solo deben inyectarlo los adaptadores de infraestructura, nunca los casos de uso.
+
+### Variables de entorno
+
+| Variable                      | Obligatoria                      | Origen                                                        |
+| :---------------------------- | :------------------------------- | :------------------------------------------------------------ |
+| `FIREBASE_PROJECT_ID`         | Sí                               | `project_id` del JSON de la cuenta de servicio                |
+| `FIREBASE_CLIENT_EMAIL`       | Sí, salvo con emulador           | `client_email` del JSON                                       |
+| `FIREBASE_PRIVATE_KEY`        | Sí, salvo con emulador           | `private_key` del JSON, en una línea, entre comillas dobles y con `\n` |
+| `FIREBASE_AUTH_EMULATOR_HOST` | No (prohibida en `production`)   | `127.0.0.1:9099` para usar el emulador local                  |
+
+El JSON se descarga en _Firebase Console ➔ Configuración del proyecto ➔ Cuentas de servicio ➔ Generar nueva clave privada_. Solo se copian sus valores al `.env`: el JSON **nunca** se guarda en el repositorio.
+
+> //! `FIREBASE_AUTH_EMULATOR_HOST` hace que `firebase-admin` acepte tokens sin firmar. Joi la rechaza si `NODE_ENV` es `production` o no está definido.
+
+### Probar sin frontend
+
+Un ID token se puede obtener directamente de la API REST de Firebase Auth:
+
+```powershell
+# Proyecto real: <WEB_API_KEY> en Configuración del proyecto ➔ General
+$R = Invoke-RestMethod -Method Post `
+  -Uri "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=<WEB_API_KEY>" `
+  -ContentType "application/json" `
+  -Body '{"email":"valeria@test.com","password":"123456","returnSecureToken":true}'
+
+$R.idToken  # ID token de Firebase
+```
+
+Con el emulador (`firebase emulators:start --only auth --project demo-talent-hub`), la URL es `http://127.0.0.1:9099/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=fake` y no hacen falta credenciales.
+
+---
+
+## 6. Pendiente
+
+- //TODO: Puerto `IDENTITY_PROVIDER` y adaptador `FirebaseIdentityProvider` (`verifyIdToken`) sobre `FIREBASE_AUTH`.
+- //TODO: Endpoints `POST /auth/login` y `POST /auth/register` que verifiquen el ID token de Firebase y firmen el JWT con `AuthService.sign(user)`. El `uid` y el `email` del registro deben salir del token verificado, no del body.
+- //TODO: Renovación de la sesión (nuevo ID token de Firebase ➔ `/auth/login`).
 
 ---
 

@@ -5,7 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 //? Imports de usuario
-import { JwtConfigService } from '@configuration/security';
+import { FIREBASE_AUTH, FirebaseConfigService, JwtConfigService } from '@configuration/security';
 
 import { LoggerModule } from '@logger/logger.module';
 import { UsersModule } from '@users/users.module';
@@ -31,6 +31,15 @@ import { JwtAuthGuard } from '@auth/infrastructure/guards';
     //? Strategies
     JwtConfigService,
     JwtStrategy,
+
+    //? Firebase Admin (verificación de los ID tokens de Firebase)
+    FirebaseConfigService,
+    {
+      provide: FIREBASE_AUTH,
+      useFactory: (firebaseConfigService: FirebaseConfigService) =>
+        firebaseConfigService.createAuth(),
+      inject: [FirebaseConfigService],
+    },
 
     //* Guard global: toda ruta exige JWT salvo las marcadas con @PublicJwt()
     {
