@@ -20,6 +20,7 @@ export class SwaggerRunner {
     this.createDocument();
   }
 
+  //? El JwtAuthGuard es global: Swagger envía el JWT de "Authorize" en todas las rutas
   private setup() {
     return this.config
       .setTitle(`${name} - ${process.env.NODE_ENV}`)
@@ -58,6 +59,7 @@ export class SwaggerRunner {
         },
         'authorization',
       )
+      .addSecurityRequirements('authorization')
       .build();
   }
 

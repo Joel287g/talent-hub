@@ -59,7 +59,7 @@ src/
 
 ## 2. Login y Registro
 
-El cliente inicia sesión en Firebase (correo/contraseña o Google) y envía su ID token en la cabecera **`firebase-token`** (sin prefijo `Bearer`) para canjearlo por el JWT del backend. Ambas rutas son `@PublicJwt()` y responden solo `{ accessToken }`: los datos del usuario pertenecen al módulo `users`.
+El cliente inicia sesión en Firebase (correo/contraseña o Google) y envía su ID token en la cabecera **`firebase-token`** (sin prefijo `Bearer`) para canjearlo por el JWT del backend. Ambas rutas son `@PublicJwt()` y responden solo `{ accessToken }`: los datos del usuario pertenecen al módulo `users` y se obtienen con `GET /users/me`.
 
 ```text
  Firebase (cliente) ──► ID token
@@ -136,9 +136,11 @@ import { GetUser, PublicJwt } from '@common/infrastructure/decorators';
 
 @Controller('users')
 export class UsersController {
-  //* Ruta protegida: devuelve la entidad completa del usuario autenticado
+  //* Ruta protegida (implementada): la JwtStrategy ya cargó el usuario, solo se mapea la respuesta
   @Get('me')
-  public me(@GetUser() user: UserEntity) {}
+  public me(@GetUser() user: UserEntity): UserInterface {
+    return UserMapper.toResponse(user);
+  }
 
   //* Una sola propiedad
   @Get('me/id')
@@ -147,7 +149,6 @@ export class UsersController {
   //* Varias propiedades ➔ { id, email }
   @Get('me/contact')
   public myContact(@GetUser(['id', 'email']) contact: Pick<UserEntity, 'id' | 'email'>) {}
-
 }
 
 //* Rutas públicas: el guard no exige JWT (ej. AuthController, que usa el ID token de Firebase)
@@ -230,7 +231,7 @@ Invoke-RestMethod -Method Post -Uri "http://localhost:<PORT>/api/auth/login" `
   -Headers @{ "firebase-token" = $R.idToken }
 ```
 
-En Swagger (`/api/docs`), `/auth/login` y `/auth/register` muestran un campo para pegar la cabecera `firebase-token`.
+En Swagger (`/api/docs`), `/auth/login` y `/auth/register` muestran un campo para pegar la cabecera `firebase-token`. El `accessToken` que devuelven se pega en el botón **Authorize** (esquema `authorization`, sin `Bearer`), que Swagger aplica a todas las rutas para probar las protegidas (ej. `GET /users/me`).
 
 Con el emulador (`firebase emulators:start --only auth --project demo-talent-hub`), la URL es `http://127.0.0.1:9099/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=fake` y no hacen falta credenciales.
 
@@ -238,7 +239,6 @@ Con el emulador (`firebase emulators:start --only auth --project demo-talent-hub
 
 ## 7. Pendiente
 
-- //TODO: `GET /users/me` en el `UsersController` con los datos del usuario autenticado (`@GetUser()` + `UserMapper.toResponse`).
 - //TODO: Verificación de correo: crear las cuentas con un estado pendiente cuando `emailVerified` sea `false` y activarlas al verificar el correo en Firebase.
 - //TODO: Renovación de la sesión en el cliente (nuevo ID token de Firebase ➔ `/auth/login`).
 
