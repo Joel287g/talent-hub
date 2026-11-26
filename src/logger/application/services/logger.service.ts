@@ -26,7 +26,10 @@ export class LoggerService {
     const contextString = [this.defaultContext, ...contextDetail].join('-');
     const activeLogger = contextDetail.length > 0 ? new Logger(contextString) : this.consoleLogger;
 
-    activeLogger[level.toLowerCase()](logger.message, JSON.stringify(logger.data).slice(0, 2000));
+    //* `JSON.stringify(undefined)` devuelve `undefined`: sin `?? null` el log fallaría antes de validarse
+    const DATA = JSON.stringify(logger.data ?? null).slice(0, 2000);
+
+    activeLogger[level.toLowerCase()](logger.message, DATA);
 
     const logEntity = LoggerEntity.create({
       type: logger.type,

@@ -1,10 +1,12 @@
 //? Imports de codigo
+import { METHODS } from 'http';
+
 import { Document, Types } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
-import { Collections, MethodsHttp } from '@common/domain/enums';
+import { Collections } from '@common/domain/enums';
 
 @Schema({
   _id: true,
@@ -36,8 +38,9 @@ export class Sniffer extends Document {
   @Prop({ required: true, type: Object })
   headers: any;
 
-  @Prop({ required: true, type: String, enum: MethodsHttp })
-  method: MethodsHttp;
+  //* Cualquier método que acepte el servidor HTTP de Node: los no habituales (ej. TRACE) son justo los que interesa auditar
+  @Prop({ required: true, type: String, enum: METHODS })
+  method: string;
 
   //* Rango HTTP completo: el enum `HttpStatus` no incluye todos los códigos (ej. 431)
   @Prop({ required: true, type: Number, min: 100, max: 599 })

@@ -1,6 +1,3 @@
-//? Imports de usuario
-import { MethodsHttp } from '@common/domain/enums';
-
 export interface SnifferInterface {
   id?: string | null;
   auth?: string;
@@ -10,7 +7,7 @@ export interface SnifferInterface {
   request?: any;
   response?: any;
   headers: any;
-  method: MethodsHttp;
+  method: string;
   statusCode: number;
   processingTime: number;
   userAgent?: string;
@@ -31,7 +28,7 @@ export class SnifferEntity {
   private readonly _request?: any;
   private readonly _response?: any;
   private readonly _headers: any;
-  private readonly _method: MethodsHttp;
+  private readonly _method: string;
   private readonly _statusCode: number;
   private readonly _processingTime: number;
   private readonly _userAgent?: string;
@@ -84,7 +81,7 @@ export class SnifferEntity {
   public get headers(): any {
     return this._headers;
   }
-  public get method(): MethodsHttp {
+  public get method(): string {
     return this._method;
   }
   public get statusCode(): number {

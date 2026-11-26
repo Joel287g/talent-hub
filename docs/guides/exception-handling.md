@@ -53,10 +53,10 @@ El sistema implementa cuatro filtros registrados globalmente mediante el token `
 
 - **Propósito:** Intercepta los errores nativos lanzados por el driver de MongoDB.
 - **Comportamiento:** Traduce códigos crudos de base de datos a códigos de estado HTTP semánticamente correctos:
-  - **11000 / 11001** (Duplicidad de claves únicas) ➔ **400 Bad Request** (o **409 Conflict**).
-  - **11002** (Violación de restricciones) ➔ **400 Bad Request**.
+  - **11000 / 11001** (Duplicidad de claves únicas) ➔ **409 Conflict**. Solo debería ocurrir con peticiones simultáneas, porque la unicidad se comprueba antes (ver sección 6).
   - **2** (No encontrado) ➔ **404 Not Found**.
   - **11007** ➔ **422 Unprocessable Entity**.
+  - Cualquier otro código ➔ **500 Internal Server Error**.
 
 ### 3. Seguridad y Entornos (Environment-based Stack)
 
@@ -77,7 +77,7 @@ Todas las respuestas de error del backend devuelven una estructura JSON uniforme
 {
   "message": "E11000 duplicate key error collection: talent-dev.users index: uid_1 dup key: { uid: \"string\" }",
   "name": "MongoServerError",
-  "statusCode": 400,
+  "statusCode": 409,
   "method": "POST",
   "url": "/api/users/create",
   "timestamp": "2026-09-16T21:49:19.468Z",
@@ -172,7 +172,7 @@ Todo error previsible se ataja **antes** de que lo lance la base de datos o el s
 - **Unicidad** (`uid`, `email`, `phone`, `alias`, contacto de empresa): se consulta mediante un Caso de Uso antes de persistir y se lanza un **409** del catálogo del módulo (ej. `UserErrors.aliasAlreadyExists()`).
 - **Coherencia:** la consulta previa debe comparar exactamente los mismos campos que el índice único. Ej: el teléfono se compara siempre completo (`cca2` + `code` + `number`), porque varios países comparten prefijo.
 
-> //! Los índices únicos y el `MongooseExceptionFilter` se mantienen como última defensa: dos peticiones simultáneas pueden superar a la vez la consulta previa.
+> //! Los índices únicos y el `MongooseExceptionFilter` se mantienen como última defensa: dos peticiones simultáneas pueden superar a la vez la consulta previa. En ese caso el E11000 también se responde con un **409**.
 
 ---
 

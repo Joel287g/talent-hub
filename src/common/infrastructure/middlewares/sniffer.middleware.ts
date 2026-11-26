@@ -35,7 +35,7 @@ export class SnifferMiddleware implements NestMiddleware {
       'authorization',
     ]);
 
-    const METHOD: MethodsHttp = request.method;
+    const METHOD: string = request.method;
     const CONTENT = METHOD === MethodsHttp.GET ? 'query' : 'body';
     const BODY = request[CONTENT];
 
@@ -109,7 +109,8 @@ export class SnifferMiddleware implements NestMiddleware {
           {
             type: LoggerTypes.SNIFFER,
             message: LoggerSniffer.ERROR,
-            data: { error: ERROR, sniffer },
+            //* Un `Error` pierde `message` y `stack` al serializarse: se copian a mano
+            data: { error: { name: ERROR?.name, message: ERROR?.message }, sniffer },
           },
           this.CONTEXT,
         ),

@@ -36,9 +36,10 @@ export class MongooseExceptionFilter implements ExceptionFilter<mongo.MongoServe
 
     //* Traducción de códigos crudos de Mongo a HTTP Status semánticos
     switch (exception.code) {
+      //* Solo llega aquí si dos peticiones simultáneas superan la consulta previa de unicidad
       case 11000:
       case 11001:
-        statusCode = HttpStatus.BAD_REQUEST;
+        statusCode = HttpStatus.CONFLICT;
         break;
       case 2:
         statusCode = HttpStatus.NOT_FOUND;
