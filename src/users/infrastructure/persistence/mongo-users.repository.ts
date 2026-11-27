@@ -7,7 +7,9 @@ import { Model } from 'mongoose';
 import { BaseRepository } from '@common/repositories';
 import { UsersRepository } from '@users/domain/repositories';
 import { ALIAS_COLLATION, Users } from '@users/infrastructure/persistence/schemas';
-import { UserEntity } from '@users/domain/entities';
+import { BusinessProfileEntity, PersonalProfileEntity, UserEntity } from '@users/domain/entities';
+import { BusinessProfileMapper } from '@users/infrastructure/persistence/business-profile.mapper';
+import { PersonalProfileMapper } from '@users/infrastructure/persistence/personal-profile.mapper';
 import { UserMapper } from '@users/infrastructure/persistence/user.mapper';
 
 @Injectable()
@@ -89,6 +91,27 @@ export class MongoDBUsersRepository
         },
       },
     });
+    return this.mapToDomain(USER);
+  }
+  //#endregion
+
+  //#region UPDATE
+  async addPersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findByIdAndUpdate(
+      id,
+      { $set: { personalProfile: PersonalProfileMapper.toPersistence(profile) } },
+      { returnDocument: 'after', runValidators: true },
+    );
+    return this.mapToDomain(USER);
+  }
+
+  async addBusinessProfile(id: string, profile: BusinessProfileEntity): Promise<UserEntity | null> {
+    //* `$push` no reescribe las demás empresas (ni sus marcas de tiempo)
+    const USER = await this.usersModel.findByIdAndUpdate(
+      id,
+      { $push: { businessProfiles: BusinessProfileMapper.toPersistence(profile) } },
+      { returnDocument: 'after', runValidators: true },
+    );
     return this.mapToDomain(USER);
   }
   //#endregion

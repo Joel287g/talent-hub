@@ -50,7 +50,8 @@ export class UserEntity {
   private readonly _email: string;
   private readonly _phone: PhoneEntity | null;
   private readonly _activeProfileType: ProfileTypeEnum;
-  private readonly _personalProfile: PersonalProfileEntity | null;
+  //* Mutable: un usuario registrado con su cuenta de empresa puede añadir después su perfil personal
+  private _personalProfile: PersonalProfileEntity | null;
   private readonly _businessProfiles: BusinessProfileEntity[];
   private readonly _role: SystemRoleEnum;
   private readonly _status: UserStatus;
@@ -139,6 +140,40 @@ export class UserEntity {
   //? Methods
   public isActive(): boolean {
     return this._status === UserStatus.ACTIVE;
+  }
+
+  public hasPersonalProfile(): boolean {
+    return this._personalProfile !== null;
+  }
+
+  /**
+   * Añade el perfil personal a un usuario que se registró solo con su cuenta de empresa.
+   *
+   * @param {CreatePersonalProfileType} profile - Datos del perfil personal.
+   * @returns {PersonalProfileEntity} Perfil personal creado y asignado al usuario.
+   * @throws {BaseException} 409 si el usuario ya tiene un perfil personal.
+   */
+  public addPersonalProfile(profile: CreatePersonalProfileType): PersonalProfileEntity {
+    //* Invariante: un usuario tiene como máximo un perfil personal
+    if (this.hasPersonalProfile()) {
+      throw UserErrors.personalProfileAlreadyExists('USER-DOM-ENT-USER-003');
+    }
+
+    this._personalProfile = PersonalProfileEntity.create(profile);
+    return this._personalProfile;
+  }
+
+  /**
+   * Añade una cuenta de empresa al usuario (0..N empresas por usuario).
+   *
+   * @param {CreateBusinessProfileType} profile - Datos de la cuenta de empresa.
+   * @returns {BusinessProfileEntity} Cuenta de empresa creada y asignada al usuario.
+   */
+  public addBusinessProfile(profile: CreateBusinessProfileType): BusinessProfileEntity {
+    const BUSINESS_PROFILE = BusinessProfileEntity.create(profile);
+
+    this._businessProfiles.push(BUSINESS_PROFILE);
+    return BUSINESS_PROFILE;
   }
 
   //? Methods static

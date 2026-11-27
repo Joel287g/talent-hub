@@ -29,6 +29,16 @@ class UserErrorsFactory extends BaseErrors {
   ): BaseException<UserErrorsEnum> {
     return new BaseException<UserErrorsEnum>(UserErrorsEnum.BUSINESS_ALREADY_EXISTS, 409, code);
   }
+
+  public personalProfileAlreadyExists(
+    code: string = 'USER-DOM-EXC-USER_ERRO-006',
+  ): BaseException<UserErrorsEnum> {
+    return new BaseException<UserErrorsEnum>(
+      UserErrorsEnum.PERSONAL_PROFILE_ALREADY_EXISTS,
+      409,
+      code,
+    );
+  }
 }
 
 export const UserErrors = new UserErrorsFactory();
