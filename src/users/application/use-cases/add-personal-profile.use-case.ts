@@ -24,7 +24,7 @@ export class AddPersonalProfileUseCase {
    */
   public async execute(user: UserEntity, payload: CreatePersonalProfileDto): Promise<UserEntity> {
     const PERSONAL_PROFILE = user.addPersonalProfile(payload);
-    const UPDATED_USER = await this.usersRepository.savePersonalProfile(user.id, PERSONAL_PROFILE);
+    const UPDATED_USER = await this.usersRepository.addPersonalProfile(user.id, PERSONAL_PROFILE);
 
     if (!UPDATED_USER) {
       throw UserErrors.notFound('USER-APP-USE-ADD_PERS_PROF-001');

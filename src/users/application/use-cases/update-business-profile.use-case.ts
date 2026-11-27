@@ -29,7 +29,10 @@ export class UpdateBusinessProfileUseCase {
     payload: UpdateBusinessProfileDto,
   ): Promise<UserEntity> {
     const BUSINESS_PROFILE = user.updateBusinessProfile(businessProfileId, payload);
-    const UPDATED_USER = await this.usersRepository.saveBusinessProfile(user.id, BUSINESS_PROFILE);
+    const UPDATED_USER = await this.usersRepository.updateBusinessProfile(
+      user.id,
+      BUSINESS_PROFILE,
+    );
 
     if (!UPDATED_USER) {
       throw UserErrors.businessProfileNotFound('USER-APP-USE-UPDA_BUSI_PROF-001');

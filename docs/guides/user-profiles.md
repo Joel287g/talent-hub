@@ -92,7 +92,7 @@ Edición **parcial** con `UpdatePersonalProfileDto` (mismas validaciones que el 
 
 - `address`, `avatar` y las listas se **reemplazan completos** (no se fusionan con los valores anteriores).
 - Los campos obligatorios usan `@IsOptionalNotNull()` (`@common/application/decorators`) en lugar de `@IsOptional()`, que trataría `null` como omitido y lo dejaría sin validar.
-- `PersonalProfileEntity` es inmutable: `update()` devuelve un perfil nuevo que conserva `createdAt`. El repositorio lo guarda con `savePersonalProfile()` (`$set` del subdocumento), el mismo método que el alta.
+- `PersonalProfileEntity` es inmutable: `update()` devuelve un perfil nuevo que conserva `createdAt`. El repositorio lo guarda con `updatePersonalProfile()`, campo a campo (ver la advertencia de la sección 5).
 - **Alias:** se consulta antes de guardar con la misma collation que el índice único. El propio alias no cuenta como duplicado, así que el usuario puede cambiar solo sus mayúsculas (`vale` ➔ `Vale`).
 
 | Situación                                  | Respuesta                                 | Código                            |
@@ -119,7 +119,9 @@ Mismas reglas de edición parcial que el perfil personal, con `UpdateBusinessPro
 - //TODO: Decidir si `taxId` puede editarse según la normativa fiscal española.
 - `offeredStyles` admite una lista vacía (igual que en el alta).
 - Sin consultas previas (ningún campo editable es único): el controlador llama directamente al caso de uso.
-- El repositorio reemplaza solo esa empresa (`$set` de `businessProfiles.$`), sin tocar las demás. `update()` conserva el `id`, el contacto, el `taxId` y `createdAt`.
+- El repositorio actualiza solo esa empresa (`businessProfiles.$`), sin tocar las demás. `update()` conserva el `id`, el contacto, el `taxId` y `createdAt`.
+
+> //! **Ediciones de subdocumentos campo a campo.** `updatePersonalProfile()` y `updateBusinessProfile()` del repositorio escriben `personalProfile.<campo>` / `businessProfiles.$.<campo>` (helper `toFieldsSet`), nunca el subdocumento entero. Con `timestamps` en el subschema, Mongoose vuelve a sellar el `createdAt` del perfil personal o añade `businessProfiles.$.updatedAt` al mismo `$set`, y Mongo lo rechaza (error 40 ➔ 500). Solo el alta (`addPersonalProfile`, `addBusinessProfile`) escribe el subdocumento completo, porque aún no existe.
 
 | Situación                                              | Respuesta                                 | Código                  |
 | :----------------------------------------------------- | :---------------------------------------- | :---------------------- |

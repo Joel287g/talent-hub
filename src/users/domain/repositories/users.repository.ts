@@ -18,9 +18,10 @@ export interface UsersRepository extends BaseRepositoryInterface<UserEntity> {
     number: string;
   }): Promise<UserEntity | null>;
   create(entity: UserEntity): Promise<UserEntity>;
-  savePersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null>;
+  addPersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null>;
+  updatePersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null>;
   addBusinessProfile(id: string, profile: BusinessProfileEntity): Promise<UserEntity | null>;
-  saveBusinessProfile(id: string, profile: BusinessProfileEntity): Promise<UserEntity | null>;
+  updateBusinessProfile(id: string, profile: BusinessProfileEntity): Promise<UserEntity | null>;
   updateActiveProfile(
     id: string,
     activeProfileType: ProfileTypeEnum,

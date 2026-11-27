@@ -13,6 +13,9 @@ import { BusinessProfileMapper } from '@users/infrastructure/persistence/busines
 import { PersonalProfileMapper } from '@users/infrastructure/persistence/personal-profile.mapper';
 import { UserMapper } from '@users/infrastructure/persistence/user.mapper';
 
+//? Campos de un subdocumento que una edición nunca reescribe
+const IMMUTABLE_FIELDS = ['_id', 'createdAt'];
+
 @Injectable()
 export class MongoDBUsersRepository
   extends BaseRepository<UserEntity, Users>
@@ -97,13 +100,28 @@ export class MongoDBUsersRepository
   //#endregion
 
   //#region UPDATE
-  async savePersonalProfile(
+  //* Alta: el perfil aún no existe (`null`), así que se escribe el subdocumento completo
+  async addPersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findByIdAndUpdate(
+      id,
+      { $set: { personalProfile: PersonalProfileMapper.toPersistence(profile) } },
+      { returnDocument: 'after', runValidators: true },
+    );
+    return this.mapToDomain(USER);
+  }
+
+  async updatePersonalProfile(
     id: string,
     profile: PersonalProfileEntity,
   ): Promise<UserEntity | null> {
     const USER = await this.usersModel.findByIdAndUpdate(
       id,
-      { $set: { personalProfile: PersonalProfileMapper.toPersistence(profile) } },
+      {
+        $set: MongoDBUsersRepository.toFieldsSet(
+          'personalProfile',
+          PersonalProfileMapper.toPersistence(profile),
+        ),
+      },
       { returnDocument: 'after', runValidators: true },
     );
     return this.mapToDomain(USER);
@@ -119,14 +137,19 @@ export class MongoDBUsersRepository
     return this.mapToDomain(USER);
   }
 
-  async saveBusinessProfile(
+  async updateBusinessProfile(
     id: string,
     profile: BusinessProfileEntity,
   ): Promise<UserEntity | null> {
-    //* `$` reemplaza solo la empresa que coincide con el filtro, sin tocar las demás
+    //* `$` apunta solo a la empresa que coincide con el filtro, sin tocar las demás
     const USER = await this.usersModel.findOneAndUpdate(
       { _id: id, 'businessProfiles._id': new Types.ObjectId(profile.id) },
-      { $set: { 'businessProfiles.$': BusinessProfileMapper.toPersistence(profile) } },
+      {
+        $set: MongoDBUsersRepository.toFieldsSet(
+          'businessProfiles.$',
+          BusinessProfileMapper.toPersistence(profile),
+        ),
+      },
       { returnDocument: 'after', runValidators: true },
     );
     return this.mapToDomain(USER);
@@ -150,6 +173,23 @@ export class MongoDBUsersRepository
       { returnDocument: 'after', runValidators: true },
     );
     return this.mapToDomain(USER);
+  }
+  //#endregion
+
+  //#region Helpers
+  /**
+   * Convierte un subdocumento en un `$set` campo a campo (`personalProfile.headline`, ...).
+   *
+   * //! Reemplazar el subdocumento entero no sirve en una edición: con `timestamps`, Mongoose vuelve a
+   * //! sellar su `createdAt` o añade `<ruta>.updatedAt` al mismo `$set` (conflicto, error 40 de Mongo).
+   * //! `_id` y `createdAt` nunca se reescriben; `updatedAt` llega ya actualizado desde la entidad.
+   */
+  private static toFieldsSet(path: string, document: Record<string, any>): Record<string, any> {
+    return Object.fromEntries(
+      Object.entries(document)
+        .filter(([key]) => !IMMUTABLE_FIELDS.includes(key))
+        .map(([key, value]) => [`${path}.${key}`, value]),
+    );
   }
   //#endregion
 }
