@@ -234,7 +234,19 @@ El JSON se descarga en _Firebase Console ➔ Configuración del proyecto ➔ Cue
 
 ### Probar sin frontend
 
-Un ID token se puede obtener directamente de la API REST de Firebase Auth:
+El script `npm run auth:token` (`src/scripts/get-token.script.ts`) hace en un solo paso el inicio de sesión en Firebase y el canje por el JWT del backend, y copia el `accessToken` al portapapeles:
+
+```bash
+npm run auth:token -- valeria@test.com 123456             # login ➔ accessToken
+npm run auth:token -- nuevo@test.com 123456 --sign-up     # crea antes la cuenta en Firebase
+npm run auth:token                                        # usa FIREBASE_TEST_EMAIL / FIREBASE_TEST_PASSWORD
+```
+
+- Lee el `.env.<NODE_ENV>` (por defecto `.env.development`) y necesita `PORT`, `FIREBASE_WEB_API_KEY` (_Configuración del proyecto ➔ General_; no hace falta con el emulador) y el backend arrancado.
+- Si el usuario aún no está registrado en el backend (**404** `USER-NOT_FOUND`), muestra y copia el **ID token de Firebase** para pegarlo en la cabecera `firebase-token` de `POST /api/auth/register`.
+- `--no-copy` desactiva el portapapeles. Se niega a ejecutarse con `NODE_ENV=production`.
+
+Equivalente manual con la API REST de Firebase Auth:
 
 ```powershell
 # Proyecto real: <WEB_API_KEY> en Configuración del proyecto ➔ General

@@ -78,6 +78,9 @@ Crea un archivo `.env.development` en la raíz del proyecto basándote en el arc
 # Modo desarrollo con recarga en vivo
 npm run start:dev
 
+# Obtener un JWT sin frontend (ver docs/guides/authentication.md, "Probar sin frontend")
+npm run auth:token -- <email> <password>
+
 # Compilación
 npm run build
 ```
