@@ -6,6 +6,7 @@ import {
   BusinessProfileEntity,
   BusinessProfileInterface,
   CreateBusinessProfileType,
+  UpdateBusinessProfileType,
 } from '@users/domain/entities/business-profile.entity';
 import {
   CreatePersonalProfileType,
@@ -195,7 +196,7 @@ export class UserEntity {
    * @throws {BaseException} 400 si no se indica ningún campo; 404 si el usuario no tiene perfil personal.
    */
   public updatePersonalProfile(changes: UpdatePersonalProfileType): PersonalProfileEntity {
-    if (!Object.values(changes).some((value) => value !== undefined)) {
+    if (!UserEntity.hasChanges(changes)) {
       throw UserErrors.nothingToUpdate('USER-DOM-ENT-USER-009');
     }
 
@@ -205,6 +206,34 @@ export class UserEntity {
 
     this._personalProfile = this._personalProfile.update(changes);
     return this._personalProfile;
+  }
+
+  /**
+   * Edita parcialmente una de las empresas del usuario.
+   *
+   * @param {string} businessProfileId - Id de la empresa (de `businessProfiles`).
+   * @param {UpdateBusinessProfileType} changes - Campos a cambiar; los omitidos se conservan.
+   * @returns {BusinessProfileEntity} Empresa actualizada.
+   * @throws {BaseException} 400 si no se indica ningún campo; 404 si la empresa no es del usuario.
+   */
+  public updateBusinessProfile(
+    businessProfileId: string,
+    changes: UpdateBusinessProfileType,
+  ): BusinessProfileEntity {
+    if (!UserEntity.hasChanges(changes)) {
+      throw UserErrors.nothingToUpdate('USER-DOM-ENT-USER-011');
+    }
+
+    const INDEX = this._businessProfiles.findIndex((profile) => profile.id === businessProfileId);
+
+    if (INDEX === -1) {
+      throw UserErrors.businessProfileNotFound('USER-DOM-ENT-USER-012');
+    }
+
+    const BUSINESS_PROFILE = this._businessProfiles[INDEX].update(changes);
+
+    this._businessProfiles[INDEX] = BUSINESS_PROFILE;
+    return BUSINESS_PROFILE;
   }
 
   /**
@@ -275,6 +304,11 @@ export class UserEntity {
   //#endregion
 
   //#region Methods static
+  //? Una edición parcial debe traer al menos un campo informado
+  private static hasChanges(changes: object): boolean {
+    return Object.values(changes).some((value) => value !== undefined);
+  }
+
   public static create(user: CreateUserType): UserEntity {
     const PERSONAL_PROFILE = user.personalProfile
       ? PersonalProfileEntity.create(user.personalProfile)

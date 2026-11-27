@@ -35,6 +35,22 @@ export type CreateBusinessProfileType = Omit<
   offeredStyles?: DanceStyleEnum[];
 };
 
+//* Edición parcial: `undefined` ➔ sin cambios; `null` ➔ borra el dato (solo en los campos opcionales)
+//! `email`, `phone` y `taxId` no se editan por esta vía (contacto único y dato fiscal)
+export type UpdateBusinessProfileType = Partial<
+  Pick<
+    CreateBusinessProfileType,
+    | 'name'
+    | 'description'
+    | 'type'
+    | 'avatar'
+    | 'address'
+    | 'availableToTravel'
+    | 'ownTransportation'
+    | 'offeredStyles'
+  >
+>;
+
 export class BusinessProfileEntity {
   private readonly _id: string | null;
   private readonly _name: string;
@@ -149,6 +165,39 @@ export class BusinessProfileEntity {
       availableToTravel: businessProfile.availableToTravel ?? false,
       ownTransportation: businessProfile.ownTransportation ?? false,
       offeredStyles: businessProfile.offeredStyles ?? [],
+    });
+  }
+
+  //? Methods
+  /**
+   * Devuelve una empresa nueva con los cambios aplicados (la entidad es inmutable).
+   * Conserva el `id`, el contacto (`email`, `phone`), el `taxId` y la fecha de creación.
+   *
+   * @param {UpdateBusinessProfileType} changes - Campos a cambiar; los omitidos se conservan.
+   * @returns {BusinessProfileEntity} Empresa actualizada.
+   */
+  public update(changes: UpdateBusinessProfileType): BusinessProfileEntity {
+    return new BusinessProfileEntity({
+      id: this._id,
+      name: changes.name ?? this._name,
+      description: changes.description === undefined ? this._description : changes.description,
+      type: changes.type ?? this._type,
+      avatar:
+        changes.avatar === undefined
+          ? this._avatar
+          : changes.avatar
+            ? MediaFileEntity.create(changes.avatar)
+            : null,
+      taxId: this._taxId,
+      email: this._email,
+      phone: this._phone,
+      //* Campos obligatorios: nunca se borran (el DTO rechaza `null`)
+      address: changes.address ? AddressEntity.create(changes.address) : this._address,
+      availableToTravel: changes.availableToTravel ?? this._availableToTravel,
+      ownTransportation: changes.ownTransportation ?? this._ownTransportation,
+      offeredStyles: changes.offeredStyles ?? this._offeredStyles,
+      createdAt: this._createdAt,
+      updatedAt: new Date(),
     });
   }
 }

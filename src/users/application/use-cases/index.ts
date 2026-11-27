@@ -7,3 +7,4 @@ export { AddPersonalProfileUseCase } from '@users/application/use-cases/add-pers
 export { AddBusinessProfileUseCase } from '@users/application/use-cases/add-business-profile.use-case';
 export { SwitchActiveProfileUseCase } from '@users/application/use-cases/switch-active-profile.use-case';
 export { UpdatePersonalProfileUseCase } from '@users/application/use-cases/update-personal-profile.use-case';
+export { UpdateBusinessProfileUseCase } from '@users/application/use-cases/update-business-profile.use-case';

@@ -1,6 +1,7 @@
 export {
   BusinessProfileInterface,
   CreateBusinessProfileType,
+  UpdateBusinessProfileType,
   BusinessProfileEntity,
 } from '@users/domain/entities/business-profile.entity';
 export {

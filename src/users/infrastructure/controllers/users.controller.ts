@@ -1,6 +1,6 @@
 //? Imports de codigo
-import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 
 //? Imports de usuario
 import { GetUser } from '@common/infrastructure/decorators';
@@ -9,6 +9,7 @@ import {
   CreateBusinessProfileDto,
   CreatePersonalProfileDto,
   SwitchActiveProfileDto,
+  UpdateBusinessProfileDto,
   UpdatePersonalProfileDto,
 } from '@users/application/dtos';
 import {
@@ -16,7 +17,10 @@ import {
   AddPersonalProfileService,
   UpdatePersonalProfileService,
 } from '@users/application/services';
-import { SwitchActiveProfileUseCase } from '@users/application/use-cases';
+import {
+  SwitchActiveProfileUseCase,
+  UpdateBusinessProfileUseCase,
+} from '@users/application/use-cases';
 import { UserEntity, UserInterface } from '@users/domain/entities';
 import { UserMapper } from '@users/infrastructure/persistence';
 
@@ -29,6 +33,7 @@ export class UsersController {
     private readonly addBusinessProfileService: AddBusinessProfileService,
     private readonly switchActiveProfileUseCase: SwitchActiveProfileUseCase,
     private readonly updatePersonalProfileService: UpdatePersonalProfileService,
+    private readonly updateBusinessProfileUseCase: UpdateBusinessProfileUseCase,
   ) {}
 
   //* La JwtStrategy ya cargó el usuario (existe y está ACTIVE): no hace falta otra consulta
@@ -74,6 +79,25 @@ export class UsersController {
     @Body() createBusinessProfileDto: CreateBusinessProfileDto,
   ): Promise<UserInterface> {
     const USER = await this.addBusinessProfileService.execute(user, createBusinessProfileDto);
+    return UserMapper.toResponse(USER);
+  }
+
+  //* Edición parcial de una empresa del usuario; sin consultas previas, así que llama al caso de uso
+  @Patch('me/business-profiles/:businessProfileId')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Edita una cuenta de empresa del usuario autenticado' })
+  @ApiParam({ name: 'businessProfileId', description: 'Id de la empresa (de businessProfiles)' })
+  @ApiBody({ type: UpdateBusinessProfileDto })
+  public async updateBusinessProfile(
+    @GetUser() user: UserEntity,
+    @Param('businessProfileId') businessProfileId: string,
+    @Body() updateBusinessProfileDto: UpdateBusinessProfileDto,
+  ): Promise<UserInterface> {
+    const USER = await this.updateBusinessProfileUseCase.execute(
+      user,
+      businessProfileId,
+      updateBusinessProfileDto,
+    );
     return UserMapper.toResponse(USER);
   }
 

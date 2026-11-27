@@ -11,22 +11,18 @@ import {
   IsString,
   Matches,
   MaxLength,
-  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 //? Imports de usuario
 import { TEXT_MAX_LENGTH } from '@common/application/constants';
-import { IsSafeText, Trim } from '@common/application/decorators';
+import { IsOptionalNotNull, IsSafeText, Trim } from '@common/application/decorators';
 import { CreateAddressDto, CreateAvatarDto } from '@common/application/dtos';
 import { DanceStyleEnum, SpecialtyEnum } from '@users/domain/enums';
 
 //* Mismo formato que en el alta (CreatePersonalProfileDto)
 const ALIAS = /^[\p{L}\p{N}._-]+(?: [\p{L}\p{N}._-]+)*$/u;
-
-//? Campos obligatorios del perfil: se pueden omitir (sin cambios), pero un `null` se valida y se rechaza
-const isSent = (_dto: object, value: unknown): boolean => value !== undefined;
 
 /**
  * Edición parcial del perfil personal: los campos omitidos no cambian.
@@ -67,14 +63,14 @@ export class UpdatePersonalProfileDto {
   avatar?: CreateAvatarDto | null;
 
   @ApiProperty({ required: false, type: CreateAddressDto })
-  @ValidateIf(isSent)
+  @IsOptionalNotNull()
   @IsObject()
   @ValidateNested()
   @Type(() => CreateAddressDto)
   address?: CreateAddressDto;
 
   @ApiProperty({ required: false, enum: SpecialtyEnum, isArray: true })
-  @ValidateIf(isSent)
+  @IsOptionalNotNull()
   @IsArray()
   @ArrayMinSize(1)
   @ArrayUnique()
@@ -82,7 +78,7 @@ export class UpdatePersonalProfileDto {
   specialties?: SpecialtyEnum[];
 
   @ApiProperty({ required: false, enum: DanceStyleEnum, isArray: true })
-  @ValidateIf(isSent)
+  @IsOptionalNotNull()
   @IsArray()
   @ArrayMinSize(1)
   @ArrayUnique()
@@ -90,12 +86,12 @@ export class UpdatePersonalProfileDto {
   danceStyles?: DanceStyleEnum[];
 
   @ApiProperty({ required: false })
-  @ValidateIf(isSent)
+  @IsOptionalNotNull()
   @IsBoolean()
   availableToTravel?: boolean;
 
   @ApiProperty({ required: false })
-  @ValidateIf(isSent)
+  @IsOptionalNotNull()
   @IsBoolean()
   ownTransportation?: boolean;
 }

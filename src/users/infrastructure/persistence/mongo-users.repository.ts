@@ -119,6 +119,19 @@ export class MongoDBUsersRepository
     return this.mapToDomain(USER);
   }
 
+  async saveBusinessProfile(
+    id: string,
+    profile: BusinessProfileEntity,
+  ): Promise<UserEntity | null> {
+    //* `$` reemplaza solo la empresa que coincide con el filtro, sin tocar las demás
+    const USER = await this.usersModel.findOneAndUpdate(
+      { _id: id, 'businessProfiles._id': new Types.ObjectId(profile.id) },
+      { $set: { 'businessProfiles.$': BusinessProfileMapper.toPersistence(profile) } },
+      { returnDocument: 'after', runValidators: true },
+    );
+    return this.mapToDomain(USER);
+  }
+
   async updateActiveProfile(
     id: string,
     activeProfileType: ProfileTypeEnum,

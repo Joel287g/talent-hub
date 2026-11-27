@@ -1,6 +1,6 @@
 # 👥 Guía de Perfiles de Usuario (Personal y Empresa)
 
-Este documento describe cómo un usuario de **Talent Hub** gestiona sus perfiles: el **perfil personal** (artista) y sus **cuentas de empresa** (academias, compañías, etc.). Explica cómo añadir el perfil que no se creó en el registro, cómo editarlo y cómo cambiar el perfil activo, que es el que decide qué datos muestra el cliente.
+Este documento describe cómo un usuario de **Talent Hub** gestiona sus perfiles: el **perfil personal** (artista) y sus **cuentas de empresa** (academias, compañías, etc.). Explica cómo añadir el perfil que no se creó en el registro, cómo editar los perfiles y cómo cambiar el perfil activo, que es el que decide qué datos muestra el cliente.
 
 > Todas las rutas son protegidas: requieren el JWT del backend en la cabecera `authorization` (ver [Autenticación](./authentication.md)). El usuario lo carga la `JwtStrategy` y llega al controlador con `@GetUser()`.
 
@@ -91,7 +91,7 @@ Edición **parcial** con `UpdatePersonalProfileDto` (mismas validaciones que el 
 ```
 
 - `address`, `avatar` y las listas se **reemplazan completos** (no se fusionan con los valores anteriores).
-- Los campos obligatorios usan `@ValidateIf((_, value) => value !== undefined)` en lugar de `@IsOptional()`, que trataría `null` como omitido y lo dejaría sin validar.
+- Los campos obligatorios usan `@IsOptionalNotNull()` (`@common/application/decorators`) en lugar de `@IsOptional()`, que trataría `null` como omitido y lo dejaría sin validar.
 - `PersonalProfileEntity` es inmutable: `update()` devuelve un perfil nuevo que conserva `createdAt`. El repositorio lo guarda con `savePersonalProfile()` (`$set` del subdocumento), el mismo método que el alta.
 - **Alias:** se consulta antes de guardar con la misma collation que el índice único. El propio alias no cuenta como duplicado, así que el usuario puede cambiar solo sus mayúsculas (`vale` ➔ `Vale`).
 
@@ -101,6 +101,31 @@ Edición **parcial** con `UpdatePersonalProfileDto` (mismas validaciones que el 
 | El alias es de otro usuario                | **409** `USER-ALIAS_ALREADY_EXISTS`       | `USER-APP-SER-UPDA_PERS_PROF-002` |
 | Body sin ningún campo                      | **400** `USER-NOTHING_TO_UPDATE`          | `USER-DOM-ENT-USER-009`           |
 | Body inválido (incluye `null` en un campo obligatorio) | **400** (`ValidationPipe`)    | —                                 |
+
+---
+
+## 5. Editar una cuenta de empresa
+
+`PATCH /api/users/me/business-profiles/:businessProfileId` ➔ `UpdateBusinessProfileUseCase` ➔ `UserEntity.updateBusinessProfile()` ➔ `BusinessProfileEntity.update()`. Responde **200** con el usuario completo.
+
+Mismas reglas de edición parcial que el perfil personal, con `UpdateBusinessProfileDto`:
+
+| Campos                                                                              | Omitido     | `null` (o texto vacío)     |
+| :---------------------------------------------------------------------------------- | :---------- | :------------------------- |
+| `description`, `avatar`                                                             | Sin cambios | **Borra** el dato          |
+| `name`, `type`, `address`, `offeredStyles`, `availableToTravel`, `ownTransportation` | Sin cambios | **400** (son obligatorios) |
+
+- **No editables:** `email` y `phone` (contacto único de la empresa, con su propia comprobación de duplicados) y `taxId` (dato fiscal). El `ValidationPipe` (`whitelist`) los descarta del body y `UpdateBusinessProfileType` no los admite, así que la entidad tampoco los cambia.
+- //TODO: Decidir si `taxId` puede editarse según la normativa fiscal española.
+- `offeredStyles` admite una lista vacía (igual que en el alta).
+- Sin consultas previas (ningún campo editable es único): el controlador llama directamente al caso de uso.
+- El repositorio reemplaza solo esa empresa (`$set` de `businessProfiles.$`), sin tocar las demás. `update()` conserva el `id`, el contacto, el `taxId` y `createdAt`.
+
+| Situación                                              | Respuesta                                 | Código                  |
+| :----------------------------------------------------- | :---------------------------------------- | :---------------------- |
+| La empresa no existe o no es del usuario               | **404** `USER-BUSINESS_PROFILE_NOT_FOUND` | `USER-DOM-ENT-USER-012` |
+| Body sin ningún campo editable                         | **400** `USER-NOTHING_TO_UPDATE`          | `USER-DOM-ENT-USER-011` |
+| Body inválido (incluye `null` en un campo obligatorio) | **400** (`ValidationPipe`)                | —                       |
 
 ---
 
