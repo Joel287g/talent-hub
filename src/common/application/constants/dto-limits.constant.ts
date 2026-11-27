@@ -4,6 +4,7 @@
  */
 export const TEXT_MAX_LENGTH = {
   UID: 128, //* Máximo que admite Firebase Authentication
+  ID: 64, //* Identificadores internos (ej. id de una empresa del usuario)
   EMAIL: 254, //* Máximo de una dirección de correo (RFC 5321)
   NAME: 100,
   ALIAS: 50,

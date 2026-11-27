@@ -105,6 +105,7 @@ Este glosario define los conceptos clave, patrones y terminología utilizados en
 
 ## P
 
+- **Perfil Activo (Active Profile):** Perfil con el que el usuario está operando en cada momento: su perfil personal o una de sus cuentas de empresa (`activeProfileType` + `activeBusinessProfileId`). Decide qué datos muestra el cliente y se cambia con `UserEntity.switchActiveProfile()` (ver [Perfiles de Usuario](../guides/user-profiles.md)).
 - **Primitive Obsession (Obsesión por Primitivos):** Antipatrón de diseño donde se utilizan tipos primitivos (`string`, `number`) para representar conceptos de negocio complejos (ej. usar un `string` para un UID en lugar de una clase propia).
 - **Proveedor de Identidad (Identity Provider):** Servicio externo que autentica al usuario y emite un token que lo identifica (en nuestro caso, Firebase Authentication). El dominio lo abstrae con el puerto `IdentityProvider` (`IDENTITY_PROVIDER`), que devuelve una `VerifiedIdentity` (`uid`, `email`, `emailVerified`, `provider`). Su adaptador es `FirebaseIdentityProvider`.
 - **Puerto (Port):** Interfaz definida en la capa de Dominio que dicta un contrato estricto de lo que el sistema necesita hacer (ej. `UsersRepository`, `IdentityProvider`), sin importar cómo se implemente técnicamente.

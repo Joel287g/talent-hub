@@ -1,5 +1,5 @@
 //? Imports de codigo
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 //? Imports de usuario
@@ -42,6 +42,9 @@ export class Users extends Document {
   //? Tipo de perfil
   @Prop({ required: true, type: String, enum: ProfileTypeEnum })
   activeProfileType: ProfileTypeEnum;
+
+  @Prop({ required: false, type: Types.ObjectId, default: null })
+  activeBusinessProfileId?: Types.ObjectId | null;
 
   //? Información de la cuenta
   @Prop({ required: false, type: PersonalProfileSchema, default: {} })

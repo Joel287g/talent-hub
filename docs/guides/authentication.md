@@ -52,7 +52,7 @@ src/
  └── users/
      └── domain/
          └── entities/
-             └── user.entity.ts              # UserEntity.isActive(), addPersonalProfile(), addBusinessProfile()
+             └── user.entity.ts              # UserEntity.isActive()
 ```
 
 ---
@@ -87,24 +87,7 @@ El cliente inicia sesión en Firebase (correo/contraseña o Google) y envía su 
 | Body del registro inválido                         | **400** (`ValidationPipe`)               | —                                |
 | ID token ausente o no válido                       | **401/403/503** (ver sección 6)          | `AUTH-INF-PRO-FIRE_IDEN-00X`     |
 
-### Añadir el otro perfil después del registro
-
-El onboarding crea el perfil del `activeProfileType` elegido. El otro se añade después desde el módulo `users`, con el JWT del backend (rutas protegidas) y el mismo DTO que el registro. Ambas rutas responden **201** con el usuario completo (`UserMapper.toResponse`) y no cambian el `activeProfileType`.
-
-| Ruta                               | Body                       | Servicio ➔ Caso de uso                                     | Entidad                           |
-| :--------------------------------- | :------------------------- | :--------------------------------------------------------- | :-------------------------------- |
-| `POST /api/users/me/personal-profile` | `CreatePersonalProfileDto` | `AddPersonalProfileService` ➔ `AddPersonalProfileUseCase` | `UserEntity.addPersonalProfile()` |
-| `POST /api/users/me/business-profiles` | `CreateBusinessProfileDto` | `AddBusinessProfileService` ➔ `AddBusinessProfileUseCase` | `UserEntity.addBusinessProfile()` |
-
-- Un usuario tiene **como máximo un perfil personal** (invariante de la entidad) y **0..N cuentas de empresa**.
-- El repositorio escribe solo el subdocumento (`$set` del perfil personal, `$push` de la empresa), sin reescribir el resto del usuario.
-
-| Situación                                               | Respuesta                                     | Código                              |
-| :------------------------------------------------------ | :-------------------------------------------- | :---------------------------------- |
-| El usuario ya tiene perfil personal                     | **409** `USER-PERSONAL_PROFILE_ALREADY_EXISTS` | `USER-APP-SER-ADD_PERS_PROF-001`    |
-| El alias ya está en uso                                 | **409** `USER-ALIAS_ALREADY_EXISTS`           | `USER-APP-SER-ADD_PERS_PROF-002`    |
-| El email o el teléfono de la empresa ya están en uso    | **409** `USER-BUSINESS_ALREADY_EXISTS`        | `USER-APP-SER-ADD_BUSI_PROF-001`    |
-| Body inválido                                           | **400** (`ValidationPipe`)                    | —                                   |
+> El registro crea el perfil del `activeProfileType` elegido. Para añadir el otro perfil o cambiar el perfil activo, ver [Perfiles de Usuario](./user-profiles.md).
 
 ---
 
@@ -275,4 +258,4 @@ Con el emulador (`firebase emulators:start --only auth --project demo-talent-hub
 
 ---
 
-**Main menu:** [README.md](../../README.md) || **Previous:** [Estándares de Código y Formato](../architecture/code-standards.md)
+**Main menu:** [README.md](../../README.md) || **Previous:** [Estándares de Código y Formato](../architecture/code-standards.md) || **Next:** [Perfiles de Usuario](./user-profiles.md)

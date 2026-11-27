@@ -23,6 +23,7 @@ export interface UserInterface {
   email: string;
   phone?: PhoneInterface | null;
   activeProfileType: ProfileTypeEnum;
+  activeBusinessProfileId?: string | null;
   personalProfile?: PersonalProfileInterface | null;
   businessProfiles?: BusinessProfileInterface[];
   role: SystemRoleEnum;
@@ -36,7 +37,14 @@ export type UserIdentityType = Pick<UserInterface, 'uid' | 'email'>;
 
 export type CreateUserType = Omit<
   UserInterface,
-  'id' | 'personalProfile' | 'businessProfiles' | 'role' | 'status' | 'createdAt' | 'updatedAt'
+  | 'id' //\
+  | 'activeBusinessProfileId'
+  | 'personalProfile'
+  | 'businessProfiles'
+  | 'role'
+  | 'status'
+  | 'createdAt'
+  | 'updatedAt'
 > & {
   personalProfile?: CreatePersonalProfileType | null;
   businessProfiles?: CreateBusinessProfileType[];
@@ -49,8 +57,8 @@ export class UserEntity {
   private readonly _lastName: string;
   private readonly _email: string;
   private readonly _phone: PhoneEntity | null;
-  private readonly _activeProfileType: ProfileTypeEnum;
-  //* Mutable: un usuario registrado con su cuenta de empresa puede añadir después su perfil personal
+  private _activeProfileType: ProfileTypeEnum;
+  private _activeBusinessProfileId: string | null;
   private _personalProfile: PersonalProfileEntity | null;
   private readonly _businessProfiles: BusinessProfileEntity[];
   private readonly _role: SystemRoleEnum;
@@ -58,6 +66,7 @@ export class UserEntity {
   private readonly _createdAt: Date;
   private readonly _updatedAt: Date;
 
+  //#region Constructor
   constructor(user: UserInterface) {
     this._id = user.id ?? null;
     this._uid = user.uid;
@@ -70,6 +79,7 @@ export class UserEntity {
         : new PhoneEntity(user.phone)
       : null;
     this._activeProfileType = user.activeProfileType;
+    this._activeBusinessProfileId = user.activeBusinessProfileId ?? null;
     this._personalProfile = user.personalProfile
       ? user.personalProfile instanceof PersonalProfileEntity
         ? user.personalProfile
@@ -83,8 +93,9 @@ export class UserEntity {
     this._createdAt = user.createdAt ?? new Date();
     this._updatedAt = user.updatedAt ?? new Date();
   }
+  //#endregion
 
-  //? Getters
+  //#region Getters
   public get id(): string | null {
     return this._id;
   }
@@ -113,6 +124,18 @@ export class UserEntity {
     return this._activeProfileType;
   }
 
+  public get activeBusinessProfileId(): string | null {
+    return this.activeBusinessProfile?.id ?? null;
+  }
+
+  public get activeBusinessProfile(): BusinessProfileEntity | null {
+    const STORED = this._businessProfiles.find(
+      (profile) => profile.id !== null && profile.id === this._activeBusinessProfileId,
+    );
+
+    return STORED ?? this._businessProfiles[0] ?? null;
+  }
+
   public get personalProfile(): PersonalProfileEntity | null {
     return this._personalProfile;
   }
@@ -136,8 +159,9 @@ export class UserEntity {
   public get updatedAt(): Date {
     return this._updatedAt;
   }
+  //#endregion
 
-  //? Methods
+  //#region Methods
   public isActive(): boolean {
     return this._status === UserStatus.ACTIVE;
   }
@@ -154,13 +178,65 @@ export class UserEntity {
    * @throws {BaseException} 409 si el usuario ya tiene un perfil personal.
    */
   public addPersonalProfile(profile: CreatePersonalProfileType): PersonalProfileEntity {
-    //* Invariante: un usuario tiene como máximo un perfil personal
     if (this.hasPersonalProfile()) {
       throw UserErrors.personalProfileAlreadyExists('USER-DOM-ENT-USER-003');
     }
 
     this._personalProfile = PersonalProfileEntity.create(profile);
     return this._personalProfile;
+  }
+
+  /**
+   * Cambia el perfil activo del usuario (personal o una de sus empresas).
+   *
+   * @param {ProfileTypeEnum} profileType - Perfil que pasa a estar activo.
+   * @param {string} [businessProfileId] - Empresa a activar. Si se omite, la última activa o la primera.
+   *   Prohibido con PERSONAL: cambiar al perfil personal no cambia la empresa activa.
+   * @throws {BaseException} 400 si se indica una empresa al activar el perfil personal.
+   * @throws {BaseException} 404 si el usuario no tiene el perfil personal o la empresa indicada.
+   * @throws {BaseException} 409 si el perfil (o la empresa) ya está activo.
+   */
+  public switchActiveProfile(
+    profileType: ProfileTypeEnum,
+    businessProfileId?: string | null,
+  ): void {
+    if (profileType === ProfileTypeEnum.PERSONAL) {
+      //* La empresa activa se conserva para volver a ella al cambiar de nuevo a BUSINESS
+      if (businessProfileId) {
+        throw UserErrors.invalidProfileSwitch('USER-DOM-ENT-USER-006');
+      }
+
+      //* Invariante: solo se puede activar un perfil que el usuario tenga
+      if (!this.hasPersonalProfile()) {
+        throw UserErrors.personalProfileNotFound('USER-DOM-ENT-USER-004');
+      }
+
+      if (this._activeProfileType === ProfileTypeEnum.PERSONAL) {
+        throw UserErrors.profileAlreadyActive('USER-DOM-ENT-USER-007');
+      }
+
+      this._activeProfileType = ProfileTypeEnum.PERSONAL;
+      return;
+    }
+
+    const BUSINESS_PROFILE = businessProfileId
+      ? this._businessProfiles.find((profile) => profile.id === businessProfileId)
+      : this.activeBusinessProfile;
+
+    if (!BUSINESS_PROFILE) {
+      throw UserErrors.businessProfileNotFound('USER-DOM-ENT-USER-005');
+    }
+
+    //* Entre empresas sí se puede cambiar: solo se rechaza la misma empresa que ya está activa
+    if (
+      this._activeProfileType === ProfileTypeEnum.BUSINESS &&
+      BUSINESS_PROFILE.id === this.activeBusinessProfileId
+    ) {
+      throw UserErrors.profileAlreadyActive('USER-DOM-ENT-USER-008');
+    }
+
+    this._activeProfileType = ProfileTypeEnum.BUSINESS;
+    this._activeBusinessProfileId = BUSINESS_PROFILE.id;
   }
 
   /**
@@ -175,8 +251,9 @@ export class UserEntity {
     this._businessProfiles.push(BUSINESS_PROFILE);
     return BUSINESS_PROFILE;
   }
+  //#endregion
 
-  //? Methods static
+  //#region Methods static
   public static create(user: CreateUserType): UserEntity {
     const PERSONAL_PROFILE = user.personalProfile
       ? PersonalProfileEntity.create(user.personalProfile)
@@ -208,4 +285,5 @@ export class UserEntity {
       status: UserStatus.ACTIVE,
     });
   }
+  //#endregion
 }

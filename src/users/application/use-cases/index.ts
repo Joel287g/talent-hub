@@ -5,3 +5,4 @@ export { FindUserByAliasUseCase } from '@users/application/use-cases/find-user-b
 export { FindUserByBusinessContactUseCase } from '@users/application/use-cases/find-user-by-business-contact.use-case';
 export { AddPersonalProfileUseCase } from '@users/application/use-cases/add-personal-profile.use-case';
 export { AddBusinessProfileUseCase } from '@users/application/use-cases/add-business-profile.use-case';
+export { SwitchActiveProfileUseCase } from '@users/application/use-cases/switch-active-profile.use-case';

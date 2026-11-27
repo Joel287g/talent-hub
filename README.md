@@ -56,6 +56,7 @@ Para profundizar en las decisiones técnicas y operativas, consulta las guías e
 - [Manejo de Excepciones y Logging](./docs/guides/exception-handling.md)
 - [Estándares de Código y Formato](./docs/architecture/code-standards.md)
 - [Autenticación (JWT + Passport)](./docs/guides/authentication.md)
+- [Perfiles de Usuario (Personal y Empresa)](./docs/guides/user-profiles.md)
 - [Diagramas ER](./docs/architecture/entity-relationship-diagram.md)
 
 ## ⚙️ Guía de Inicio Rápido

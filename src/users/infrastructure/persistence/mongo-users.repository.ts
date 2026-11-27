@@ -1,13 +1,14 @@
 //? Imports de codigo
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 //? Imports de usuario
 import { BaseRepository } from '@common/repositories';
 import { UsersRepository } from '@users/domain/repositories';
 import { ALIAS_COLLATION, Users } from '@users/infrastructure/persistence/schemas';
 import { BusinessProfileEntity, PersonalProfileEntity, UserEntity } from '@users/domain/entities';
+import { ProfileTypeEnum } from '@users/domain/enums';
 import { BusinessProfileMapper } from '@users/infrastructure/persistence/business-profile.mapper';
 import { PersonalProfileMapper } from '@users/infrastructure/persistence/personal-profile.mapper';
 import { UserMapper } from '@users/infrastructure/persistence/user.mapper';
@@ -110,6 +111,26 @@ export class MongoDBUsersRepository
     const USER = await this.usersModel.findByIdAndUpdate(
       id,
       { $push: { businessProfiles: BusinessProfileMapper.toPersistence(profile) } },
+      { returnDocument: 'after', runValidators: true },
+    );
+    return this.mapToDomain(USER);
+  }
+
+  async updateActiveProfile(
+    id: string,
+    activeProfileType: ProfileTypeEnum,
+    activeBusinessProfileId: string | null,
+  ): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          activeProfileType,
+          activeBusinessProfileId: activeBusinessProfileId
+            ? new Types.ObjectId(activeBusinessProfileId)
+            : null,
+        },
+      },
       { returnDocument: 'after', runValidators: true },
     );
     return this.mapToDomain(USER);

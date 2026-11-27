@@ -1,6 +1,7 @@
 //? Imports de usuario
 import { BaseRepositoryInterface } from '@common/repositories';
 import { BusinessProfileEntity, PersonalProfileEntity, UserEntity } from '@users/domain/entities';
+import { ProfileTypeEnum } from '@users/domain/enums';
 
 export const USERS_REPOSITORY = Symbol('USERS_REPOSITORY');
 
@@ -19,5 +20,10 @@ export interface UsersRepository extends BaseRepositoryInterface<UserEntity> {
   create(entity: UserEntity): Promise<UserEntity>;
   addPersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null>;
   addBusinessProfile(id: string, profile: BusinessProfileEntity): Promise<UserEntity | null>;
+  updateActiveProfile(
+    id: string,
+    activeProfileType: ProfileTypeEnum,
+    activeBusinessProfileId: string | null,
+  ): Promise<UserEntity | null>;
   exists(id: string): Promise<boolean>;
 }

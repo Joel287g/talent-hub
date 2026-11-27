@@ -39,6 +39,30 @@ class UserErrorsFactory extends BaseErrors {
       code,
     );
   }
+
+  public personalProfileNotFound(
+    code: string = 'USER-DOM-EXC-USER_ERRO-007',
+  ): BaseException<UserErrorsEnum> {
+    return new BaseException<UserErrorsEnum>(UserErrorsEnum.PERSONAL_PROFILE_NOT_FOUND, 404, code);
+  }
+
+  public businessProfileNotFound(
+    code: string = 'USER-DOM-EXC-USER_ERRO-008',
+  ): BaseException<UserErrorsEnum> {
+    return new BaseException<UserErrorsEnum>(UserErrorsEnum.BUSINESS_PROFILE_NOT_FOUND, 404, code);
+  }
+
+  public profileAlreadyActive(
+    code: string = 'USER-DOM-EXC-USER_ERRO-009',
+  ): BaseException<UserErrorsEnum> {
+    return new BaseException<UserErrorsEnum>(UserErrorsEnum.PROFILE_ALREADY_ACTIVE, 409, code);
+  }
+
+  public invalidProfileSwitch(
+    code: string = 'USER-DOM-EXC-USER_ERRO-010',
+  ): BaseException<UserErrorsEnum> {
+    return new BaseException<UserErrorsEnum>(UserErrorsEnum.INVALID_PROFILE_SWITCH, 400, code);
+  }
 }
 
 export const UserErrors = new UserErrorsFactory();

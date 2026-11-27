@@ -1,12 +1,17 @@
 //? Imports de codigo
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Patch, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 //? Imports de usuario
 import { GetUser } from '@common/infrastructure/decorators';
 
-import { CreateBusinessProfileDto, CreatePersonalProfileDto } from '@users/application/dtos';
+import {
+  CreateBusinessProfileDto,
+  CreatePersonalProfileDto,
+  SwitchActiveProfileDto,
+} from '@users/application/dtos';
 import { AddBusinessProfileService, AddPersonalProfileService } from '@users/application/services';
+import { SwitchActiveProfileUseCase } from '@users/application/use-cases';
 import { UserEntity, UserInterface } from '@users/domain/entities';
 import { UserMapper } from '@users/infrastructure/persistence';
 
@@ -17,6 +22,7 @@ export class UsersController {
   constructor(
     private readonly addPersonalProfileService: AddPersonalProfileService,
     private readonly addBusinessProfileService: AddBusinessProfileService,
+    private readonly switchActiveProfileUseCase: SwitchActiveProfileUseCase,
   ) {}
 
   //* La JwtStrategy ya cargó el usuario (existe y está ACTIVE): no hace falta otra consulta
@@ -49,6 +55,19 @@ export class UsersController {
     @Body() createBusinessProfileDto: CreateBusinessProfileDto,
   ): Promise<UserInterface> {
     const USER = await this.addBusinessProfileService.execute(user, createBusinessProfileDto);
+    return UserMapper.toResponse(USER);
+  }
+
+  //* Cambia entre el perfil personal y las empresas del usuario (decide qué datos muestra el cliente)
+  @Patch('me/active-profile')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Cambia el perfil activo del usuario autenticado' })
+  @ApiBody({ type: SwitchActiveProfileDto })
+  public async switchActiveProfile(
+    @GetUser() user: UserEntity,
+    @Body() switchActiveProfileDto: SwitchActiveProfileDto,
+  ): Promise<UserInterface> {
+    const USER = await this.switchActiveProfileUseCase.execute(user, switchActiveProfileDto);
     return UserMapper.toResponse(USER);
   }
 }

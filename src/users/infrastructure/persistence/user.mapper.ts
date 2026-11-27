@@ -26,6 +26,7 @@ export class UserMapper {
       email: user.email,
       phone: user.phone ? PhoneMapper.toDomain(user.phone) : null,
       activeProfileType: user.activeProfileType,
+      activeBusinessProfileId: user.activeBusinessProfileId?.toString() ?? null,
       personalProfile: user.personalProfile
         ? PersonalProfileMapper.toDomain(user.personalProfile)
         : null,
@@ -54,6 +55,9 @@ export class UserMapper {
       email: user.email,
       phone: user.phone ? PhoneMapper.toPersistence(user.phone) : null,
       activeProfileType: user.activeProfileType,
+      activeBusinessProfileId: user.activeBusinessProfileId
+        ? new Types.ObjectId(user.activeBusinessProfileId)
+        : null,
       personalProfile: user.personalProfile
         ? PersonalProfileMapper.toPersistence(user.personalProfile)
         : null,
@@ -79,6 +83,7 @@ export class UserMapper {
       email: user.email,
       phone: user.phone ? PhoneMapper.toResponse(user.phone) : null,
       activeProfileType: user.activeProfileType,
+      activeBusinessProfileId: user.activeBusinessProfileId,
       personalProfile: user.personalProfile
         ? PersonalProfileMapper.toResponse(user.personalProfile)
         : null,

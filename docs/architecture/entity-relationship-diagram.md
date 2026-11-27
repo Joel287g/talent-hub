@@ -26,6 +26,7 @@ erDiagram
         Phone phone UK "Teléfono del usuario (opcional, único por cca2 + code + number)"
 
         ProfileTypeEnum activeProfileType "PERSONAL | BUSINESS"
+        ObjectId activeBusinessProfileId "Empresa activa (_id de businessProfiles; null = la primera)"
 
         PersonalProfile personalProfile "Información de la cuenta personal"
         Array~BusinessProfile~ businessProfiles "Información de las distintas cuentas de empresas"
