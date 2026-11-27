@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 //? Imports de usuario
 import { AVATAR_MAX_SIZE } from '@common/application/constants';
 import { CreateMediaFileDto } from '@common/application/dtos/create-media-file.dto';
-import { MediaExtension } from '@common/domain/enums';
+import { MediaExtension, MediaMimeType } from '@common/domain/enums';
 
 //* Un avatar solo puede ser una imagen (el tipo MIME ya se cruza con la extensión)
 const IMAGE_EXTENSIONS = [
@@ -13,6 +13,12 @@ const IMAGE_EXTENSIONS = [
   MediaExtension.JPEG,
   MediaExtension.PNG,
   MediaExtension.WEBP,
+];
+
+const IMAGE_MIME_TYPES = [
+  MediaMimeType.IMAGE_JPEG,
+  MediaMimeType.IMAGE_PNG,
+  MediaMimeType.IMAGE_WEBP,
 ];
 
 /**
@@ -34,6 +40,14 @@ ApiProperty({
 })(AVATAR, 'extension');
 IsIn(IMAGE_EXTENSIONS)(AVATAR, 'extension');
 
+//! Sin redeclarar el ejemplo, Swagger hereda el de `CreateMediaFileDto` (video/mp4) y el ejemplo es inválido
+ApiProperty({
+  description: 'Tipo MIME de la imagen, debe corresponder a la extensión (Required)',
+  required: true,
+  enum: IMAGE_MIME_TYPES,
+  example: MediaMimeType.IMAGE_WEBP,
+})(AVATAR, 'mimeType');
+
 ApiProperty({
   description: `Tamaño en bytes de la imagen, máximo ${AVATAR_MAX_SIZE} (Required)`,
   required: true,
@@ -46,5 +60,6 @@ Max(AVATAR_MAX_SIZE)(AVATAR, 'size');
 ApiProperty({
   description: 'Una imagen no tiene duración: debe omitirse',
   required: false,
+  readOnly: true,
 })(AVATAR, 'duration');
 IsEmpty()(AVATAR, 'duration');
