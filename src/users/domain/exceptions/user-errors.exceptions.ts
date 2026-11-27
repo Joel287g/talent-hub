@@ -63,6 +63,12 @@ class UserErrorsFactory extends BaseErrors {
   ): BaseException<UserErrorsEnum> {
     return new BaseException<UserErrorsEnum>(UserErrorsEnum.INVALID_PROFILE_SWITCH, 400, code);
   }
+
+  public nothingToUpdate(
+    code: string = 'USER-DOM-EXC-USER_ERRO-011',
+  ): BaseException<UserErrorsEnum> {
+    return new BaseException<UserErrorsEnum>(UserErrorsEnum.NOTHING_TO_UPDATE, 400, code);
+  }
 }
 
 export const UserErrors = new UserErrorsFactory();

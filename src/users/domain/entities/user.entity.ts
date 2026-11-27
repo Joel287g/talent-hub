@@ -11,6 +11,7 @@ import {
   CreatePersonalProfileType,
   PersonalProfileEntity,
   PersonalProfileInterface,
+  UpdatePersonalProfileType,
 } from '@users/domain/entities/personal-profile.entity';
 import { ProfileTypeEnum, UserStatus } from '@users/domain/enums';
 import { UserErrors } from '@users/domain/exceptions';
@@ -183,6 +184,26 @@ export class UserEntity {
     }
 
     this._personalProfile = PersonalProfileEntity.create(profile);
+    return this._personalProfile;
+  }
+
+  /**
+   * Edita parcialmente el perfil personal del usuario.
+   *
+   * @param {UpdatePersonalProfileType} changes - Campos a cambiar; los omitidos se conservan.
+   * @returns {PersonalProfileEntity} Perfil personal actualizado.
+   * @throws {BaseException} 400 si no se indica ningún campo; 404 si el usuario no tiene perfil personal.
+   */
+  public updatePersonalProfile(changes: UpdatePersonalProfileType): PersonalProfileEntity {
+    if (!Object.values(changes).some((value) => value !== undefined)) {
+      throw UserErrors.nothingToUpdate('USER-DOM-ENT-USER-009');
+    }
+
+    if (!this.hasPersonalProfile()) {
+      throw UserErrors.personalProfileNotFound('USER-DOM-ENT-USER-010');
+    }
+
+    this._personalProfile = this._personalProfile.update(changes);
     return this._personalProfile;
   }
 

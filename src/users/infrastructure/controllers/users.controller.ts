@@ -9,8 +9,13 @@ import {
   CreateBusinessProfileDto,
   CreatePersonalProfileDto,
   SwitchActiveProfileDto,
+  UpdatePersonalProfileDto,
 } from '@users/application/dtos';
-import { AddBusinessProfileService, AddPersonalProfileService } from '@users/application/services';
+import {
+  AddBusinessProfileService,
+  AddPersonalProfileService,
+  UpdatePersonalProfileService,
+} from '@users/application/services';
 import { SwitchActiveProfileUseCase } from '@users/application/use-cases';
 import { UserEntity, UserInterface } from '@users/domain/entities';
 import { UserMapper } from '@users/infrastructure/persistence';
@@ -23,6 +28,7 @@ export class UsersController {
     private readonly addPersonalProfileService: AddPersonalProfileService,
     private readonly addBusinessProfileService: AddBusinessProfileService,
     private readonly switchActiveProfileUseCase: SwitchActiveProfileUseCase,
+    private readonly updatePersonalProfileService: UpdatePersonalProfileService,
   ) {}
 
   //* La JwtStrategy ya cargó el usuario (existe y está ACTIVE): no hace falta otra consulta
@@ -42,6 +48,19 @@ export class UsersController {
     @Body() createPersonalProfileDto: CreatePersonalProfileDto,
   ): Promise<UserInterface> {
     const USER = await this.addPersonalProfileService.execute(user, createPersonalProfileDto);
+    return UserMapper.toResponse(USER);
+  }
+
+  //* Edición parcial: los campos omitidos no cambian; `null` borra los opcionales
+  @Patch('me/personal-profile')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Edita el perfil personal del usuario autenticado' })
+  @ApiBody({ type: UpdatePersonalProfileDto })
+  public async updatePersonalProfile(
+    @GetUser() user: UserEntity,
+    @Body() updatePersonalProfileDto: UpdatePersonalProfileDto,
+  ): Promise<UserInterface> {
+    const USER = await this.updatePersonalProfileService.execute(user, updatePersonalProfileDto);
     return UserMapper.toResponse(USER);
   }
 

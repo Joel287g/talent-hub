@@ -6,3 +6,4 @@ export { FindUserByBusinessContactUseCase } from '@users/application/use-cases/f
 export { AddPersonalProfileUseCase } from '@users/application/use-cases/add-personal-profile.use-case';
 export { AddBusinessProfileUseCase } from '@users/application/use-cases/add-business-profile.use-case';
 export { SwitchActiveProfileUseCase } from '@users/application/use-cases/switch-active-profile.use-case';
+export { UpdatePersonalProfileUseCase } from '@users/application/use-cases/update-personal-profile.use-case';

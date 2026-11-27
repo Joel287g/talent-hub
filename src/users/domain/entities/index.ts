@@ -6,6 +6,7 @@ export {
 export {
   PersonalProfileInterface,
   CreatePersonalProfileType,
+  UpdatePersonalProfileType,
   PersonalProfileEntity,
 } from '@users/domain/entities/personal-profile.entity';
 export {

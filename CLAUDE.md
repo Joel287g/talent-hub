@@ -16,7 +16,7 @@ Las reglas, instrucciones y direcciones del proyecto viven en `docs/`. **Todo c�
 - Estándares de Código y Formato (nomenclatura, BetterComments, imports y barriles): @docs/architecture/code-standards.md
 - Diagrama Entidad-Relación del módulo de usuarios: @docs/architecture/entity-relationship-diagram.md
 - Autenticación (JWT + Passport, `@PublicJwt`, `@GetUser`): @docs/guides/authentication.md
-- Perfiles de usuario (añadir perfil personal o de empresa, cambiar el perfil activo): @docs/guides/user-profiles.md
+- Perfiles de usuario (añadir y editar perfiles, cambiar el perfil activo): @docs/guides/user-profiles.md
 - Visión general, stack y comandos: @README.md
 
 ### Resumen de reglas críticas (detalle completo en los docs)

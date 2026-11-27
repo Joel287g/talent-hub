@@ -97,7 +97,10 @@ export class MongoDBUsersRepository
   //#endregion
 
   //#region UPDATE
-  async addPersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null> {
+  async savePersonalProfile(
+    id: string,
+    profile: PersonalProfileEntity,
+  ): Promise<UserEntity | null> {
     const USER = await this.usersModel.findByIdAndUpdate(
       id,
       { $set: { personalProfile: PersonalProfileMapper.toPersistence(profile) } },

@@ -36,6 +36,9 @@ export type CreatePersonalProfileType = Omit<
   danceStyles?: DanceStyleEnum[];
 };
 
+//* Edición parcial: `undefined` ➔ sin cambios; `null` ➔ borra el dato (solo en los campos opcionales)
+export type UpdatePersonalProfileType = Partial<CreatePersonalProfileType>;
+
 export class PersonalProfileEntity {
   private readonly _headline: string | null;
   private readonly _biography: string | null;
@@ -127,6 +130,38 @@ export class PersonalProfileEntity {
       ownTransportation: personalProfile.ownTransportation ?? false,
       specialties: personalProfile.specialties ?? [],
       danceStyles: personalProfile.danceStyles ?? [],
+    });
+  }
+
+  //? Methods
+  /**
+   * Devuelve un perfil nuevo con los cambios aplicados (la entidad es inmutable).
+   *
+   * @param {UpdatePersonalProfileType} changes - Campos a cambiar; los omitidos se conservan.
+   * @returns {PersonalProfileEntity} Perfil actualizado, con la misma fecha de creación.
+   */
+  public update(changes: UpdatePersonalProfileType): PersonalProfileEntity {
+    const KEEP = <T>(value: T | undefined, current: T): T =>
+      value === undefined ? current : value;
+
+    return new PersonalProfileEntity({
+      headline: KEEP(changes.headline, this._headline),
+      biography: KEEP(changes.biography, this._biography),
+      alias: KEEP(changes.alias, this._alias),
+      avatar:
+        changes.avatar === undefined
+          ? this._avatar
+          : changes.avatar
+            ? MediaFileEntity.create(changes.avatar)
+            : null,
+      //* Campos obligatorios: nunca se borran (el DTO rechaza `null`)
+      address: changes.address ? AddressEntity.create(changes.address) : this._address,
+      availableToTravel: changes.availableToTravel ?? this._availableToTravel,
+      ownTransportation: changes.ownTransportation ?? this._ownTransportation,
+      specialties: changes.specialties ?? this._specialties,
+      danceStyles: changes.danceStyles ?? this._danceStyles,
+      createdAt: this._createdAt,
+      updatedAt: new Date(),
     });
   }
 }
