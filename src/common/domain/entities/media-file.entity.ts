@@ -30,6 +30,7 @@ export class MediaFileEntity {
   private readonly _createdAt: Date;
   private readonly _updatedAt: Date;
 
+  //#region Constructor
   constructor(mediaFile: MediaFileInterface) {
     this._id = mediaFile.id ?? null;
     this._url = mediaFile.url;
@@ -43,8 +44,9 @@ export class MediaFileEntity {
     this._createdAt = mediaFile.createdAt ?? new Date();
     this._updatedAt = mediaFile.updatedAt ?? new Date();
   }
+  //#endregion
 
-  //? Getters
+  //#region Getters
   public get id(): string | null {
     return this._id;
   }
@@ -88,8 +90,9 @@ export class MediaFileEntity {
   public get updatedAt(): Date {
     return this._updatedAt;
   }
+  //#endregion
 
-  //? Methods static
+  //#region Methods static
   public static create(mediaFile: CreateMediaFileType): MediaFileEntity {
     return new MediaFileEntity({
       url: mediaFile.url,
@@ -102,4 +105,5 @@ export class MediaFileEntity {
       duration: mediaFile.duration ?? null,
     });
   }
+  //#endregion
 }

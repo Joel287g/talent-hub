@@ -15,8 +15,11 @@ export type CreateLoggerType = LoggerInterface;
 export type CreateLoggerPayloadType = Omit<CreateLoggerType, 'level'>;
 
 export class LoggerEntity {
+  //#region Constructor
   private constructor(public readonly props: LoggerInterface) {}
+  //#endregion
 
+  //#region Methods static
   public static create(payload: CreateLoggerType): LoggerEntity {
     return new LoggerEntity({
       data: payload.data,
@@ -25,4 +28,5 @@ export class LoggerEntity {
       type: payload.type,
     });
   }
+  //#endregion
 }

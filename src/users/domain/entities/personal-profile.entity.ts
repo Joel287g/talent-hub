@@ -52,6 +52,7 @@ export class PersonalProfileEntity {
   private readonly _createdAt: Date;
   private readonly _updatedAt: Date;
 
+  //#region Constructor
   constructor(personalProfile: PersonalProfileInterface) {
     this._headline = personalProfile.headline ?? null;
     this._biography = personalProfile.biography ?? null;
@@ -72,8 +73,9 @@ export class PersonalProfileEntity {
     this._createdAt = personalProfile.createdAt ?? new Date();
     this._updatedAt = personalProfile.updatedAt ?? new Date();
   }
+  //#endregion
 
-  //? Getters
+  //#region Getters
   public get headline(): string | null {
     return this._headline;
   }
@@ -117,23 +119,9 @@ export class PersonalProfileEntity {
   public get updatedAt(): Date {
     return this._updatedAt;
   }
+  //#endregion
 
-  //? Methods static
-  public static create(personalProfile: CreatePersonalProfileType): PersonalProfileEntity {
-    return new PersonalProfileEntity({
-      headline: personalProfile.headline ?? null,
-      biography: personalProfile.biography ?? null,
-      alias: personalProfile.alias ?? null,
-      avatar: personalProfile.avatar ? MediaFileEntity.create(personalProfile.avatar) : null,
-      address: AddressEntity.create(personalProfile.address),
-      availableToTravel: personalProfile.availableToTravel ?? false,
-      ownTransportation: personalProfile.ownTransportation ?? false,
-      specialties: personalProfile.specialties ?? [],
-      danceStyles: personalProfile.danceStyles ?? [],
-    });
-  }
-
-  //? Methods
+  //#region Methods
   /**
    * Devuelve un perfil nuevo con los cambios aplicados (la entidad es inmutable).
    *
@@ -164,4 +152,21 @@ export class PersonalProfileEntity {
       updatedAt: new Date(),
     });
   }
+  //#endregion
+
+  //#region Methods static
+  public static create(personalProfile: CreatePersonalProfileType): PersonalProfileEntity {
+    return new PersonalProfileEntity({
+      headline: personalProfile.headline ?? null,
+      biography: personalProfile.biography ?? null,
+      alias: personalProfile.alias ?? null,
+      avatar: personalProfile.avatar ? MediaFileEntity.create(personalProfile.avatar) : null,
+      address: AddressEntity.create(personalProfile.address),
+      availableToTravel: personalProfile.availableToTravel ?? false,
+      ownTransportation: personalProfile.ownTransportation ?? false,
+      specialties: personalProfile.specialties ?? [],
+      danceStyles: personalProfile.danceStyles ?? [],
+    });
+  }
+  //#endregion
 }

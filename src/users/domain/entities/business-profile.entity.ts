@@ -67,6 +67,7 @@ export class BusinessProfileEntity {
   private readonly _createdAt: Date;
   private readonly _updatedAt: Date;
 
+  //#region Constructor
   constructor(businessProfile: BusinessProfileInterface) {
     this._id = businessProfile.id ?? null;
     this._name = businessProfile.name;
@@ -93,8 +94,9 @@ export class BusinessProfileEntity {
     this._createdAt = businessProfile.createdAt ?? new Date();
     this._updatedAt = businessProfile.updatedAt ?? new Date();
   }
+  //#endregion
 
-  //? Getters
+  //#region Getters
   public get id(): string | null {
     return this._id;
   }
@@ -150,25 +152,9 @@ export class BusinessProfileEntity {
   public get updatedAt(): Date {
     return this._updatedAt;
   }
+  //#endregion
 
-  //? Methods static
-  public static create(businessProfile: CreateBusinessProfileType): BusinessProfileEntity {
-    return new BusinessProfileEntity({
-      name: businessProfile.name,
-      description: businessProfile.description ?? null,
-      type: businessProfile.type,
-      avatar: businessProfile.avatar ? MediaFileEntity.create(businessProfile.avatar) : null,
-      taxId: businessProfile.taxId ?? null,
-      email: businessProfile.email,
-      phone: PhoneEntity.create(businessProfile.phone),
-      address: AddressEntity.create(businessProfile.address),
-      availableToTravel: businessProfile.availableToTravel ?? false,
-      ownTransportation: businessProfile.ownTransportation ?? false,
-      offeredStyles: businessProfile.offeredStyles ?? [],
-    });
-  }
-
-  //? Methods
+  //#region Methods
   /**
    * Devuelve una empresa nueva con los cambios aplicados (la entidad es inmutable).
    * Conserva el `id`, el contacto (`email`, `phone`), el `taxId` y la fecha de creación.
@@ -200,4 +186,23 @@ export class BusinessProfileEntity {
       updatedAt: new Date(),
     });
   }
+  //#endregion
+
+  //#region Methods static
+  public static create(businessProfile: CreateBusinessProfileType): BusinessProfileEntity {
+    return new BusinessProfileEntity({
+      name: businessProfile.name,
+      description: businessProfile.description ?? null,
+      type: businessProfile.type,
+      avatar: businessProfile.avatar ? MediaFileEntity.create(businessProfile.avatar) : null,
+      taxId: businessProfile.taxId ?? null,
+      email: businessProfile.email,
+      phone: PhoneEntity.create(businessProfile.phone),
+      address: AddressEntity.create(businessProfile.address),
+      availableToTravel: businessProfile.availableToTravel ?? false,
+      ownTransportation: businessProfile.ownTransportation ?? false,
+      offeredStyles: businessProfile.offeredStyles ?? [],
+    });
+  }
+  //#endregion
 }

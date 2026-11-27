@@ -11,13 +11,15 @@ export class PhoneEntity {
   private readonly _code: string;
   private readonly _number: string;
 
+  //#region Constructor
   constructor(phone: PhoneInterface) {
     this._cca2 = phone.cca2;
     this._code = phone.code;
     this._number = phone.number;
   }
+  //#endregion
 
-  //? Getters
+  //#region Getters
   public get cca2(): string {
     return this._cca2;
   }
@@ -29,8 +31,9 @@ export class PhoneEntity {
   public get number(): string {
     return this._number;
   }
+  //#endregion
 
-  //? Methods static
+  //#region Methods static
   public static create(phone: CreatePhoneType): PhoneEntity {
     return new PhoneEntity({
       cca2: phone.cca2,
@@ -38,4 +41,5 @@ export class PhoneEntity {
       number: phone.number,
     });
   }
+  //#endregion
 }

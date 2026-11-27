@@ -37,6 +37,7 @@ export class SnifferEntity {
   private readonly _createdAt: Date;
   private readonly _updatedAt: Date;
 
+  //#region Constructor
   constructor(sniffer: SnifferInterface) {
     this._id = sniffer.id ?? null;
     this._auth = sniffer.auth;
@@ -55,8 +56,9 @@ export class SnifferEntity {
     this._createdAt = sniffer.createdAt ?? new Date();
     this._updatedAt = sniffer.updatedAt ?? new Date();
   }
+  //#endregion
 
-  //? Getters
+  //#region Getters
   public get id(): string | null | undefined {
     return this._id;
   }
@@ -105,8 +107,9 @@ export class SnifferEntity {
   public get updatedAt(): Date | undefined {
     return this._updatedAt;
   }
+  //#endregion
 
-  //? Methods static
+  //#region Methods static
   public static create(sniffer: CreateSnifferType): SnifferEntity {
     return new SnifferEntity({
       auth: sniffer.auth,
@@ -124,4 +127,5 @@ export class SnifferEntity {
       appVersion: sniffer.appVersion,
     });
   }
+  //#endregion
 }

@@ -13,14 +13,16 @@ export class AddressEntity {
   private readonly _postalCode: string;
   private readonly _street: string;
 
+  //#region Constructor
   constructor(address: AddressInterface) {
     this._country = address.country;
     this._city = address.city;
     this._postalCode = address.postalCode;
     this._street = address.street;
   }
+  //#endregion
 
-  //? Getters
+  //#region Getters
   public get country(): string {
     return this._country;
   }
@@ -36,8 +38,9 @@ export class AddressEntity {
   public get street(): string {
     return this._street;
   }
+  //#endregion
 
-  //? Methods static
+  //#region Methods static
   public static create(address: CreateAddressType): AddressEntity {
     return new AddressEntity({
       country: address.country,
@@ -46,4 +49,5 @@ export class AddressEntity {
       street: address.street,
     });
   }
+  //#endregion
 }

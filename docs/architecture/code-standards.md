@@ -27,6 +27,35 @@ Para estandarizar la documentación visual y el rastreo en el editor, se utiliza
 - `//!` : Para advertencias críticas, alertas de seguridad o código temporal/bloqueante.
 - `//TODO:` : Para tareas pendientes o futuras refactorizaciones.
 
+### Regiones en las Entidades (`//#region`)
+
+Las entidades de dominio (`*.entity.ts`) agrupan sus secciones principales con `//#region` / `//#endregion`, para poder plegarlas y localizarlas en el minimapa del editor. Siempre en este orden, omitiendo las que no existan:
+
+```typescript
+export class UserEntity {
+  private readonly _id: string | null;
+
+  //#region Constructor
+  constructor(user: UserInterface) { ... }
+  //#endregion
+
+  //#region Getters
+  public get id(): string | null { ... }
+  //#endregion
+
+  //#region Methods
+  public isActive(): boolean { ... }
+  //#endregion
+
+  //#region Methods static
+  public static create(user: CreateUserType): UserEntity { ... }
+  //#endregion
+}
+```
+
+- Solo las secciones principales: no se anidan regiones ni se crean por método.
+- Las propiedades privadas (`_id`, `_name`, ...) quedan fuera de las regiones, al inicio de la clase.
+
 ---
 
 ## 3. Reglas de Organización e Importaciones
