@@ -52,11 +52,16 @@ export type CreateUserType = Omit<
   businessProfiles?: CreateBusinessProfileType[];
 };
 
+//* Edición parcial de los datos base: `undefined` ➔ sin cambios
+//! `email` y `phone` no se editan por esta vía: cambiarlos exige confirmarlos antes (flujo de seguridad)
+export type UpdateUserType = Partial<Pick<CreateUserType, 'name' | 'lastName'>>;
+
 export class UserEntity {
   private readonly _id: string | null;
   private readonly _uid: string;
-  private readonly _name: string;
-  private readonly _lastName: string;
+  //* Mutables: el usuario puede editar sus datos base (`update`)
+  private _name: string;
+  private _lastName: string;
   private readonly _email: string;
   private readonly _phone: PhoneEntity | null;
   private _activeProfileType: ProfileTypeEnum;
@@ -170,6 +175,21 @@ export class UserEntity {
 
   public hasPersonalProfile(): boolean {
     return this._personalProfile !== null;
+  }
+
+  /**
+   * Edita parcialmente los datos base del usuario (`name`, `lastName`).
+   *
+   * @param {UpdateUserType} changes - Campos a cambiar; los omitidos se conservan.
+   * @throws {BaseException} 400 si no se indica ningún campo.
+   */
+  public update(changes: UpdateUserType): void {
+    if (!UserEntity.hasChanges(changes)) {
+      throw UserErrors.nothingToUpdate('USER-DOM-ENT-USER-013');
+    }
+
+    this._name = changes.name ?? this._name;
+    this._lastName = changes.lastName ?? this._lastName;
   }
 
   /**

@@ -18,6 +18,7 @@ export interface UsersRepository extends BaseRepositoryInterface<UserEntity> {
     number: string;
   }): Promise<UserEntity | null>;
   create(entity: UserEntity): Promise<UserEntity>;
+  updateBaseData(user: UserEntity): Promise<UserEntity | null>;
   addPersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null>;
   updatePersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null>;
   addBusinessProfile(id: string, profile: BusinessProfileEntity): Promise<UserEntity | null>;

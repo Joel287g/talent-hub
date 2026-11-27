@@ -11,6 +11,7 @@ import {
   SwitchActiveProfileDto,
   UpdateBusinessProfileDto,
   UpdatePersonalProfileDto,
+  UpdateUserDto,
 } from '@users/application/dtos';
 import {
   AddBusinessProfileService,
@@ -20,6 +21,7 @@ import {
 import {
   SwitchActiveProfileUseCase,
   UpdateBusinessProfileUseCase,
+  UpdateUserUseCase,
 } from '@users/application/use-cases';
 import { UserEntity, UserInterface } from '@users/domain/entities';
 import { UserMapper } from '@users/infrastructure/persistence';
@@ -34,6 +36,7 @@ export class UsersController {
     private readonly switchActiveProfileUseCase: SwitchActiveProfileUseCase,
     private readonly updatePersonalProfileService: UpdatePersonalProfileService,
     private readonly updateBusinessProfileUseCase: UpdateBusinessProfileUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
   ) {}
 
   //* La JwtStrategy ya cargó el usuario (existe y está ACTIVE): no hace falta otra consulta
@@ -41,6 +44,19 @@ export class UsersController {
   @ApiOperation({ summary: 'Devuelve los datos del usuario autenticado' })
   public me(@GetUser() user: UserEntity): UserInterface {
     return UserMapper.toResponse(user);
+  }
+
+  //* Edición parcial de los datos base (`name`, `lastName`); sin consultas previas, llama al caso de uso
+  @Patch('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Edita los datos base del usuario autenticado' })
+  @ApiBody({ type: UpdateUserDto })
+  public async update(
+    @GetUser() user: UserEntity,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserInterface> {
+    const USER = await this.updateUserUseCase.execute(user, updateUserDto);
+    return UserMapper.toResponse(USER);
   }
 
   //* Para quien se registró con su cuenta de empresa y ahora quiere su perfil personal

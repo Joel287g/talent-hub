@@ -1,6 +1,6 @@
 # 👥 Guía de Perfiles de Usuario (Personal y Empresa)
 
-Este documento describe cómo un usuario de **Talent Hub** gestiona sus perfiles: el **perfil personal** (artista) y sus **cuentas de empresa** (academias, compañías, etc.). Explica cómo añadir el perfil que no se creó en el registro, cómo editar los perfiles y cómo cambiar el perfil activo, que es el que decide qué datos muestra el cliente.
+Este documento describe cómo un usuario de **Talent Hub** gestiona sus perfiles: el **perfil personal** (artista) y sus **cuentas de empresa** (academias, compañías, etc.). Explica cómo añadir el perfil que no se creó en el registro, cómo editar los perfiles y los datos base del usuario, y cómo cambiar el perfil activo, que es el que decide qué datos muestra el cliente.
 
 > Todas las rutas son protegidas: requieren el JWT del backend en la cabecera `authorization` (ver [Autenticación](./authentication.md)). El usuario lo carga la `JwtStrategy` y llega al controlador con `@GetUser()`.
 
@@ -115,8 +115,7 @@ Mismas reglas de edición parcial que el perfil personal, con `UpdateBusinessPro
 | `description`, `avatar`                                                             | Sin cambios | **Borra** el dato          |
 | `name`, `type`, `address`, `offeredStyles`, `availableToTravel`, `ownTransportation` | Sin cambios | **400** (son obligatorios) |
 
-- **No editables:** `email` y `phone` (contacto único de la empresa, con su propia comprobación de duplicados) y `taxId` (dato fiscal). El `ValidationPipe` (`whitelist`) los descarta del body y `UpdateBusinessProfileType` no los admite, así que la entidad tampoco los cambia.
-- //TODO: Decidir si `taxId` puede editarse según la normativa fiscal española.
+- **No editables:** `email` y `phone` (datos de contacto: deben confirmarse antes, ver sección 7) y `taxId` (dato fiscal). El `ValidationPipe` (`whitelist`) los descarta del body y `UpdateBusinessProfileType` no los admite, así que la entidad tampoco los cambia.
 - `offeredStyles` admite una lista vacía (igual que en el alta).
 - Sin consultas previas (ningún campo editable es único): el controlador llama directamente al caso de uso.
 - El repositorio actualiza solo esa empresa (`businessProfiles.$`), sin tocar las demás. `update()` conserva el `id`, el contacto, el `taxId` y `createdAt`.
@@ -128,6 +127,30 @@ Mismas reglas de edición parcial que el perfil personal, con `UpdateBusinessPro
 | La empresa no existe o no es del usuario               | **404** `USER-BUSINESS_PROFILE_NOT_FOUND` | `USER-DOM-ENT-USER-012` |
 | Body sin ningún campo editable                         | **400** `USER-NOTHING_TO_UPDATE`          | `USER-DOM-ENT-USER-011` |
 | Body inválido (incluye `null` en un campo obligatorio) | **400** (`ValidationPipe`)                | —                       |
+
+---
+
+## 6. Editar los datos base del usuario
+
+`PATCH /api/users/me` ➔ `UpdateUserUseCase` ➔ `UserEntity.update()`. Responde **200** con el usuario completo.
+
+Edición parcial con `UpdateUserDto`: solo `name` y `lastName`. Si se omiten no cambian, y no se pueden borrar (`null` o un texto vacío ➔ **400**).
+
+- **`email` y `phone` no editables:** por seguridad, un dato de contacto nuevo debe **confirmarse antes** de guardarse (ej. código por correo o SMS). El `ValidationPipe` (`whitelist`) los descarta del body y `UpdateUserType` no los admite.
+- Sin consultas previas (`name` y `lastName` no son únicos): el controlador llama directamente al caso de uso.
+- El repositorio (`updateBaseData()`) solo escribe `name` y `lastName`; ni el contacto ni los perfiles se tocan.
+
+| Situación                                        | Respuesta                        | Código                  |
+| :----------------------------------------------- | :------------------------------- | :---------------------- |
+| Body sin ningún campo editable (ej. solo `phone`) | **400** `USER-NOTHING_TO_UPDATE` | `USER-DOM-ENT-USER-013` |
+| Body inválido (`name: null`, solo espacios, ...) | **400** (`ValidationPipe`)       | —                       |
+
+---
+
+## 7. Pendiente
+
+- //TODO: Flujo seguro para cambiar los datos de contacto (`email` y `phone` del usuario y de cada empresa): confirmar el dato nuevo antes de guardarlo y comprobar su unicidad (409).
+- //TODO: Decidir si `taxId` puede editarse según la normativa fiscal española.
 
 ---
 

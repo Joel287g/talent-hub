@@ -14,5 +14,6 @@ export {
   UserInterface,
   CreateUserType,
   UserIdentityType,
+  UpdateUserType,
   UserEntity,
 } from '@users/domain/entities/user.entity';

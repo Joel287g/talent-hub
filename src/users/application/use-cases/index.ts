@@ -8,3 +8,4 @@ export { AddBusinessProfileUseCase } from '@users/application/use-cases/add-busi
 export { SwitchActiveProfileUseCase } from '@users/application/use-cases/switch-active-profile.use-case';
 export { UpdatePersonalProfileUseCase } from '@users/application/use-cases/update-personal-profile.use-case';
 export { UpdateBusinessProfileUseCase } from '@users/application/use-cases/update-business-profile.use-case';
+export { UpdateUserUseCase } from '@users/application/use-cases/update-user.use-case';

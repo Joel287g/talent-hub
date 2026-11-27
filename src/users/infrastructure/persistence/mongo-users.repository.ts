@@ -100,6 +100,15 @@ export class MongoDBUsersRepository
   //#endregion
 
   //#region UPDATE
+  async updateBaseData(user: UserEntity): Promise<UserEntity | null> {
+    const USER = await this.usersModel.findByIdAndUpdate(
+      user.id,
+      { $set: { name: user.name, lastName: user.lastName } },
+      { returnDocument: 'after', runValidators: true },
+    );
+    return this.mapToDomain(USER);
+  }
+
   //* Alta: el perfil aún no existe (`null`), así que se escribe el subdocumento completo
   async addPersonalProfile(id: string, profile: PersonalProfileEntity): Promise<UserEntity | null> {
     const USER = await this.usersModel.findByIdAndUpdate(

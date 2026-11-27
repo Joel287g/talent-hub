@@ -4,3 +4,4 @@ export { CreateBusinessProfileDto } from '@users/application/dtos/create-busines
 export { SwitchActiveProfileDto } from '@users/application/dtos/switch-active-profile.dto';
 export { UpdatePersonalProfileDto } from '@users/application/dtos/update-personal-profile.dto';
 export { UpdateBusinessProfileDto } from '@users/application/dtos/update-business-profile.dto';
+export { UpdateUserDto } from '@users/application/dtos/update-user.dto';
